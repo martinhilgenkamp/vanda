@@ -4,7 +4,7 @@ session_start();
 require_once('../class/class.mysql.php');
 require_once("../class/class.machines.php");
 
-$machine = new Machine;
+$mm = new MachineManager;
 
 // make post safe en zet in post + session
 foreach($_POST as $key => $val){
@@ -12,8 +12,7 @@ foreach($_POST as $key => $val){
 	$_SESSION[$key] = $val;
 }
 
-$post = (object) $post;
-
+$post = (object)$post;
 
 if(!$post->task){
 	$post-> task = '';
@@ -21,14 +20,14 @@ if(!$post->task){
 
 switch($post->task){
 	case 'add':
-		$machine->add($post);
+		$mm->addMachine($post);
 	break;
 	case 'remove':
 		if(!$post->id){
 			echo "FOUT! er zijn geen rollen geselecteerd";
 			exit;
 		} else {
-			$machine->Delete($post->id);	
+			$mm->Delete($post->id);	
 		}
 	break;
 }
@@ -39,7 +38,5 @@ function RestoreSession(){
 	session_start();
 	$_SESSION['username'] = $name;
 }
-
-
 
 ?>
