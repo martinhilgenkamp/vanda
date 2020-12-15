@@ -1,0 +1,503 @@
+/* Style css voor Vanda Carpet Management */
+html {
+	background: url(../images/background.jpg) #ccc;	
+	font-size: 	14px;
+	font-family:Arial, Helvetica, sans-serif;
+	line-height:20px;
+	color: 		#333;
+}
+
+@font-face {
+	font-family: Code128;
+	src: url('code128.otf');
+}
+
+a, a:visited{
+	color: 		#333;
+}
+
+* {
+	margin: 	0px;
+	padding: 	0px;	
+}
+h1, h2, h3, p {
+	margin-bottom:20px;	
+}
+
+h1 {
+	font-size: 24px;
+	text-align: center;	
+}
+
+.clr {
+	clear: both;	
+}
+
+input[type=submit], input[type=reset], input[type=button]{
+	padding: 5px 10px;	
+	margin: 5px;
+}
+
+/*Hier komt de styling voor het inloggen*/
+.register-form {
+	margin: 10px auto 0px auto;
+	width: 300px;
+	padding: 20px;	
+	background: #ccc;
+	border: 1px solid #666;
+}
+
+.error_message {
+	margin: 0px auto;
+	color: #f00;
+	width: 500px;	
+	text-align: center;
+}
+
+.register-form form input{padding: 5px;}
+.register-form .btn{background: #222c6a;
+padding: 7px;
+border-radius: 5px;
+text-decoration: none;
+width: 50px;
+display: inline-block;
+color: #FFF;
+margin-left: 80px;
+}
+
+.register-form .register{
+border: 0;
+width: 60px;
+padding: 8px;
+}
+
+/*Hier komt de styling voor het de pagina*/
+#wrapper {
+	width: 		100%;
+	min-height: 300px;
+	margin: 	auto;
+	background: #fff;
+	position: 	relative;
+	
+}
+
+#header {
+	padding:  0px 0px 10px 0px;	
+}
+
+
+#logo {
+	width: 		150px;
+	height: 	52px;
+	padding-top: 1px;
+	background: #fff;
+	padding-top: 0px;
+	padding-left:10px;
+	position: 	absolute;
+	z-index: 	10;
+}
+
+#content-wrapper {
+	margin: 5px 0px;
+	padding-bottom: 20px;
+}
+
+.button {
+	position: relative;
+	margin: 0px 10px 10px 0px;
+}
+
+.suppliers .submit .reset {
+	margin: 5px 10px;	
+}
+
+.submit { margin-left: 20px; }
+
+#amount{
+	width: 50px;
+	text-align: center;	
+}
+
+.amountbutton {
+	margin:  10px 10px;
+	width: 25px;
+}
+
+.table-header tr, .table-header tr:hover {
+	background: #222c6a !important;
+	color: #fff;	
+	line-height: 30px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.table-header a:hover{
+	text-decoration: underline;	
+}
+
+.table-header a, .table-header a:visited, .table-header a:active {
+	color: #fff;
+	text-decoration: none;
+	font-weight: bold;	
+}
+
+.results{
+	width: 100%;
+	border: 1px solid #ededed;	
+	text-align: center;
+	line-height: 27px;
+}
+
+.ui-accordion-content-active {
+	height: 155px;
+	vertical-align: middle;
+}
+
+.grey {
+	background: #ededed;	
+}
+
+#filterdiv {
+	text-align: right;	
+}
+
+#filterdiv select {
+	font-size: 14px;
+	margin: 0px 10px 10px 0px;
+	height: 20px;
+}
+
+.datepicker {
+	font-size: 14px;
+	margin-bottom: 10px;
+	margin-right: 10px;
+	height: 20px;	
+}
+
+#csv, #csv img {
+	width: 50px;
+	height: 50px;
+	float: left;
+	margin-top: 10px;
+	cursor: pointer;
+}
+
+.delete, .delete-stock {
+	height: 20px;
+	width: 21px;
+	background: url(../images/cross-16px.png) center no-repeat ;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.unship-article {
+	height: 20px;
+	width: 21px;
+	background: url(../images/truck-cross.png) center no-repeat ;
+	display: inline-block;
+	cursor: pointer;
+}
+
+
+#query {
+	display: none;
+}
+
+#results {
+	margin: 0px 0px 10px 0px;	
+}
+
+#version {
+	position: fixed;	
+}
+
+#version, #version a {
+	font-size: 9px;
+	color: #aaa;	
+	bottom: 0px;
+	right: 3px;	
+	text-decoration: none;
+}
+
+#version a {
+	display: inline;
+	width: 120px;
+	text-align: right;	
+}
+
+#insertform a.ui-button {
+	margin: 5px;	
+}
+
+.mobilelist {
+	list-style: none;
+	line-height: 25px;
+	text-align: center;
+}
+
+.input-select {
+	width: 175px;	
+}
+
+.mobilelist label{
+	display: inline-block;
+	width: 140px;
+	font-size: 14px;
+}
+
+#barcode-display {
+	font-family: Code128;
+	font-size: 45px;
+	line-height: 50px;
+}
+
+.ui-widget tr:hover {	
+	background: #ccc;
+}
+
+#stansbuttons-container{
+	display: block;
+	height: 40px;
+}
+
+#optieform ul, #stanslist, #insertform {
+	list-style: none;
+	text-align: center;
+	font-size: 14px;
+	margin: 0px;
+	padding: 0px;
+}	
+
+#optieform ul li,#stanslist li, #insertform li {
+	line-height: 30px;	
+}
+
+#optieform ul li label, #stanslist li label, #insertform li label {
+	display: inline-block;
+	width: 190px;	
+}
+
+#optieform input, #stanslist input{
+	width: 200px;	
+}
+
+#optieform input[type=text], #stanslist input[type=text], #insertform input[type=text]{
+	height: 25px;
+	line-height: 25px;
+	font-size: 14px;
+	padding: 0px 5px;	
+}
+
+#taskform ul li,#taskform ul li label {
+	display: inline-block;
+	width: 150px;
+	float: left;
+}
+
+#taskformcontainer{
+	background-color: #222c6a;
+	color: #fff;
+	font-weight:  bold;
+	
+}
+
+#taskformcontainer label {
+margin: 10px;
+}
+
+
+#taskformcontainer input[type="text"]{
+	height: 24px;
+	line-height: 25px;
+	font-size: 14px;
+	padding: 0px 5px;
+	margin-top: 15px;
+}
+
+.blue-divider {
+	background: #222c6a;
+	height: 5px;
+	line-height: 5px !important;
+}
+
+.open:hover, .gereed:hover, .behandeling:hover {
+	cursor:  pointer;
+	background:  #222c6a;
+	color:  #FFF;
+	font-weight: bold;
+}
+
+.gettransport, .returntransport {
+	color: #fff !important;
+	background-color:  #222c6a !important;	
+	margin-top: 10px;
+	line-height:  25px;
+	background: #222c6a !important;
+}
+
+
+.roll-form-div { 
+	font-size:  1.4em;
+	text-align: center;
+}
+
+#rollformlist,#childrollformlist {
+	list-style: none;
+}
+
+#rollformlist label span{
+	display:  inline-block;
+	width: 300px;
+}
+
+#childrollformlist label span {
+	display: inline-block;
+	width:300px;
+}
+
+#rollformlist input[type="text"], #childrollformlist input[type="text"]{
+	height: 24px;
+	line-height: 25px;
+	font-size: 14px;
+	padding: 0px 5px;
+	margin-top: 2px;
+	margin-right:  10px;
+}
+
+#childrollform li {
+	list-style:  none;
+	width: 100%;
+}
+
+#childrollform{
+	display: none;
+}
+
+	
+#childrollform li label span {
+	font-size:  1.0em;
+	display: inline-block;
+	width:300px;
+	text-align:  left;
+}
+
+/* Overzichts tabellen */
+.data-table {
+	position:relative;
+	width: 100%;
+	border-collapse: collapse;	
+}
+
+#artikelnummer_col {
+	min-width: 140px;	
+}
+
+/* Zebra striping */
+.data-table tr:nth-of-type(odd) { 
+  background: #e3e3e3; 
+}
+
+.data-table th, th a { 
+  background: #222c6a; 
+  color: white !important; 
+  font-weight: bold; 
+  text-decoration: none;
+}
+.data-table td, th { 
+  padding: 4px 3px; 
+  border: 1px solid #ccc; 
+  text-align: center; 
+  font-size: .8em;
+}
+
+
+/* Filter form */
+#filter_form_div, #filter_form_div label{
+	font-weight: bold;
+	line-height: 30px;
+	text-align: right;
+	margin-right: 10px;
+	
+}
+
+#filter_form  {
+	margin-bottom: 5px;	
+	font: 1em "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+#filter_form input[type=text], #filter_form select, #submit_free_search, #reset_free_form {
+	line-height: 30px;
+	padding: 3px 5px;
+	font: 1em "Trebuchet MS", Arial, Helvetica, sans-serif;
+	margin-right: 10px;
+}
+
+#input_price {
+	display: inline-block;
+	height: 25px;
+	width: 15px;	
+}
+
+#submit_free_search:hover, #reset_free_form:hover, #filter_form_div select {
+	cursor: pointer;
+}
+
+
+#filter_form input[type=text] {
+	margin-top: 2px;
+}
+
+#filter_form_div select {
+	padding: 5px 0px 0px 0px;
+    margin: 2px 10px 0px 5px;
+    border: 1px solid #E5E5E5;
+    background: #FBFBFB;
+    outline: 0;
+    -webkit-box-shadow: inset 1px 1px 2px rgba(238, 238, 238, 0.2);
+    box-shadow: inset 1px 1px 2px rgba(238, 238, 238, 0.2);
+	font: 1em "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+.debug {
+	width: 100%;
+	background: #fffa90;
+	color: #777620;
+	border: #dad55e;
+}
+
+
+#machineform ul{
+	text-align: center;
+}
+
+#machineform ul li {
+	display:  inline-block;
+	width: 180px;
+	align-self: center;
+}
+
+.machine-input-text {
+	padding: 5px 2px;
+	margin: 5px;
+	width: 150px;
+}
+
+#errorbox {
+	padding: 10px 5px;
+	margin: 10px;
+	text-align:  center;
+	font-weight:  bold;
+	display: none;
+}
+
+.machine-header li{
+	text-align:  center;
+	align-self: center;
+	width: 180px;
+}
+
+.machine-success {
+	border-color: #063E00 !important;
+	background-color: #B6F3B9 !important;
+	border:  1px solid;
+}
