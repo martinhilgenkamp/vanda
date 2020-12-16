@@ -10,7 +10,7 @@ class MachineManager {
 	}
 	
 	function addMachine($data) {
-		if($data->persoon == '' || $data->kwaliteit == '' || $data->machine ==''){
+		if($data['persoon'] == '' || $data['kwaliteit'] == '' || $data['machine'] ==''){
 			//incomplete entry throw error
 			echo "Niet alle waardes zijn ingevuld.";
 			return;
@@ -31,12 +31,12 @@ class MachineManager {
 			echo 'Dubbele registratie probeer het later opnieuw.';
 		}
 
-		$_SESSION['persoon'.$data->machine] = $data->persoon;
-		$_SESSION['kwaliteit'.$data->machine] = $data->kwaliteit;
+		$_SESSION['persoon'.$data['machine']] = $data['persoon'];
+		$_SESSION['kwaliteit'.$data['machine']] = $data['kwaliteit'];
 	}
 
 	function getLastTime($data) {
-		$qry = "SELECT datum FROM `vanda_machines` WHERE persoon = '".$data->persoon."' AND machine = '".$data->machine."' ORDER BY datum DESC LIMIT 1";
+		$qry = "SELECT datum FROM `vanda_machines` WHERE persoon = '".$data['persoon']."' AND machine = '".$data['machine']."' ORDER BY datum DESC LIMIT 1";
 		
 		$res = $this->db->selectQuery($qry);
 
@@ -346,6 +346,7 @@ class MachineManager {
 		// Generate table header
 		$output .= "<table class=\"data-table\">";
 		$output .= "	<tr>";
+		$output .= "		<th>Rij</th>";
 		$output .= "		<th><input type='checkbox' id='machine-select-all' name='machine-select-all'></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=id&order=".$order."&pg=".$pg."'>ID</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=persoon&order=".$order."&pg=".$pg."'>Operator</a></th>";
@@ -357,7 +358,9 @@ class MachineManager {
 		$records = 0;
 		foreach ($result as $row) {
 			// Generate table rows
+			$records++;
 			$output .= "	<tr id='row_".$row->id."' class='data-table-row'>";
+			$output .= "		<td>".$records."</td>";
 			$output .= "		<td><input class='machine-checkbox' type='checkbox' name='machineid[]' value='".$row->id."' /></td>";
 			$output .= "		<td>".$row->id."</td>";
 			$output .= "		<td>".$row->persoon."</td>";
@@ -365,13 +368,17 @@ class MachineManager {
 			$output .= "		<td> Machine ".$row->machine."</td>";		
 			$output .= "		<td>".date('Y-m-d H:i:s',strtotime($row->datum))."</td>";		
 			$output .= "	</tr>";
-			$records++;
 		}
 		
-		if($records == 0){
+		if($records == 0) {
 			$output .=  '<tr class=\'data-table-row\'>';	
-			$output .=  '<td colspan="16"><strong>Er zijn geen resultaten om weer te geven</strong></td>';
+			$output .=  	'<td colspan="16"><strong>Er zijn geen resultaten om weer te geven</strong></td>';
 			$output .=  '</tr>';
+		}
+		else {
+			$output .=  "<tr>";	
+			$output .=  	"<th colspan='7'>Totaal ".$records." registraties.</th>";
+			$output .=  "</tr>";
 		}
 		
 		// Close Table
@@ -394,22 +401,17 @@ class MachineManager {
 		
 		return $output;	
 	}
-	
-	function Delete($ids){
-		global $db;
-				
-		foreach($ids as $id){		
-			$query = "UPDATE `vanda_machines` SET `verwijderd` = '1' WHERE `vanda_machines`.`id` = ".$id;
-			if($db->query($query)){
-				echo "De registraties zijn verwijderd.";
-		    } else {
-				echo "FOUT! ".$db->error;
-				return 'error';   
-		    }
-		}
-		
+
+	function deleteMachine($ids){
+		$deleteIds = implode(', ', $ids); 
+		$data = array("verwijderd" => "1");
+
+		var_dump("<pre>");
+		var_dump($deleteIds);
+		//$this->db->updateQuery("vanda_machines", $data, "id IN (".$deleteIds.")");
+
 		$this->RestoreSession();
-	}	
+	}
 	
 	// RESET SESSION VALUES	
 	function RestoreSession(){

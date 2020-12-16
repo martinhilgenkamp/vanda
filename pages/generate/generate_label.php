@@ -1,33 +1,19 @@
 <?php 
-// Noodzakelijke dingen bij elkaar rapen.
-require_once('../class/class.mysql.php');
-require_once('../tcpdf.php');
-date_default_timezone_set("Europe/Amsterdam");
 
-// prevent notifications
-error_reporting(E_ALL ^ E_NOTICE);
-ini_set("display_errors", 0);
+require_once('../../tcpdf.php');
+require_once("../../inc/class/class.production.php");
+require_once("../../inc/class/class.option.php");
 
-$barcode= $_GET['artikelnummer'];
-$result = $db->query("SELECT * FROM `vanda_production` WHERE barcode = '".$barcode."' LIMIT 1;");
-$post = $result->fetch_object();
+$pm = new ProductionManager();
+$om = new OptionManager();
+
+$barcode = $_GET['artikelnummer'];
+$post = $pm->getProductByBarcode($barcode);
 
 // Get options
-$query = "SELECT * FROM vanda_options WHERE id = 1";
-$options = $db->query($query) or die ('Er is een fout opgetreden met laden van de gegevens: '. $db->error());
-$options = $options->fetch_object();
+$options = $om->getOptionById(1);
 
-class MYPDF extends TCPDF {
-    // Page footer
-    public function Footer() {
-		//$artikelnummer= $_GET['artikelnummer'];
-		//$result = $db->query("SELECT * FROM articles WHERE artikelnummer = '".$artikelnummer."' LIMIT 1;");
-		//$post = $db->fetch_object($result);
-        // Page number
-       // $this->writeHTMLCell(200, 0, '10', '80', '<span style="font-size: 18px; font-weight: bold; line-height:20px;">'.$post->opmerking.'</span>', 0, 1, 0, false, '', true);
-    }
-	
-}
+class MYPDF extends TCPDF { }
 
 // create new PDF document
 $pdf = new MYPDF('landscape' , 'mm', array(98,205), true, 'UTF-8', false);
@@ -51,7 +37,6 @@ $pdf->AddPage();
 // generate barcode
 $barcode = $post->barcode;
 $pdf->setBarcode($barcode);
-
 
 $style = array(
     'position' => 'C',
@@ -88,10 +73,12 @@ $pdf->SetMargins(0, 0, 0,0);
 
 // write some JavaScript code
 // force print dialog
-$js .= 'print(true);';
+$js = 'print(true);';
 
 // set javascript
 $pdf->IncludeJS($js);
+
+ob_end_clean();
 
 $pdf->Output('label-'.$barcode.'.pdf', 'I');
 ?>

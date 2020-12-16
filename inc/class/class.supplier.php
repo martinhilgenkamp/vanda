@@ -14,6 +14,12 @@ class SupplierManager {
 		return $this->db->selectQuery($qry);
 	}
 
+	function loadSuppliersIncludeDeleted() {
+		$qry = "SELECT * FROM vanda_suppliers ORDER BY supplier_desc ASC";
+		
+		return $this->db->selectQuery($qry);
+	}
+
 	function getBySupplierNumber($supplierNumber) {
 		$qry = "SELECT * FROM vanda_suppliers WHERE id = ".$supplierNumber;
 		

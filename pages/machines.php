@@ -23,7 +23,7 @@ $machines = 8;
 				<?php 
 				echo "<li><input type=\"text\" class=\"ui-widget ui-state-default ui-corner-all machine-input-text\" name=\"operator".$i."\" id=\"input_operator".$i."\" value=\"".$mm->getLastPersoon($i)."\"></li>";
 				echo "<li><input type=\"text\" class=\"ui-widget ui-state-default ui-corner-all machine-input-text\" name=\"kwalitet".$i."\" id=\"input_kwaliteit".$i."\" value=\"".$mm->getLastKwaliteit($i)."\"></li>";
-				echo '<input type="button" class="ui-button ui-corner-all ui-widget machinebutton"  id="machine'.$i.'" name="machine'.$i.'" value="Machine '.$i.'">';
+				echo '<input type="button" class="ui-button ui-corner-all ui-widget machinebutton"  id="machine'.$i.'" name="machine'.$i.'" value="Machine'.$i.'">';
 				?>
 			</ul>
 		<?php } ?>

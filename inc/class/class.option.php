@@ -13,6 +13,14 @@ class OptionManager {
 		
 		return $this->db->selectQuery($qry);
 	}
+
+	function getOptionById($id) {
+		$qry = "SELECT * FROM vanda_options WHERE id = '".$id."'";
+		
+		$res = $this->db->selectQuery($qry);
+
+		return $res[0];
+	}
 }
 
 ?>

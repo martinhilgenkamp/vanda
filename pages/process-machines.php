@@ -1,8 +1,8 @@
 <?php
 // Noodzakelijke dingen bij elkaar rapen.
 session_start();
-require_once('../class/class.mysql.php');
-require_once("../class/class.machines.php");
+
+require_once("../inc/class/class.machines.php");
 
 $mm = new MachineManager;
 
@@ -15,19 +15,26 @@ foreach($_POST as $key => $val){
 $post = (object)$post;
 
 if(!$post->task){
-	$post-> task = '';
+	$post->task = '';
 }
 
 switch($post->task){
 	case 'add':
-		$mm->addMachine($post);
+		$data = array(
+			"persoon" => $post->persoon,
+			"kwaliteit" => $post->kwaliteit,
+			"machine" => $post->machine,
+			"datum" => date("Y-m-d H:i:s")
+		);
+
+		$mm->addMachine($data);
 	break;
 	case 'remove':
 		if(!$post->id){
 			echo "FOUT! er zijn geen rollen geselecteerd";
 			exit;
 		} else {
-			$mm->Delete($post->id);	
+			$mm->deleteMachine($post->id);	
 		}
 	break;
 }
