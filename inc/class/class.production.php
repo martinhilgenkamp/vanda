@@ -12,17 +12,17 @@ class ProductionManager {
 		return $this->db->insertQuery("vanda_production", $data);
 	}
 
-	function editProduction($data, $id){
+	function editProduction($data, $id) {
 		return $this->db->updateQuery("vanda_production", $data, "id = ". $id);
 	}
 
-	function deleteProduction($id){
+	function deleteProduction($id) {
 		$data = array("removed" => "1");
 
 		return $this->db->updateQuery("vanda_production", $data, "id=".(int)$id);
 	}
 
-	function unshipArticle($id){
+	function unshipArticle($id) {
 		$data = array(
 			"shipping_id" => "0",
 			"geleverd" => "0000-00-00 00:00:00"
@@ -102,6 +102,18 @@ class ProductionManager {
 	function getProductByBarcode($barcode) {
 		$qry = "SELECT * FROM vanda_production WHERE barcode = '".$barcode."' LIMIT 1";
 		
+		$res = $this->db->selectQuery($qry);
+
+		return $res[0];
+	}
+
+	function editProductionByBarcode($data, $barcode) {
+		return $this->db->updateQuery("vanda_production", $data, "barcode = '".$barcode."'");
+	}
+
+	function getProductionCountByShippingId($shipId) {
+		$qry = "SELECT count(*) AS aantal FROM  vanda_production WHERE shipping_id = '".$shipId."'";
+
 		$res = $this->db->selectQuery($qry);
 
 		return $res[0];

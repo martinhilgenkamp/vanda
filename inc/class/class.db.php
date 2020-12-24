@@ -38,6 +38,8 @@ class DB {
 	}
 
 	function updateQuery($table, $data, $where) {
+		$strInsert = '';
+		$strValues = '';
 		$strUpdate = '';
 
 		$arrFields = $this->listOfFields($table);

@@ -13,13 +13,13 @@ class ShipmentManager {
 	}
 
 	function editShipment($data, $id){
-		return $this->db->updateQuery("vanda_shipment", $data, "id = ".(int)$id);
+		return $this->db->updateQuery("vanda_shipment", $data, "ship_id = ".(int)$id);
 	}
 
 	function updateShipment($ship, $id) {
 		$data = array("verzonden" => $ship);
 
-		return $this->db->updateQuery("vanda_shipment", $data, "id=".(int)$id);
+		return $this->db->updateQuery("vanda_shipment", $data, "ship_id = ".(int)$id);
 	}
 
 	function getShipmentId() {
@@ -28,6 +28,30 @@ class ShipmentManager {
 		$res = $this->db->selectQuery($qry);
 
 		return $res[0];
+	}
+
+	function getAllShipments() {
+		$qry = "SELECT * FROM  vanda_shipment GROUP BY datum DESC";
+		
+		return $this->db->selectQuery($qry);
+	}
+
+	function getAllShippedShipments() {
+		$qry = "SELECT * FROM  vanda_shipment WHERE verzonden != 1 GROUP BY ship_id ASC";
+		
+		return $this->db->selectQuery($qry);
+	}
+
+	function getAllUnShippedShipments() {
+		$qry = "SELECT ship_id as id, klant, DATE_FORMAT(datum,'%d-%m-%Y') as datum FROM  vanda_shipment WHERE verzonden != 1 GROUP BY ship_id ASC";
+
+		return $this->db->selectQuery($qry);
+	}
+
+	function getExistingShipmentsById($id) {
+		$qry = "SELECT * FROM vanda_production WHERE shipping_id = '".$id."' AND removed = '0'";
+
+		return $this->db->selectQuery($qry); 
 	}
 }
 
