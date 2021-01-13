@@ -4,7 +4,7 @@ require_once("class.db.php");
 class ProductionManager {
 	var $db;
 
-	function ProductionManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 

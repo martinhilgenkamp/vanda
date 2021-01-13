@@ -4,7 +4,7 @@ require_once("class.db.php");
 class TaskManager {
 	var $db;
 
-	function TaskManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 

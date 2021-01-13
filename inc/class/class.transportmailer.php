@@ -3,7 +3,7 @@ require_once('PHPMailer/PHPMailerAutoload.php');
 class TransportMailer extends PHPMailer
 {	
 	
-	 function __construct()
+	function __construct()
 	{
 		parent::__construct();
 		

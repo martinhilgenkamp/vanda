@@ -15,7 +15,7 @@ class DB {
 
 	var $transactionResult;
 
- 	function DB() {
+ 	function __construct() {
 		$this->host = "localhost";
        	$this->database = "vanda";
        	$this->user = "root";

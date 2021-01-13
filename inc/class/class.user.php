@@ -4,7 +4,7 @@ require_once("class.db.php");
 class UserManager {
 	var $db;
 
-	function UserManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 

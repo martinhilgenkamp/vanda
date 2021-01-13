@@ -4,7 +4,7 @@ require_once("class.db.php");
 class SupplierManager {
 	var $db;
 
-	function SupplierManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 

@@ -4,7 +4,7 @@ require_once("class.db.php");
 class ShipmentManager {
 	var $db;
 
-	function ShipmentManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 

@@ -4,7 +4,7 @@ require_once("class.db.php");
 class ProductManager {
 	var $db;
 
-	function ProductManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 

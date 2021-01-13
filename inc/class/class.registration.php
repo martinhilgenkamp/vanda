@@ -4,7 +4,7 @@ require_once("class.db.php");
 class RegistrationManager {
 	var $db;
 
-	function RegistrationManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 

@@ -4,7 +4,7 @@ require_once("class.db.php");
 class OptionManager {
 	var $db;
 
-	function OptionManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 

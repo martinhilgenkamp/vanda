@@ -5,7 +5,7 @@ require_once("class.db.php");
 class MachineManager {
 	var $db;
 
-	function MachineManager() {
+	function __construct() {
 		$this->db = new DB();
 	}
 	
