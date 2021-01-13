@@ -4,7 +4,7 @@
 // $query = "SELECT * FROM vanda_suppliers WHERE verwijderd = 0 ORDER BY volgorde DESC, supplier_desc ASC;";
 // if($result =$db->query($query)){
 // 	while($row = $result->fetch_object()){
-// 		$suppliers[$row->id] = $row;
+// 		$resSuppliers[$row->id] = $row;
 // 	}	
 // }
 
@@ -34,7 +34,7 @@
 // $remark = mysqli_real_escape_string($db,$_POST['remark']);
 
 // if($article_no){$article = $articles[$article_no];}
-// if($article_no){$supplier = $suppliers[$supplier_no];}
+// if($article_no){$supplier = $resSuppliers[$supplier_no];}
 
 require_once("../inc/class/class.supplier.php");
 require_once("../inc/class/class.product.php");
@@ -52,6 +52,9 @@ $tm = new TransportMailer();
 
 $resSuppliers = $sm->loadSuppliers();
 $resProducts = $pm->loadProducts();
+
+// initializing request variable
+ $task = '';
 
 if ($_POST) {
 	$task = $_POST['task'];
@@ -357,12 +360,12 @@ switch($task){
 		
 		// Prepare subject and messagebody
 		$subject = 'Transportverzoek Ritnr: '.$ritnummer;
-		$body = $tm->BuildGetBody($ritnummer,$suppliers[$supplier_no]->supplier_desc,$suppliers[$supplier_no]->transporttype);
+		$body = $tm->BuildGetBody($ritnummer,$resSuppliers[$supplier_no]->supplier_desc,$resSuppliers[$supplier_no]->transporttype);
 		
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		$tm->addAddress('rlimburg@bloemert.com', 'Verhoek Expeditie'); //expeditie@verhoek-europe.com
+		$tm->addAddress('ggaastra@bloemert.com', 'Verhoek Expeditie'); //expeditie@verhoek-europe.com
 		
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually
@@ -375,7 +378,7 @@ switch($task){
 			$tm->UpdateStatus($ritnummer,$subject,$body, '0');
 		} else {
 			$tm->UpdateStatus($ritnummer,$subject,$body, '1');	
-			echo 'transport onerweg van '.$suppliers[$supplier_no]->supplier_desc." naar Vanda met ritnummer ".$ritnummer;
+			echo 'transport onderweg van '.$resSuppliers[$supplier_no]->supplier_desc." naar Vanda met ritnummer ".$ritnummer;
 		}
 
 		// $supplier_no = mysqli_real_escape_string($db,$_POST['supplier']);
@@ -389,7 +392,7 @@ switch($task){
 		// // Prepare subject ande messagebody
 		
 		// $subject = 'Transportverzoek Ritnr: '.$ritnummer;
-		// $body = $mail->BuildGetBody($ritnummer,$suppliers[$supplier_no]->supplier_desc,$suppliers[$supplier_no]->transporttype);
+		// $body = $mail->BuildGetBody($ritnummer,$resSuppliers[$supplier_no]->supplier_desc,$resSuppliers[$supplier_no]->transporttype);
 		
 		// $mail->Subject = $subject;
 		
@@ -408,7 +411,7 @@ switch($task){
 		// 	$mail->UpdateStatus($ritnummer,$subject,$body, '0');
 		// } else {
 		// 	$mail->UpdateStatus($ritnummer,$subject,$body, '1');	
-		// 	echo 'transport onerweg van '.$suppliers[$supplier_no]->supplier_desc." naar Vanda met ritnummer ".$ritnummer;
+		// 	echo 'transport onerweg van '.$resSuppliers[$supplier_no]->supplier_desc." naar Vanda met ritnummer ".$ritnummer;
 		// //	echo "Message sent!";
 		// }
 	break;
@@ -420,7 +423,7 @@ switch($task){
 		
 		// Prepare subject and messagebody
 		$subject = 'Transportverzoek Ritnr: '.$ritnummer;
-		$body = $tm->BuildReturnBody($ritnummer,$suppliers[$supplier_no]->supplier_desc,$suppliers[$supplier_no]->transporttype);
+		$body = $tm->BuildReturnBody($ritnummer,$resSuppliers[$supplier_no]->supplier_desc,$resSuppliers[$supplier_no]->transporttype);
 		
 		$tm->Subject = $subject;
 		
@@ -438,7 +441,7 @@ switch($task){
 			$tm->UpdateStatus($ritnummer,$subject,$body, '0');
 		} else {
 			$tm->UpdateStatus($ritnummer,$subject,$body, '1');	
-			echo 'transport onerweg van Vanda naar '.$suppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
+			echo 'transport onerweg van Vanda naar '.$resSuppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
 		}
 
 		// $supplier_no = mysqli_real_escape_string($db,$_POST['supplier']);
@@ -451,7 +454,7 @@ switch($task){
 		// // Prepare subject ande messagebody
 		
 		// $subject = 'Transportverzoek Ritnr: '.$ritnummer;
-		// $body = $mail->BuildReturnBody($ritnummer,$suppliers[$supplier_no]->supplier_desc,$suppliers[$supplier_no]->transporttype);
+		// $body = $mail->BuildReturnBody($ritnummer,$resSuppliers[$supplier_no]->supplier_desc,$resSuppliers[$supplier_no]->transporttype);
 		
 		// $mail->Subject = $subject;
 		
@@ -471,7 +474,7 @@ switch($task){
 		// 	$mail->UpdateStatus($ritnummer,$subject,$body, '0');
 		// } else {
 		// 	$mail->UpdateStatus($ritnummer,$subject,$body, '1');	
-		// 	echo 'transport onerweg van Vanda naar '.$suppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
+		// 	echo 'transport onerweg van Vanda naar '.$resSuppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
 		// //	echo "Message sent!";
 		// }
 	break;
