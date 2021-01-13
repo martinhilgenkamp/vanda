@@ -1,17 +1,20 @@
 <?php 
 // Noodzakelijke dingen bij elkaar rapen.
-require_once('../class/class.mysql.php');
-require_once('../tcpdf.php');
+require_once('../../inc/class/class.rollen.php');
+require_once('../../tcpdf.php');
 date_default_timezone_set("Europe/Amsterdam");
+$rollManager = new RollsManager();
 
 // prevent notifications
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ERROR | E_PARSE);
 ini_set("display_errors",0);
 
 $rolnummer= $_GET['rolnummer'];
-$query = "SELECT * FROM `vanda_rolls` WHERE rolnummer = '".$rolnummer."' AND verwijderd = '0'";
-$result = $db->query($query);
-$rollen = $result->fetch_all();
+$rollen = $rollManager->loadActiveRolls($rolnummer);
+//$query = "SELECT * FROM `vanda_rolls` WHERE rolnummer = '".$rolnummer."' AND verwijderd = '0'";
+
+//$result = $db->query($query);
+//$rollen = $result->fetch_all();
 $aantal = count($rollen);
 
 class MYPDF extends TCPDF {
@@ -96,7 +99,7 @@ $substylenotext = array(
 // Repeat page function to the set amount of labels
 for($i = 0; $i < $aantal;$i++){
 	$pdf->AddPage();
-	$rolcode = $rollen[$i][1].sprintf('%02d',$rollen[$i][2]);
+	$rolcode = $rollen[$i]->rolnummer.sprintf('%02d',$rollen[$i]->deelnummer);
 	
 	$pdf->setBarcode($rolcode);
 	$x = $pdf->GetX();
@@ -104,27 +107,27 @@ for($i = 0; $i < $aantal;$i++){
 	$pdf->write1DBarcode($rolcode, 'C128', '0', '5', '700' , 20, 0.6, $style, 'N');
 	$linestyle = array('width' => 0.3, 'cap' => 'butt', 'join' => 'miter', 'dash' => '', 'phase' => 0, 'color' => array(0, 0, 0));
 	$pdf->Line(0, 23, 150, 23, $linestyle);
-	$pdf->writeHTMLCell(150, 10, '0', '23', '<span style="font-size: 25px; font-weight: bold;">'.$rollen[$i][6].'</span>', 0, 1, 0, false, 'C', true);
+	$pdf->writeHTMLCell(150, 10, '0', '23', '<span style="font-size: 25px; font-weight: bold;">'.$rollen[$i]->omschrijving.'</span>', 0, 1, 0, false, 'C', true);
 	$pdf->Line(0, 34, 150, 33, $linestyle);
 
 	
-	$pdf->writeHTMLCell(50, 0, '0', '35', '<span style="font-size: 15px; font-weight: bold;">Lengte: '.$rollen[$i][3].'</span>', 0, 1, 0, false, 'L', true);
-	$pdf->writeHTMLCell(50, 0, '50', '35', '<span style="font-size: 15px; font-weight: bold;">Breedte: '.$rollen[$i][4].'</span>', 0, 1, 0, false, 'C', true);
-	$pdf->writeHTMLCell(40, 0, '110', '35', '<span style="font-size: 15px; font-weight: bold;">M2: '.round(($rollen[$i][3]*$rollen[$i][4]),2).'</span>', 0, 1, 0, false, 'L', true);
+	$pdf->writeHTMLCell(50, 0, '0', '35', '<span style="font-size: 15px; font-weight: bold;">Lengte: '.$rollen[$i]->snijlengte.'</span>', 0, 1, 0, false, 'L', true);
+	$pdf->writeHTMLCell(50, 0, '50', '35', '<span style="font-size: 15px; font-weight: bold;">Breedte: '.$rollen[$i]->snijbreedte.'</span>', 0, 1, 0, false, 'C', true);
+	$pdf->writeHTMLCell(40, 0, '110', '35', '<span style="font-size: 15px; font-weight: bold;">M2: '.round(($rollen[$i]->snijlengte*$rollen[$i]->snijbreedte),2).'</span>', 0, 1, 0, false, 'L', true);
 	
-	$pdf->write1DBarcode($rollen[$i][3], 'C128', '5', '43', '50' , 10, 0.4, $substylenotext, 'L');
-	$pdf->write1DBarcode($rollen[$i][4], 'C128', '55', '43', '50' , 10, 0.4, $substylenotext, 'C');
-	$pdf->write1DBarcode(round(($rollen[$i][3]*$rollen[$i][4]),2), 'C128', '110', '43', '50' , 10, 0.4, $substylenotext, 'R');
+	$pdf->write1DBarcode($rollen[$i]->snijlengte, 'C128', '5', '43', '50' , 10, 0.4, $substylenotext, 'L');
+	$pdf->write1DBarcode($rollen[$i]->snijbreedte, 'C128', '55', '43', '50' , 10, 0.4, $substylenotext, 'C');
+	$pdf->write1DBarcode(round(($rollen[$i]->snijbreedte*$rollen[$i]->snijlengte),2), 'C128', '110', '43', '50' , 10, 0.4, $substylenotext, 'R');
 	
 	$pdf->Line(0, 61, 150, 61, $linestyle);
 	
 	
 	$pdf->writeHTMLCell(20, 0, '0', '62', '<span style="font-size: 18px; font-weight: bold;">EAN:</span>', 0, 1, 0, false, 'L', true);
-	$pdf->write1DBarcode($rollen[$i][5], 'C128', '20', '62', '50' , 15, 0.4, $substyle, 'L');
+	$pdf->write1DBarcode($rollen[$i]->ean, 'C128', '20', '62', '50' , 15, 0.4, $substyle, 'L');
 	
 	
-	$pdf->writeHTMLCell(50, 0, '100', '64', '<span style="font-size: 15px; font-weight: bold;">Kleur: '.$rollen[$i][7].'</span>', 0, 1, 0, false, 'R', true);
-	$pdf->writeHTMLCell(50, 0, '100', '74', '<span style="font-size: 15px; font-weight: bold;">Backing: '.$rollen[$i][8].'</span>', 0, 1, 0, false, 'R', true);
+	$pdf->writeHTMLCell(50, 0, '100', '64', '<span style="font-size: 15px; font-weight: bold;">Kleur: '.$rollen[$i]->kleur.'</span>', 0, 1, 0, false, 'R', true);
+	$pdf->writeHTMLCell(50, 0, '100', '74', '<span style="font-size: 15px; font-weight: bold;">Backing: '.$rollen[$i]->backing.'</span>', 0, 1, 0, false, 'R', true);
 	
 	
 	$pdf->SetMargins(0, 0, 0,0);
