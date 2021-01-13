@@ -1,9 +1,9 @@
 <!-- include scripts for rollen functionality !-->
 
 <?php
-require_once('class/class.rollen.php');
+require_once('inc/class/class.rollen.php');
 
-$roll = new Rolls;
+$roll = new RollsManager;
 
 echo $roll->getRollForm();
 

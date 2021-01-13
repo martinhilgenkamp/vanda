@@ -1,11 +1,11 @@
 <?php
 // Noodzakelijke dingen bij elkaar rapen.
 session_start();
-require_once('../class/class.mysql.php');
-require_once("../class/class.rollen.php");
-require_once("../class/class.rollship.php");
+require_once('../inc/class/class.db.php');
+require_once("../inc/class/class.rollen.php");
+require_once("../inc/class/class.rollship.php");
 
-$roll = new Rolls;
+$roll = new RollsManager;
 
 // make post safe en zet in post + session
 foreach($_POST as $key => $val){
@@ -30,7 +30,7 @@ switch($post->task){
 	case 'edit':
 		
 		if($post->rollid){ //check if id is checked.
-			global $db;
+
 			$rollid = $post->rollid;
 			$hidden = array('task', 'rollid'); //prevent program parameters to land in table
 			$post->gewijzigd = date('Y-m-d H:i:s');
@@ -107,8 +107,9 @@ switch($post->task){
 	break;
 		
 	case 'check':
-		$result = $db->query("SELECT rolnummer FROM `vanda_rolls` WHERE rolnummer = '$post->rolnummer'");
-		if($result->num_rows == 0) {
+		$rolls = $roll->loadActiveRolls($post->rolnummer);
+
+		if(count($rolls) == 0) {
 			 echo "false ".$post->rolnummer;
 		} else {
 			echo "true";

@@ -1,5 +1,6 @@
 <?php
 require_once("class.rollship.php");
+require_once("class.db.php");
 
 date_default_timezone_set("Europe/Amsterdam");
 
@@ -8,20 +9,27 @@ error_reporting(E_ALL ^ E_NOTICE);
 ini_set("display_errors", 1);
 $nl = "\r\n";
 
-class Rolls {
-	
+class RollsManager {
+
+	function __construct() {
+		$this->db = new DB();
+	}
+
 	function loadRoll($id){
-		global $db;
 		// Load article values in to session;		
 		$query = "SELECT * FROM `vanda_rolls` WHERE `rollid` = '".$id."' LIMIT 1";		// load the article.
-		$result = $db->query($query);
-		$vals = $result->fetch_assoc();
-		return $vals;	
-		$result->close();
+		$result = $this->db->selectQuery($query);
+		return $result[0]; 
+	}
+
+	function loadActiveRolls($id) {
+		$query = "SELECT * FROM `vanda_rolls` WHERE `rolnummer` = '".$id."' AND `verwijderd` = 0";		// load the article.
+		$result = $this->db->selectQuery($query);
+		
+		return $result ;
 	}
 	
 	function ProcessChildRolls($post){
-	   global $db;
 	   $hidden = array('rol','width','save','username','task','id','bronlengte','bronbreedte','moederrol','custom'); //prevent program parameters to land in table
 		
 	   $post->ingevoerd = date('Y-m-d H:i:s');		  // Set create date time
@@ -29,9 +37,7 @@ class Rolls {
 	   $post->deelnummer = '00';	   
 	   $post->verzonden = '00';
 	   $post->verwijderd = '00';
-		//debug
-		//print_r($post);
-		  	
+
 	   foreach($post->rol as $key => $length){
 				// Loop through post values and prepare sql query	
 			   $count = 0;
@@ -42,20 +48,21 @@ class Rolls {
 		   	   $post->snijbreedte = round($post->width[$key],2);
 		   
 				// Alleen opslaan alsd de lengte boven de 0 ligt
+				$fields = [];
 				if($length > 0){
 				   foreach($post as $col => $val) {
 					  // build array
 					  if($val && !in_array($col,$hidden)){
-						  if ($count++ != 0) $fields .= ', ';
-						$fields .= "`$col` = '$val'";
+						$fields[$col] = $val;
 					  }
 				   }
 
 				   // Build query
-				   $query = "INSERT INTO `vanda_rolls` SET ".$fields;
+				   $succeeded = $this->db->insertQuery("vanda_rolls", $fields);
+				   //$query = "INSERT INTO `vanda_rolls` SET ".$fields;
 				   //echo $query;
 
-					if(!$db->query($query)){
+					if(!$succeeded){
 						echo "<br> PANIEK <BR>".$db->error;
 						return 'error';   
 					}
@@ -129,8 +136,8 @@ class Rolls {
 		// Determine user based on session and db.
 		global $db;
 		$query = "SELECT ean FROM `vanda_rolls` ORDER BY ingevoerd DESC LIMIT 1; ";
-		if($result = $db->query($query)){
-			$result = $result->fetch_object();
+		if($result = $this->db->selectQuery($query)){
+			$result = $result[0];
 		} else {
 			echo "FOUT! ".$db->error;
 			return 'error';   
@@ -157,7 +164,7 @@ class Rolls {
 		//}		
 	
 		// Generate output
-		$output .= '<div class="roll-form-div">'.$nl;
+		$output = '<div class="roll-form-div">'.$nl;
 		$output .= '<form class="rollform" action="" id="rollform" enctype="multipart/form-data" method="post">';
 		$output .= '<div id="rollform-part1"><ul id="rollformlist">'.$nl;
 		$output .= '<li><label for="rolnummer"><span>Rolnummer:</span><input id="input_rolnummer" name="rolnummer" type="text" value="'.($_SESSION['rolnummer'] ?  $_SESSION['rolnummer'] : '').'" required/></label></li>'.$nl;
@@ -347,9 +354,9 @@ class Rolls {
 	function getTable($where = '', $range = array(0,20)){
 		global $db;
 		//$user = getUser($_SESSION['username']);
-		$viewtype = $_SESSION['viewtype'];
+		$viewtype = isset($_SESSION['viewtype']) ? $_SESSION['viewtype'] : null;
 			
-		$selected_roll = $_SESSION['selected_roll'];
+		$selected_roll = isset($_SESSION['selected_roll']) ? $_SESSION['selected_roll'] : null;
 		unset($_SESSION['selected_roll']);
 		
 		$cols = array('rolnummer','deelnummer','snijbreedte','snijlengte','bronbreedte','bronlengte','omschrijving','ingevoerd','gewijzigd','verzonden');
@@ -438,7 +445,7 @@ class Rolls {
 		$_SESSION['query'] = $query;
 		
 		// Tel het aantal waardes en bepaal hoeveel paginas er moeten komen
-		$result = $db->query($query);
+		$result = $this->db->selectQuery($query);
 		$total_records = $result->num_rows;
 		$total_pages = ceil($total_records / $range[1]);
 		$nl = "\n";
@@ -450,33 +457,33 @@ class Rolls {
 		echo $this->loadFilterForm($options);
 		
 		// Generate table header
-			$output .= "<form name='shipform' id='roll-shipform' action='pages/process-rollen.php' method='post'>";
-			$output .= "<table class=\"data-table\">".$nl;
-			$output .= "	<tr>".$nl;
-			$output .= "		<th><input type='checkbox' id='roll-select-all' name='roll-select-all'></th>".$nl;
-			$output .= "		<th>Label</th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=rolnummer&order=".$order."&pg=".$pg."'>Rolnummer</a></th>".$nl;
-			$output .= "		<th id='ordernummer_col'><a href='?".$link_array['page']."&sort=deelnummer&order=".$order."&pg=".$pg."'>Deelnummer</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=snijbreedte&order=".$order."&pg=".$pg."'>Snijbreedte</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=snijlengte&order=".$order."&pg=".$pg."'>Snijlengte</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=omschrijving&order=".$order."&pg=".$pg."'>Omschrijving</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=kleur&order=".$order."&pg=".$pg."'>Kleur</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=backing&order=".$order."&pg=".$pg."'>Backing</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=referentie&order=".$order."&pg=".$pg."'>Referentie</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=ingevoerd&order=".$order."&pg=".$pg."'>Ingevoerd</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=gewijzigd&order=".$order."&pg=".$pg."'>Gewijzigd</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=verzonden&order=".$order."&pg=".$pg."'>verzonden</a></th>".$nl;
-			$output .= "	</tr>".$nl;
+		$output .= "<form name='shipform' id='roll-shipform' action='pages/process-rollen.php' method='post'>";
+		$output .= "<table class=\"data-table\">".$nl;
+		$output .= "	<tr>".$nl;
+		$output .= "		<th><input type='checkbox' id='roll-select-all' name='roll-select-all'></th>".$nl;
+		$output .= "		<th>Label</th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=rolnummer&order=".$order."&pg=".$pg."'>Rolnummer</a></th>".$nl;
+		$output .= "		<th id='ordernummer_col'><a href='?".$link_array['page']."&sort=deelnummer&order=".$order."&pg=".$pg."'>Deelnummer</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=snijbreedte&order=".$order."&pg=".$pg."'>Snijbreedte</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=snijlengte&order=".$order."&pg=".$pg."'>Snijlengte</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=omschrijving&order=".$order."&pg=".$pg."'>Omschrijving</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=kleur&order=".$order."&pg=".$pg."'>Kleur</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=backing&order=".$order."&pg=".$pg."'>Backing</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=referentie&order=".$order."&pg=".$pg."'>Referentie</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=ingevoerd&order=".$order."&pg=".$pg."'>Ingevoerd</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=gewijzigd&order=".$order."&pg=".$pg."'>Gewijzigd</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=verzonden&order=".$order."&pg=".$pg."'>verzonden</a></th>".$nl;
+		$output .= "	</tr>".$nl;
 		
 		
-			$records = 0;
-			while($row = $result->fetch_object()){
+		$records = 0;
+		foreach ($result as $row) {
 			$row->omschrijving = (isset($row->omschrijving) && trim($row->omschrijving) != '' ? $row->omschrijving : '-');
 									
 			// Generate table rows
 			$output .= "	<tr id='row_".$row->rollid."' class='data-table-row'>".$nl;
 			$output .= "		<td><input class='roll-checkbox' type='checkbox' name='rollid[]' value='".$row->rollid."' /></td>".$nl;
-		    $output .= "		<td><a href='inc/generate_rol.php?rolnummer=".$row->rolnummer."' target='_blanc'><img src='images/printer.png' height='17'></a>";
+		    $output .= "		<td><a href='pages/generate/generate_rol.php?rolnummer=".$row->rolnummer."' target='_blanc'><img src='images/printer.png' height='17'></a>";
 			$output .= "		<td>".$row->rolnummer."</td>".$nl;
 			$output .= "		<td>".$row->deelnummer."</td>".$nl;
 			$output .= "		<td>".$row->snijbreedte."</td>".$nl;
@@ -524,7 +531,7 @@ class Rolls {
 		$output .="</div>";
 		*/
 		
-		$result->close();
+		//$result->close();
 		return $output;
 	
 }
