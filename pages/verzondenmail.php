@@ -2,7 +2,7 @@
 // Include classes.
 require_once('inc/class/class.db.php');
 $nl = "\r\n";
-
+$cutOffLimit = 100;
 // Load products from the database.
 $db = new DB();
 $query = "SELECT * FROM  vanda_transportmail WHERE 1=1 ORDER BY date DESC" ;
@@ -18,7 +18,7 @@ $output .= "</thead>".$nl;
 
 $c = 0;
 
-foreach($zendingen as $zending){
+foreach(array_slice($zendingen, 0, $cutOffLimit) as $zending){
 	$c = $c + 1;
 	if($c % 2 == 0){ 
 			$output .= "	<tr class=\"grey\">".$nl;
@@ -31,7 +31,7 @@ foreach($zendingen as $zending){
 }
 
 $output .= "</table>".$nl;
-$output .=  "<center>Er zijn ". count($zendingen) . " resultaten weergegeven <br>".$nl;
+$output .=  "<center>Er zijn ".$cutOffLimit." van " . count($zendingen) . " resultaten weergegeven <br>".$nl;
 
 ?>
 

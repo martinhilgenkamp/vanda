@@ -24,11 +24,8 @@ if(isset($_POST['opslaan'])){
 	$formWasSaved = true;
  } 
  
-	// Load values from database
+// Load values from database
 $result = $optionManager->getAllOptions()[0];
-//$query = "SELECT * FROM `vanda_options` WHERE id = '1'";
-//$result = mysql_query($query) or die ('Er is een fout opgetreden met laden van de gegevens: '. mysql_error());
-//$result = mysql_fetch_object($result);
 
 $bedrijfskenmerk = $result->bedrijfskenmerk;
 $ponummer = $result->ponummer;

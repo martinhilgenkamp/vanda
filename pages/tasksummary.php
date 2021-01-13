@@ -3,33 +3,37 @@
 error_reporting(E_ALL ^ E_NOTICE);
 ini_set("display_errors", 1);
 
-require_once("class/class.task.php");
-require_once("class/class.mysql.php");
-$task = new task;
+require_once("inc/class/class.task.php");
+
+$task = new TaskManager;
 
 // Process posted data
 if(isset($_POST)){	
-	$id = mysqli_real_escape_string($db, $_POST['id']);
-	$name = mysqli_real_escape_string($db, $_POST['taak']);
-	$description = mysqli_real_escape_string($db, $_POST['description']);
-	$date = mysqli_real_escape_string($db, $_POST['date']);
-	$action = mysqli_real_escape_string($db, $_POST['action']);
+	$id = $_POST['id'];
+	$name = $_POST['taak'];
+	$description = $_POST['description'];
+	$date = $_POST['date'];
+	$action = $_POST['action'];
 	
 	switch ($action) {
 		case 'new':
-			$task->saveNew($name,$description,$date);
+			$newTaskdata = [
+				"name" => $name,
+				"description" => $description,
+				"date" => $date
+			];
+			$task->addTask($newTaskdata);
 			unset($_POST);
 		break;
 		case 'behandeling':
-			$task->Process($id);
+			$task->processTask($id);
 			exit();
 		break;
 		case 'gereed':
-			$task->Complete($id);
+			$task->completeTask($id);
 			exit();
 		break;
 	} 
-	
 	
 }
 
