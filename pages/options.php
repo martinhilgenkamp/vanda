@@ -1,38 +1,47 @@
 <?php
 // Include classes.
-require_once('class/class.mysql.php');
+require_once('inc/class/class.option.php');
 
+$optionManager = new OptionManager();
+
+$formWasSaved = false;
 if(isset($_POST['opslaan'])){
 	// Get variables.
-	$bedrijfskenmerk = mysql_real_escape_string($_POST['bedrijfskenmerk']);
-	$ponummer = mysql_real_escape_string($_POST['ponummer']);
-	$maat1x = mysql_real_escape_string($_POST['maat1x']);
-	$maat1y = mysql_real_escape_string($_POST['maat1y']);
-	$maat2x = mysql_real_escape_string($_POST['maat2x']);
-	$maat2y = mysql_real_escape_string($_POST['maat2y']);
-	$maat3x = mysql_real_escape_string($_POST['maat3x']);
-	$maat3y = mysql_real_escape_string($_POST['maat3y']);
+	$data = [
+		"bedrijfskenmerk" => $_POST['bedrijfskenmerk'],
+		"ponummer" => $_POST['ponummer'],
+		"maat1x" => $_POST['maat1x'],
+		"maat1y" => $_POST['maat1y'],
+		"maat2x" => $_POST['maat2x'],
+		"maat2y" => $_POST['maat2y'],
+		"maat3x" => $_POST['maat3x'],
+		"maat3y" => $_POST['maat3y']
+	];
 	
-	$query = "UPDATE vanda_options SET ponummer = '".$ponummer."', bedrijfskenmerk = '".$bedrijfskenmerk."', maat1x = '".$maat1x."', maat1y = '".$maat1y."', maat2x = '".$maat2x."', maat2y = '".$maat2y."', maat3x = '".$maat3x."', maat3y = '".$maat3y."' WHERE id = '1'";
-	mysql_query($query) or die ('Er is een fout opgetreden met opslaan: '. mysql_error());	
- } else  {
-	 // Load values from database
-	$query = "SELECT * FROM `vanda_options` WHERE id = '1'";
-	$result = mysql_query($query) or die ('Er is een fout opgetreden met laden van de gegevens: '. mysql_error());
-	$result = mysql_fetch_object($result);
-	
-	$bedrijfskenmerk = $result->bedrijfskenmerk;
-	$ponummer = $result->ponummer;
-	
-	$maat1x = $result->maat1x;
-	$maat1y = $result->maat1y;
-	
-	$maat2x = $result->maat2x;
-	$maat2y = $result->maat2y;
-	
-	$maat3x = $result->maat3x;
-	$maat3y = $result->maat3y;	
- }
+	if (!$optionManager->updateOptionRow($data)) {
+		die ('Er is een fout opgetreden met opslaan: ');
+	}
+	$formWasSaved = true;
+ } 
+ 
+	// Load values from database
+$result = $optionManager->getAllOptions()[0];
+//$query = "SELECT * FROM `vanda_options` WHERE id = '1'";
+//$result = mysql_query($query) or die ('Er is een fout opgetreden met laden van de gegevens: '. mysql_error());
+//$result = mysql_fetch_object($result);
+
+$bedrijfskenmerk = $result->bedrijfskenmerk;
+$ponummer = $result->ponummer;
+
+$maat1x = $result->maat1x;
+$maat1y = $result->maat1y;
+
+$maat2x = $result->maat2x;
+$maat2y = $result->maat2y;
+
+$maat3x = $result->maat3x;
+$maat3y = $result->maat3y;	
+
 
 ?>
 <h1>Opties</h1>
@@ -52,5 +61,6 @@ if(isset($_POST['opslaan'])){
         <li><label for="ponummer">Maat3 Y:</label><input type="text" name="maat3y" id="maat3y" value="<?php echo ($maat3y ? $maat3y : '') ?>"</li>
        
         <li><label for="opslaan">Opslaan:</label><input type="submit" name="opslaan" value="Opslaan"></li>
+		<span><?php if ($formWasSaved) { echo('Opgeslagen'); } ?></span>
     </ul>
 </form>

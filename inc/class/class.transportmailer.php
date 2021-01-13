@@ -1,5 +1,7 @@
 <?php
 require_once('PHPMailer/PHPMailerAutoload.php');
+require_once("class.db.php");
+
 class TransportMailer extends PHPMailer
 {	
 	
@@ -29,7 +31,8 @@ class TransportMailer extends PHPMailer
 		$this->setFrom('rlimburg@bloemert.com', 'Vanda Carpets'); //magazijn@vandacarpets.nl
 		//Set an alternative reply-to address
 		$this->addReplyTo('rlimburg@bloemert.com', 'Vanda Carpets'); //magazijn@vandacarpets.nl
-		
+	
+		$this->db = new DB();
 	}
 	
 	function BuildGetBody($ritnummer,$supplier,$type){
@@ -79,21 +82,32 @@ class TransportMailer extends PHPMailer
 	}
 	
 	function Save(){
-		global $db;
 		
-		$query = "INSERT INTO `vanda_transportmail` (`id`, `date`, `to`,`subject`, `body`, `verstuurd`) VALUES (NULL, '".date('Y-m-d H:i:s')."', 'rlimburg@bloemert.com', '', '', '0');"; //martin@pruim.nl
-		if(!$db->query($query)){
-			echo "Fout bij het opslaan ".$db->error;
+		$query = "INSERT INTO `vanda_transportmail` (`id`, `date`, `to`,`subject`, `body`, `verstuurd`) VALUES (NULL, '".date('Y-m-d H:i:s')."', 'ggaastra@bloemert.com', '', '', '0');"; 
+		$data = [
+			"date" => date('Y-m-d H:i:s'),
+			"to" => "ggaastra@bloemert.com", //martin@pruim.nl
+			"verstuurd" => 0
+		];
+
+		$insertId = $this->db->insertQuery("vanda_transportmail", $data);
+
+		if($insertId == 0){
+			echo "Fout bij het opslaan ";
 		}
-		return $db->insert_id;
+		return $insertId;
 	}
 	
 	function UpdateStatus($id, $subject, $body, $status){
-		global $db;
-		$body = mysqli_real_escape_string($db,$body);
-		$query = "UPDATE `vanda_transportmail` SET `body` = '".$body."', `verstuurd` = '".$status."', `subject` = '".$subject."' WHERE `vanda_transportmail`.`id` = ".$id.";";
 		
-		if(!$db->query($query)){
+		$data = [
+			"verstuurd" => $status,
+			"body" => $body,
+			"subject" => $subject
+		];
+		
+		$isSucceeded = $this->db->updateQuery("vanda_transportmail", $data, "`vanda_transportmail`.`id` = ".$id);
+		if (!$isSucceeded) {
 			echo "Fout bij het opslaan ".$db->error;
 		} 
 	}

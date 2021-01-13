@@ -14,6 +14,10 @@ class OptionManager {
 		return $this->db->selectQuery($qry);
 	}
 
+	function updateOptionRow($data) {
+		return $this->db->updateQuery("vanda_options", $data, '1=1');
+	}
+
 	function getOptionById($id) {
 		$qry = "SELECT * FROM vanda_options WHERE id = '".$id."'";
 		
