@@ -51,7 +51,12 @@
 	$ip = trim(get_client_ip());
 	
 	// Read ip addr file
-	$handle = @fopen('allowed_ips.txt', "r"); 
+	$handle = null;
+	$ipsFileName = 'allowed_ips.txt';
+
+	if (file_exists($ipsFileName)) {
+		$handle = @fopen('allowed_ips.txt', "r"); 
+	}
 	if ($handle) { 
 		while (!feof($handle)) { 
 			$lines[] = trim(fgets($handle, 4096)); 

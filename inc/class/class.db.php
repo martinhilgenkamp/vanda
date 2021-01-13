@@ -46,7 +46,7 @@ class DB {
 
 		foreach($arrFields as $field) {
 			if(isset($data[$field->Field])) {
-				$strInsert .= $field->Field.", ";
+				$strInsert .= "`".$field->Field."`, ";
 				$strValues .= "'".$data[$field->Field]."', ";
 			}
 		}
@@ -92,7 +92,7 @@ class DB {
 		$arrFields = $this->listOfFields($table);
 		foreach($arrFields as $field) {
 			if(isset($data[$field->Field])) {
-				$strInsert .= $field->Field.", ";
+				$strInsert .= "`".$field->Field."`, ";
 				$strValues .= "'".$data[$field->Field]."', ";
 			}
 		}
