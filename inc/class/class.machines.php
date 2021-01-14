@@ -66,7 +66,6 @@ class MachineManager {
 	}
 	
 	function getEditForm($aantal){
-		global $db;
 		
 		// start generating output
 		$output .= "<div id=\"machineform-wrapper\">";
