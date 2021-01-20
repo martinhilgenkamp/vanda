@@ -6,7 +6,7 @@ date_default_timezone_set("Europe/Amsterdam");
 
 // prevent notifications
 error_reporting(E_ALL ^ E_NOTICE);
-ini_set("display_errors", 1);
+ini_set("display_errors", 0);
 $nl = "\r\n";
 
 
@@ -49,8 +49,9 @@ class TablePDF extends TCPDF{
 		$rows = array();
 		
 		// get values from database.
-		while($row = mysql_fetch_assoc($result)){
-			$rows[strtoupper($row['id'])][] = $row;
+		foreach ($result as $row) {
+		 	$data = (array)$row;
+			$rows[strtoupper($data['id'])][] = $data;
 		}
 		
 		// Zet de rijen in groepen van artikelnummer.
@@ -67,14 +68,12 @@ class TablePDF extends TCPDF{
 	
 	public function CalculateAantal($query){
 		$totaal_gewicht = 0;
-		$result = mysql_query($query);
+		$result = $this->db->selectQuery($query);
 		if(!$result){
-			die(mysql_error());	
+			die();
 		}
-		while($row = mysql_fetch_assoc($result)){
-			$rows[] = $row;
-		}
-		return count($rows);
+		
+		return count($result);
 	}
 	
 	 // Colored table
