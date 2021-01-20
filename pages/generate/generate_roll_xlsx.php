@@ -27,7 +27,7 @@
 
 /** Error reporting */
 error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
+ini_set('display_errors', 0);
 ini_set('display_startup_errors', TRUE);
 date_default_timezone_set('Europe/Amsterdam');
 
@@ -35,8 +35,8 @@ if (PHP_SAPI == 'cli')
 	die('This example should only be run from a Web Browser');
 
 /** Include PHPExcel */
-require_once dirname(__FILE__) . '/../class/PHPExcel.php';
-require_once dirname(__FILE__) . '/../class/class.mysql.php';
+require_once dirname(__FILE__) . '/../../inc/class/PHPExcel.php';
+require_once dirname(__FILE__) . '/../../inc/class/class.db.php';
 
 
 // Get the ship id to read data.
@@ -45,6 +45,11 @@ $ship_id = $_GET['ship_id'];
 class PHPExcelData extends PHPExcel{
 	// Var totaal voor totaal leverings gewicht.
 	public $query;
+
+	function __construct() {
+		parent::__construct();
+		$this->db = new DB();
+	}
 	
 		// Load table data from file
     public function LoadData($ship_id) {
@@ -54,14 +59,15 @@ class PHPExcelData extends PHPExcel{
 		
 		
 		
-		if($result = $db->query($query)){
+		if($result = $this->db->selectQuery($query)){
 			
 		} else {
 			echo "query failed" .  mysqli_error($db);
 		}
 		$i = 2;
 		
-		while($row = $result->fetch_assoc()){
+		foreach($result as $data){
+			$row = (array)$data;
 			$row['rolnummer'] = $row['rolnummer'].sprintf('%02d', $row['deelnummer']);
 			unset($row['deelnummer']);
 			$rows[$i] = $row;	
