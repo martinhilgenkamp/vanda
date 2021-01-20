@@ -518,15 +518,14 @@ class PHPExcel_Calculation_Functions
     }
 
 
-    /**
-     * VERSION
-     *
-     * @return    string    Version information
-     */
-    public static function VERSION()
-    {
-        return 'PHPExcel ##VERSION##, ##DATE##';
-    }
+	/**
+	 * VERSION
+	 *
+	 * @return	string	Version information
+	 */
+	public static function VERSION() {
+		return 'PHPExcel 1.8.2, 2018-11-22';
+	}	//	function VERSION()
 
 
     /**
@@ -555,10 +554,8 @@ class PHPExcel_Calculation_Functions
             case 'float':
             case 'integer':
                 return $value;
-                break;
             case 'boolean':
                 return (integer) $value;
-                break;
             case 'string':
                 //    Errors
                 if ((strlen($value) > 0) && ($value{0} == '#')) {

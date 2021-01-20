@@ -307,10 +307,17 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
         }
         $fileName = PHPExcel_Shared_File::realpath($fileName);
 
+        // Sadly, some 3rd party xlsx generators don't use consistent case for filenaming
+        //    so we need to load case-insensitively from the zip file
+        
         // Apache POI fixes
-        $contents = $archive->getFromName($fileName);
+        $contents = $archive->getFromIndex(
+            $archive->locateName($fileName, ZIPARCHIVE::FL_NOCASE)
+        );
         if ($contents === false) {
-            $contents = $archive->getFromName(substr($fileName, 1));
+            $contents = $archive->getFromIndex(
+                $archive->locateName(substr($fileName, 1), ZIPARCHIVE::FL_NOCASE)
+            );
         }
 
         return $contents;
@@ -953,8 +960,9 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
                                     }
 
                                     // Extract all cell references in $ref
-                                    foreach (PHPExcel_Cell::extractAllCellReferencesInRange($ref) as $reference) {
-                                        $docSheet->getStyle($reference)->setConditionalStyles($conditionalStyles);
+                                    $cellBlocks = explode(' ', str_replace('$', '', strtoupper($ref)));
+                                    foreach ($cellBlocks as $cellBlock) {
+                                        $docSheet->getStyle($cellBlock)->setConditionalStyles($conditionalStyles);
                                     }
                                 }
                             }
