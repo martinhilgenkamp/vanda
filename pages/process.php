@@ -365,7 +365,7 @@ switch($task){
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		$tm->addAddress('ggaastra@bloemert.com', 'Verhoek Expeditie'); //expeditie@verhoek-europe.com
+		$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
 		
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually
@@ -428,7 +428,7 @@ switch($task){
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		$tm->addAddress('rlimburg@bloemert.com', 'Verhoek Expeditie'); //expeditie@verhoek-europe.com
+		$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
 
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually

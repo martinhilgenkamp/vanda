@@ -28,9 +28,8 @@ class TransportMailer extends PHPMailer
 		//Password to use for SMTP authentication
 		$this->Password = "Appelsap";
 		//Set who the message is to be sent from
-		$this->setFrom('rlimburg@bloemert.com', 'Vanda Carpets'); //magazijn@vandacarpets.nl
-		//Set an alternative reply-to address
-		$this->addReplyTo('rlimburg@bloemert.com', 'Vanda Carpets'); //magazijn@vandacarpets.nl
+		$this->setFrom('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
+		$this->addReplyTo('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
 	
 		$this->db = new DB();
 	}
@@ -83,10 +82,10 @@ class TransportMailer extends PHPMailer
 	
 	function Save(){
 		
-		$query = "INSERT INTO `vanda_transportmail` (`id`, `date`, `to`,`subject`, `body`, `verstuurd`) VALUES (NULL, '".date('Y-m-d H:i:s')."', 'ggaastra@bloemert.com', '', '', '0');"; 
+		$query = "INSERT INTO `vanda_transportmail` (`id`, `date`, `to`,`subject`, `body`, `verstuurd`) VALUES (NULL, '".date('Y-m-d H:i:s')."', 'martin@pruim.nl', '', '', '0');"; 
 		$data = [
 			"date" => date('Y-m-d H:i:s'),
-			"to" => "ggaastra@bloemert.com", //martin@pruim.nl
+			"to" => "martin@pruim.nl", //change for debug
 			"verstuurd" => 0
 		];
 
