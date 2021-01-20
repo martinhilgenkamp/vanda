@@ -1,37 +1,42 @@
 <?php
+require_once("class.user.php");
+require_once("class.db.php");
+
 class RollsShipment {
+
+	function __construct() {
+		$this->userManager = new UserManager();
+		$this->db = new DB();
+	}
 	
 	function makeShipment($klant){
-		global $db;
 		
-		$insert = "INSERT INTO `vanda_roll_ship` (`klant`, `datum`) VALUES ('".$klant."', CURRENT_TIMESTAMP);";
-		$query = "SELECT LAST_INSERT_ID();";
-		
-		if($db->query($insert)){
-			return $db->insert_id;
+		$insert = [
+			"klant" => $klant,
+			"datum" => CURRENT_TIMESTAMP
+		];
+		$newId = $this->db->insertQuery("vanda_roll_ship", $insert);
+
+		if($newId > 0){
+			return $newId;
 		} else {
-			echo "Fout met het bijwerken van de rol zending".$db->error;
+			echo "Fout met het bijwerken van de rol zending";
 		}
 	}
 	
-	
 	function deleteShipment($id){
-		global $db;
-		
-		$query = "DELETE FROM vanda_roll_ship WHERE id ='".$id."';";
-		if($db->query($query)){
+ 		$query = "DELETE FROM vanda_roll_ship WHERE id ='".$id."';";
+		if($this->db->insertQuery($query)){
 			return true;
 		} else {
-			echo "Fout met het bijwerken van de rol zending".$db->error;
+			echo "Fout met het bijwerken van de rol zending";
 		}
 		
 	}
 	
 	
 	function GetShipmentSelect(){
-		global $db;
 		$query = "SELECT * FROM vanda_roll_ship ORDER BY datum DESC;";
-
 	}
 	
 	
@@ -43,7 +48,7 @@ class RollsShipment {
 	function loadFilterForm($options){
 		$this->restoreSession();
 		if (isset($_GET["free_search_rollship"])) { 	$free_search_rollship  = $_GET["free_search_rollship"];	} elseif (isset($_POST['free_search_rollship'])){	$free_search_rollship = $_POST['free_search_rollship'];	} else { $free_search_rollship='';	};		
-		$user = getUser($_SESSION['username']);
+		$user = $this->userManager->getUserByName($_SESSION['username']);
 		
 		$output .= "<div id='filter_form_div'>".$nl;
 		$output .= "<form id='filter_form' action='index.php?page=roll-shipments' method='post'>".$nl;
@@ -61,8 +66,7 @@ class RollsShipment {
 	}
 	
 	function showShipmentTable(){
-		global $db;
-		$user = getUser($_SESSION['username']);
+		$user = $this->userManager->getUserByName($_SESSION['username']);
 		$cols = array('id','klant','datum');
 		
 		// Variabelen definieren
@@ -133,8 +137,8 @@ class RollsShipment {
 		$_SESSION['query'] = $query;
 		
 		// Tel het aantal waardes en bepaal hoeveel paginas er moeten komen
-		$result = $db->query($query);
-		$total_records = $result->num_rows;
+		$result = $this->db->selectQuery($query);
+		$total_records = count($result);
 		$total_pages = ceil($total_records / $range[1]);
 		$nl = "\n";
 		
@@ -145,21 +149,21 @@ class RollsShipment {
 		echo $this->loadFilterForm($options);
 		
 		// Generate table header
-			$output .= "<table class=\"data-table\">".$nl;
-			$output .= "	<tr>".$nl;
-			$output .= "		<th>&nbsp;</th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=id&order=".$order."&pg=".$pg."'>ID</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=klant&order=".$order."&pg=".$pg."'>Klant</a></th>".$nl;
-			$output .= "		<th><a href='?".$link_array['page']."&sort=datum&order=".$order."&pg=".$pg."'>Datum</a></th>".$nl;
-			$output .= "	</tr>".$nl;
+		$output .= "<table class=\"data-table\">".$nl;
+		$output .= "	<tr>".$nl;
+		$output .= "		<th>&nbsp;</th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=id&order=".$order."&pg=".$pg."'>ID</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=klant&order=".$order."&pg=".$pg."'>Klant</a></th>".$nl;
+		$output .= "		<th><a href='?".$link_array['page']."&sort=datum&order=".$order."&pg=".$pg."'>Datum</a></th>".$nl;
+		$output .= "	</tr>".$nl;
 
-			$records = 0;
-			while($row = $result->fetch_object()){
+		$records = 0;
+		foreach($result as $row) {
 			$row->klant = (isset($row->klant) && trim($row->klant) != '' ? $row->klant : '-');
 									
 			// Generate table rows
 			$output .= "	<tr id='row_".$row->id."' class='data-table-row'>".$nl;
-			$output .= "		<td><a href='inc/generate_roll_pdf.php?ship_id=".$row->id."' target='_blanc'><img src='images/printer.png' height='17'></a> <a href='inc/generate_roll_xlsx.php?ship_id=".$row->id."' target='_blanc'><img src='images/excel.png' height='17'></a></td>".$nl;
+			$output .= "		<td><a href='pages/generate/generate_roll_pdf.php?ship_id=".$row->id."' target='_blanc'><img src='images/printer.png' height='17'></a> <a href='inc/generate_roll_xlsx.php?ship_id=".$row->id."' target='_blanc'><img src='images/excel.png' height='17'></a></td>".$nl;
 			$output .= "		<td>".$row->id."</td>".$nl;
 			$output .= "		<td>".$row->klant."</td>".$nl;
 			$output .= "		<td>".$row->datum."</td>".$nl;
@@ -191,7 +195,6 @@ class RollsShipment {
 		$output .="</div>";
 		*/
 		
-		$result->close();
 		return $output;
 	}
 	

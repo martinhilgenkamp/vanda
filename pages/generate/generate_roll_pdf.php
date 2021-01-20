@@ -1,7 +1,7 @@
 <?php 
 // Noodzakelijke dingen bij elkaar rapen.
-require_once('../class/class.mysql.php');
-require_once('../tcpdf.php');
+require_once('../../inc/class/class.db.php');
+require_once('../../tcpdf.php');
 date_default_timezone_set("Europe/Amsterdam");
 
 // prevent notifications
@@ -11,6 +11,11 @@ $nl = "\r\n";
 
 
 class TablePDF extends TCPDF{
+
+	function __construct() {
+		parent::__construct();
+		$this->db = new DB();
+	}
 	// Var totaal voor totaal leverings gewicht.
 	public $totaal;
 	public $query;
@@ -36,8 +41,8 @@ class TablePDF extends TCPDF{
     }
 	
 	// Load table data from file
-    public function LoadData($query, $conditions = '') {
-		$result = mysql_query($query);
+    public function LoadData($query, $conditions = '', $key = 'id') {
+		$result = $this->db->selectQuery($query);
 		if(!$result){
 			die(mysql_error());	
 		}

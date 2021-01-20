@@ -8,7 +8,6 @@ class DB {
 	var $password;
 	var $link;
 
-	var $selectResult;
 	var $updateResult;
 	var $deleteResult;
 	var $insertResult;
@@ -25,11 +24,11 @@ class DB {
    	}
 
 	function selectQuery($query) {
-		$this->selectResult = $this->link->query($query) or die("Ongeldige query: " . mysqli_error($this->link) . "<br>" . $query);
+		$selectResult = $this->link->query($query) or die("Ongeldige query: " . mysqli_error($this->link) . "<br>" . $query);
 
 		$resArray = Array();
-		if($this->selectResult){
-			while($record = $this->selectResult->fetch_object()){
+		if($selectResult){
+			while($record = $selectResult->fetch_object()){
 				$resArray[] = $record;
 			}
 		}
@@ -54,9 +53,9 @@ class DB {
 		foreach($arrFields as $field) {
 			if(isset($data[$field->Field])) {
 				if($data[$field->Field] == "NULL"){
-					$strUpdate .= $field->Field."=".addslashes($data[$field->Field]).", ";
+					$strUpdate .= $field->Field."=".$this->sanitizeString(($data[$field->Field])).", ";
 				} else {
-					$strUpdate .= $field->Field."='".addslashes($data[$field->Field])."', ";
+					$strUpdate .= $field->Field."='".$this->sanitizeString(($data[$field->Field]))."', ";
 				}
 			}
 		}
@@ -64,7 +63,7 @@ class DB {
 		if($strUpdate != '') {
 			$strUpdate = substr($strUpdate, 0, -2);
 
-			$qry = "UPDATE ".$table." SET ".$strUpdate." WHERE ".$where;
+			$qry = "UPDATE ".$table." SET ".$strUpdate." WHERE ".$this->sanitizeString($where);
 
 			$this->updateResult = $this->link->query($qry);
 
@@ -75,6 +74,10 @@ class DB {
 		}
 
 		return false;
+	}
+
+	function sanitizeString($value) {
+		return mysqli_real_escape_string($this->link, $value);
 	}
 
 	function deleteQuery($table, $where) {
@@ -93,7 +96,7 @@ class DB {
 		foreach($arrFields as $field) {
 			if(isset($data[$field->Field])) {
 				$strInsert .= "`".$field->Field."`, ";
-				$strValues .= "'".$data[$field->Field]."', ";
+				$strValues .= "'".$this->sanitizeString($data[$field->Field])."', ";
 			}
 		}
 

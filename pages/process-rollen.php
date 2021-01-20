@@ -2,10 +2,12 @@
 // Noodzakelijke dingen bij elkaar rapen.
 session_start();
 require_once('../inc/class/class.db.php');
+require_once('../inc/class/class.article.php');
 require_once("../inc/class/class.rollen.php");
 require_once("../inc/class/class.rollship.php");
 
 $roll = new RollsManager;
+$articleManager = new ArticleManager();
 
 // make post safe en zet in post + session
 foreach($_POST as $key => $val){
@@ -119,10 +121,14 @@ switch($post->task){
 
 
 function restoreArticle($id){
-	global $db;
+	
 	// Load article values in to session;		
-	$query = "UPDATE `articles` SET `verwijderd` = '0' WHERE `id` = '".$id."' LIMIT 1";		// delete the article
-	if($db->query($query)){
+	$data = [
+		"verwijderd" => 0,
+	];
+	$where = "`id` = ".$id;
+	$wasUpdated = $articleManager->updateArticle($data, $where);
+	if($wasUpdated){
 		echo 'Hersteld';
 	} else {
 		echo 'Verzenden mislukt'.$db->error;	

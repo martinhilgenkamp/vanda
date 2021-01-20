@@ -28,6 +28,12 @@ class RollsManager {
 		
 		return $result ;
 	}
+
+	function getRollsForShipment($shipmentId) {
+		$query = "SELECT * FROM `vanda_rolls` WHERE `verzonden` = ".$shipmentId;
+		$result = $this->db->selectQuery($query);
+		return $result;
+	}
 	
 	function ProcessChildRolls($post){
 	   $hidden = array('rol','width','save','username','task','id','bronlengte','bronbreedte','moederrol','custom'); //prevent program parameters to land in table
@@ -63,7 +69,7 @@ class RollsManager {
 				   //echo $query;
 
 					if(!$succeeded){
-						echo "<br> PANIEK <BR>".$db->error;
+						echo "<br> PANIEK <BR>";
 						return 'error';   
 					}
 				}
@@ -77,24 +83,27 @@ class RollsManager {
 	}
 	
 	function ShipRolls($rolls,$klant){
-		global $db;
 		
 		$shipment = new RollsShipment;
 		$id = $shipment->makeShipment($klant);
 		
 		
-		foreach($rolls as $roll){		
-			$query = "UPDATE `vanda_rolls` SET `verzonden` = '".$id."' ,`gewijzigd` =  '".date('Y-m-d H:i:s')."' WHERE `vanda_rolls`.`rollid` = ".$roll;
-			if($db->query($query)){
+		foreach($rolls as $roll) {
+			$data = [
+				"verzonden" => $id,
+				"gewijzigd" =>date('Y-m-d H:i:s')
+			];
+			$where = "`vanda_rolls`.`rollid` = ".$roll;
+			
+			if($this->db->updateQuery("vanda_rolls", $data, $where)){
 		    } else {
-				echo "<br> PANIEK <BR>".$db->error;
+				echo "<br> PANIEK <BR>";
 				return 'error';   
 		    }
 		}
 	}
 	
 	function UnshipRolls($rolls){
-		global $db;
 		$shipment = new RollsShipment;
 		//$id = $shipment->makeShipment($klant);
 		
@@ -103,15 +112,23 @@ class RollsManager {
 			$tmp = $this->loadRoll($roll);
 			print_r($tmp);
 			$shipid = $tmp['verzonden'];
-			$query = "UPDATE `vanda_rolls` SET `verzonden` = '0' ,`gewijzigd` =  '".date('Y-m-d H:i:s')."' WHERE `vanda_rolls`.`rollid` = ".$roll;
-			if($db->query($query)){
-				$query = "SELECT * FROM `vanda_rolls` WHERE `verzonden` = '".$shipid."'";
-				$result = $db->query($query);
-				if(!$result->num_rows){
+
+			$data = [
+				"verzonden" => 0,
+				"gewijzigd" => date('Y-m-d H:i:s')
+			];
+			$where = "`vanda_rolls`.`rollid` = ".$roll;
+
+			if($this->db->query("vanda_rolls", $data, $where)){
+				//$query = "SELECT * FROM `vanda_rolls` WHERE `verzonden` = '".$shipid."'";
+				
+
+				$result = $this->getRollsForShipment($shipid);
+				if(count($result) == 0){
 					$shipment->deleteShipment($shipid);
 				}
 		    } else {
-				echo "<br> PANIEK <BR>".$db->error;
+				echo "<br> PANIEK <BR>";
 				return 'error';   
 		    }
 			
@@ -119,13 +136,16 @@ class RollsManager {
 	}
 	
 	function DeleteRolls($rolls){
-		global $db;
 				
-		foreach($rolls as $roll){		
-			$query = "UPDATE `vanda_rolls` SET `verwijderd` = '1' ,`gewijzigd` =  '".date('Y-m-d H:i:s')."' WHERE `vanda_rolls`.`rollid` = ".$roll;
-			if($db->query($query)){
+		foreach($rolls as $roll){
+			$data = [
+				"verwijderd" => 1,
+				"gewijzigd" => date('Y-m-d H:i:s')
+			];
+			$where = "`vanda_rolls`.`rollid` = ".$roll;
+			if ($this->db->updateQuery("vanda_rolls", $data, $where)){
 		    } else {
-				echo "FOUT!".$db->error;
+				echo "FOUT!";
 				return 'error';   
 		    }
 		}
@@ -134,12 +154,11 @@ class RollsManager {
 	
 	function getEAN(){
 		// Determine user based on session and db.
-		global $db;
 		$query = "SELECT ean FROM `vanda_rolls` ORDER BY ingevoerd DESC LIMIT 1; ";
 		if($result = $this->db->selectQuery($query)){
 			$result = $result[0];
 		} else {
-			echo "FOUT! ".$db->error;
+			echo "FOUT! ";
 			return 'error';   
 		}
 		$ean = ($_SESSION['ean'] ?  $_SESSION['ean'] : $result->ean);
@@ -148,7 +167,6 @@ class RollsManager {
 	
 	
 	function getRollForm (){
-		global $db;
 		
 		$nl = "\n";
 			
@@ -205,7 +223,6 @@ class RollsManager {
 	}
 	
 	function getRollEditForm (){
-		global $db;
 		
 		$nl = "\n";
 		// Generate output
@@ -235,10 +252,6 @@ class RollsManager {
 	
 	
 	function generateChildRolls ($rolnummer,$post){
-		global $db;
-
-		//$output .= '<form class="childrollform" action="pages/process-rollen.php" id="childrollform" enctype="multipart/form-data" method="post"><ul id="childrollformlist">'.$nl;
-		// bereken hoeveel rollen er uit kunnen
 		
 		$sourcelength = (floatval($post->bronlengte));
 		
@@ -352,7 +365,7 @@ class RollsManager {
 	
 	// Get table of atricles
 	function getTable($where = '', $range = array(0,20)){
-		global $db;
+
 		//$user = getUser($_SESSION['username']);
 		$viewtype = isset($_SESSION['viewtype']) ? $_SESSION['viewtype'] : null;
 			
