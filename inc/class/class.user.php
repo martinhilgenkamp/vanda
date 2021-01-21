@@ -50,24 +50,32 @@ class UserManager {
 		}
 	}
 
+	function updateHash($password, $userId, $options) {
+		$hash = password_hash($password, PASSWORD_DEFAULT, $options);
+		
+		/* Update the password hash on the database. */
+		$data = ["password" => $hash];
+		$where = 'id = '.$userId;
+		$this->db->updateQuery('vanda_user', $data, $where);
+	}
+
 	function checkCredentials($user, $password) {
 		$options = [
 			"cost" => 12
 		];
-
+		
 		if (!password_verify($password, $user->password)) {
+			
+			if ($password == $user->password) {
+				$this->updateHash($user->password, $user->id, $options);
+				return true;
+			}
 			return false;
 		}
 
 		if (password_needs_rehash($user->password, PASSWORD_DEFAULT, $options))
 		{
-			$hash = password_hash($password, PASSWORD_DEFAULT, $options);
-			
-			/* Update the password hash on the database. */
-			$data = ["password" => $hash];
-			$where = 'id = '.$user->id;
-			$this->db->updateQuery('vanda_user', $data, $where);
-			$values = [':passwd' => $hash, ':id' => $row['account_id']];
+			$this->updateHash($user->password, $user->id, $options);
 		}
 
 		return true;
@@ -88,6 +96,23 @@ class UserManager {
 
 		return count($res) > 0 ? $res[0] : null;
 	}	
+
+	function changePassword($username, $password, $currentPassword, &$errors) {
+		$user = $this->getUserByName($username);
+		if (!$this->checkCredentials($user, $currentPassword)) {
+			$errors[] = "Oude wachtwoord komt niet overeen";
+			return false;
+		}
+
+		$options = [
+			"cost" => 12
+		];
+		$where = "username = '".$username."'";
+		$data = ["password" => password_hash($password, PASSWORD_DEFAULT, $options)];
+		$this->db->updateQuery('vanda_user', $data, $where);
+
+		return true;
+	}
 }
 
 ?>

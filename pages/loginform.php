@@ -15,10 +15,10 @@
  ?>
 
 <form action="index.php" method="POST">
-    <p><label>User Name : </label>
+    <p><label>Gebruikersnaam : </label>
 	<input id="username" type="text" name="username" placeholder="username"/></p>
  
-     <p><label>Password&nbsp;&nbsp; : </label>
+     <p><label>Wachtwoord&nbsp;&nbsp; : </label>
 	 <input id="password" type="password" name="password" placeholder="password" /></p>
     
     <input class="btn register" type="submit" name="submit" value="Login" />

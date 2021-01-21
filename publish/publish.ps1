@@ -2,7 +2,7 @@
 $path = "../"
 # construct archive path
 $DateTime = (Get-Date -Format "yyyyMMddHHmmss")
-$destination = "../artifacts\archive-$DateTime.zip"
+$destination = "../artifacts/Vanda-$DateTime.zip"
 # exclusion rules. Can use wild cards (*)
 $exclude = @(".vscode","publish","artifacts",".gitignore",".git")
 # get files to compress using exclusion filer

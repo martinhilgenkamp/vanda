@@ -71,6 +71,15 @@ width: 60px;
 padding: 8px;
 }
 
+.password-form p {
+	text-align: center;
+}
+
+.password_message {
+	color: #f00;
+}
+
+
 /*Hier komt de styling voor het de pagina*/
 #wrapper {
 	width: 		100%;

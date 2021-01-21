@@ -43,6 +43,7 @@
             <?php if($user->level){
                 echo "<a href=\"index.php?page=options\"><li>Opties</li></a>";
             }?>
+            <a href="index.php?page=changePassword"><li>Wachtwoord veranderen</li></a>
             <a href="index.php?page=logout"><li>Uitloggen</li></a>
         </ul>
 	</li>

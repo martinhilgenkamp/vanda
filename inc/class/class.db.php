@@ -63,7 +63,7 @@ class DB {
 		if($strUpdate != '') {
 			$strUpdate = substr($strUpdate, 0, -2);
 
-			$qry = "UPDATE ".$table." SET ".$strUpdate." WHERE ".$this->sanitizeString($where);
+			$qry = "UPDATE ".$table." SET ".$strUpdate." WHERE ".$where;
 
 			$this->updateResult = $this->link->query($qry);
 
