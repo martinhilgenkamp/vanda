@@ -50,8 +50,8 @@ class UserManager {
 		}
 	}
 
-	function updateHash($password, $userId, $options) {
-		$hash = password_hash($password, PASSWORD_DEFAULT, $options);
+	function updateHash($password, $userId) {
+		$hash = password_hash($password, PASSWORD_DEFAULT,);
 		
 		/* Update the password hash on the database. */
 		$data = ["password" => $hash];
@@ -60,22 +60,18 @@ class UserManager {
 	}
 
 	function checkCredentials($user, $password) {
-		$options = [
-			"cost" => 12
-		];
-		
 		if (!password_verify($password, $user->password)) {
 			
 			if ($password == $user->password) {
-				$this->updateHash($user->password, $user->id, $options);
+				$this->updateHash($user->password, $user->id);
 				return true;
 			}
 			return false;
 		}
 
-		if (password_needs_rehash($user->password, PASSWORD_DEFAULT, $options))
+		if (password_needs_rehash($user->password, PASSWORD_DEFAULT))
 		{
-			$this->updateHash($user->password, $user->id, $options);
+			$this->updateHash($user->password, $user->id);
 		}
 
 		return true;
@@ -104,11 +100,8 @@ class UserManager {
 			return false;
 		}
 
-		$options = [
-			"cost" => 12
-		];
 		$where = "username = '".$username."'";
-		$data = ["password" => password_hash($password, PASSWORD_DEFAULT, $options)];
+		$data = ["password" => password_hash($password, PASSWORD_DEFAULT)];
 		$this->db->updateQuery('vanda_user', $data, $where);
 
 		return true;

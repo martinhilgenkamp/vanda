@@ -24,7 +24,7 @@ class DB {
    	}
 
 	function selectQuery($query) {
-		$selectResult = $this->link->query($query) or die("Ongeldige query: " . mysqli_error($this->link) . "<br>" . $query);
+		$selectResult = $this->link->query($query) or die("Ongeldige query: " . $query);
 
 		$resArray = Array();
 		if($selectResult){
