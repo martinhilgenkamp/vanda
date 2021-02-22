@@ -1,9 +1,9 @@
 <?php
 	//Upload script for task form
 	$valid_types = array("jpg", "pdf", "txt", "png","jpeg","gif","xls","xlsx","doc","docx");
-	$ext = (explode(".", $_FILES['file']['name']));
-
+	
 	if (isset($_FILES['file']['name'])) {
+		$ext = (explode(".", $_FILES['file']['name']));
 		if(!in_array(strtolower(end($ext)), $valid_types)){
 			echo 'filetype';
 		} 

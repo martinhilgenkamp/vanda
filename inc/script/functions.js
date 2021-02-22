@@ -322,10 +322,6 @@ $(document).ready(function(){
 					$('#filename').val(file_name);
 				};
 				
-				if(response === 'none'){
-					alert('Geen bestand opgegeven.');
-				};
-				
 				if(response === 'filetype'){
 					alert('Verkeerd upload bestand.');							
 				};
