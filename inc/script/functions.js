@@ -284,7 +284,15 @@ $(document).ready(function(){
 		$('#gewicht').select();
 		
 	});
-	
+
+	$("#gewicht").on('input', function() {
+		debugger;
+		var value = $(this).val();
+		if (value > 9999) {
+			$(this).val(9999);
+		}
+	});
+
 	$("#taskform" ).submit(function( event ) {
 		if($("#name").val() === ''){
 			alert("Taak moet ingevuld zijn");
