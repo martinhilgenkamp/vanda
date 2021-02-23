@@ -273,7 +273,6 @@ switch($task){
 	
 	case 'insertartikel':
 		$data = [
-			"id" => null,
 			"artikelnummer" => strtoupper($_POST['artikelnummer']),
 			"kwaliteit" => $_POST['kwaliteit'],
 			"gewicht" => $_POST['gewicht'],

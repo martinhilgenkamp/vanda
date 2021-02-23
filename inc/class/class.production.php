@@ -9,6 +9,19 @@ class ProductionManager {
 	}
 
 	function addProduction($data) {
+		$defaultValues = [
+			'removed' => 0,
+			'kwaliteit' => "",
+			'ordernr' => "",
+			'shipping_id' => ""
+		];
+
+		foreach ($defaultValues as $key => $value) {
+			if (!array_key_exists($key, $data)) {
+				$data[$key] = $value;
+			}
+		}
+		
 		return $this->db->insertQuery("vanda_production", $data);
 	}
 

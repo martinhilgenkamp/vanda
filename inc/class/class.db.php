@@ -94,7 +94,7 @@ class DB {
 
 		$arrFields = $this->listOfFields($table);
 		foreach($arrFields as $field) {
-			if(isset($data[$field->Field])) {
+			if(array_key_exists($field->Field, $data)) {
 				$strInsert .= "`".$field->Field."`, ";
 				$strValues .= "'".$this->sanitizeString($data[$field->Field])."', ";
 			}
