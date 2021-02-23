@@ -62,7 +62,7 @@ if ($_POST) {
 		$task = $_GET['task'];
 	}
 
-	$supplier_no = intval($_POST['supplier']);
+	$supplier_no = isset($_POST['supplier']) ?  intval($_POST['supplier']) : null;
 	$article_no = isset($_POST['article']) ? intval($_POST['article']) : null;
 	$remark = isset($_POST['remark']) ? intval($_POST['remark']) : null;
 

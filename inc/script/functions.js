@@ -286,7 +286,6 @@ $(document).ready(function(){
 	});
 
 	$("#gewicht").on('input', function() {
-		debugger;
 		var value = $(this).val();
 		if (value > 9999) {
 			$(this).val(9999);
@@ -372,6 +371,7 @@ $(document).ready(function(){
 		}		
 		// Boek het artikel in de mysql database.
 		$.post( "pages/process.php", { task: "insertartikel", artikelnummer: artikelnummer, kwaliteit: kwaliteit, gewicht: gewicht, barcode: barcode, ordernr: ordernr}).done(function( data ) {
+			debugger;
 			if(data === 'success'){
 				if(task === 'add-stans'){
 					getStansWindow(barcode,gewicht);	
@@ -390,9 +390,11 @@ $(document).ready(function(){
 					  url: "pages/process.php",  
 					  data: dataString,  
 					  success: function(result) {  
+						  debugger;
 						$('#barcode').val(result);
 					  },
 					  error: function (xhr, ajaxOptions, thrownError) {
+						  debugger;
 						var error = (xhr.status);
 						error = error + ' ' + thrownError;
 						$('#errorbox').html(error);
