@@ -37,17 +37,17 @@ switch($post->task){
 			$hidden = array('task', 'rollid'); //prevent program parameters to land in table
 			$post->gewijzigd = date('Y-m-d H:i:s');
 			
+
+			$data = [];
 			// Loop through post values			
 			foreach($post as $col => $val) {
 			  // build array
 			  if($val && !in_array($col,$hidden)){
-				  if ($count++ != 0) $fields .= ', ';
-				$fields .= "`$col` = '$val'";
+				$data[$col] = $val;
 			  }
 		    }
 
-			$query = "UPDATE `vanda_rolls` SET ".$fields." WHERE rollid = '".$post->rollid."' LIMIT 1";
-			if($db->query($query)){
+			if($roll->UpdateRoll($data, $post->rollid)){
 				echo 'Opgeslagon';
 			} else {
 				echo 'Opslaan mislukt'.$db->error;	

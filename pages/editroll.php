@@ -1,7 +1,11 @@
 <?php
 require_once('inc/class/class.rollen.php');
 
+
+
 $roll = new RollsManager;
+
+echo('<script language="javascript" type="text/javascript" src="inc/script/rollen.js"></script>');
 
 if($_GET['id']){
 	$id = $_GET['id'];

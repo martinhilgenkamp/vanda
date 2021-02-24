@@ -15,6 +15,8 @@ class RollsManager {
 		$this->db = new DB();
 	}
 
+
+
 	function loadRoll($id){
 		// Load article values in to session;		
 		$query = "SELECT * FROM `vanda_rolls` WHERE `rollid` = '".$id."' LIMIT 1";		// load the article.
@@ -82,6 +84,11 @@ class RollsManager {
 	   echo 'success';
 	}
 	
+	function UpdateRoll($data, $id) {
+		$this->db->updateQuery("vanda_rolls", $data, "rollid='".$id."' LIMIT 1");
+		return true;
+	}
+
 	function ShipRolls($rolls,$klant){
 		
 		$shipment = new RollsShipment;
