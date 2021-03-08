@@ -559,7 +559,7 @@ function processArticles(onderdeel) {
 		  if(!onderdeel && onderdeel != null){
 		  	var currelement = $(this);
 		  } else {
-			var currelement = onderdeel;  
+			var currelement = $('#' + onderdeel);
 		  }	
 		  var supplier_no = currelement.next('div').attr('id')
 		  

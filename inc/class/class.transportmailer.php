@@ -10,6 +10,14 @@ class TransportMailer extends PHPMailer
 		parent::__construct();
 		
 		$this->isSMTP();
+		//Set SMTP options
+		$this->SMTPOptions = array(
+			'ssl' => array(
+			'verify_peer' => false,
+			'verify_peer_name' => false,
+			'allow_self_signed' => true
+			)
+		);
 		//Enable SMTP debugging
 		// 0 = off (for production use)
 		// 1 = client messages

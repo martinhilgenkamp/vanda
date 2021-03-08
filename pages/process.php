@@ -373,7 +373,7 @@ switch($task){
 		//send the message, check for errors
 		// Function to use UpdateStatus($id, $subject, $body, $status){
 		if (!$tm->send()) {
-			echo "Mailer Error: " . $mail->ErrorInfo;
+			echo "Mailer Error: " . $tm->ErrorInfo;
 			$tm->UpdateStatus($ritnummer,$subject,$body, '0');
 		} else {
 			$tm->UpdateStatus($ritnummer,$subject,$body, '1');	
@@ -440,7 +440,7 @@ switch($task){
 			$tm->UpdateStatus($ritnummer,$subject,$body, '0');
 		} else {
 			$tm->UpdateStatus($ritnummer,$subject,$body, '1');	
-			echo 'transport onerweg van Vanda naar '.$resSuppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
+			echo 'transport onderweg van Vanda naar '.$resSuppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
 		}
 
 		// $supplier_no = mysqli_real_escape_string($db,$_POST['supplier']);
