@@ -48,8 +48,9 @@ class ProductionManager {
 		$qry = "SELECT barcode FROM vanda_production ORDER BY barcode DESC LIMIT 1";
 		
 		$res = $this->db->selectQuery($qry);
+		$barcode = (int)substr($res[0]->barcode, -10) +1;
 
-		return $res[0]->barcode;
+		return $barcode;
 	}
 
 	function getBarcode() {

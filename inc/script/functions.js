@@ -345,16 +345,12 @@ $(document).ready(function(){
 		// create regexp for validation
 		var numberReg =  /^[0-9]{1,4}$/;
 		var artikelnummer = $('#artikelnummer').val();
-		var kwaliteit = $('#kwaliteit').val();
+		var kwaliteit = $('#kwaliteit').val() != undefined ? $('#kwaliteit').val() : "";
 		var gewicht = $('#gewicht').val();
 		var barcode = $('#barcode').val();
-		var ordernr = $('#ordernr').val();
+		var ordernr =  $('#ordernr').val() != undefined ? $('#ordernr').val() : "";
 		var task = $('#task').val();
-		
-		
-		
-		console.log(task);
-		
+				
 		if(artikelnummer === ''){
 			alert('geen artikel ingevoerd');
 			return;	
@@ -604,7 +600,7 @@ function getLabelWindow(artikelnummer){
 	// Nieuw label genereren met het goed artikelnummer.
 	//myWindow = window.open("inc/generate_label.php?artikelnummer="+artikelnummer,'_blank',"width=1024,height=530,location=no,menubar=no,scrollbars=no,toolbar=no,fullscreen=no");
 	
-	var url = "inc/generate_label.php?artikelnummer="+artikelnummer;
+	var url = window.location.origin+"pages/generate/generate_label.php?artikelnummer="+artikelnummer;
 	
 	$('#printFrame').attr('src', url);
     $('#printFrame').load(function() {
@@ -631,7 +627,7 @@ function getStansWindow(artikelnummer,aantal){
           aantal = 1;
     } 
 	
-	var url = "inc/generate_stans.php?artikelnummer="+artikelnummer+"&aantal="+aantal;
+	var url = window.location.origin+"/pages/generate/generate_stans.php?artikelnummer="+artikelnummer+"&aantal="+aantal;
 	console.log(url);
 	window.open(url);
 	

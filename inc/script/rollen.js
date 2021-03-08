@@ -186,7 +186,7 @@ $(document).ready(function(){
 		// Nieuw label genereren met het goed artikelnummer.
 		//myWindow = window.open("inc/generate_label.php?artikelnummer="+artikelnummer,'_blank',"width=1024,height=530,location=no,menubar=no,scrollbars=no,toolbar=no,fullscreen=no");
 
-		var url = "inc/generate_rol.php?rolnummer="+rolnummer;
+		var url = "pages/generate/generate_rol.php?rolnummer="+rolnummer;
 		//var url = "https://www.google.com";
 			window.open(url);	
 	}

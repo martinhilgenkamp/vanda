@@ -286,7 +286,7 @@ switch($task){
 		if($productionId > 0){
 			echo "success";
 		} else {
-			echo "Er is een fout opgetreden bij het opslaan! Probeer het opnieuw" . $db->error();	
+			echo "Er is een fout opgetreden bij het opslaan! Probeer het opnieuw";	
 		}
 
 		// $post = $_POST;	
@@ -316,7 +316,7 @@ switch($task){
 		// 	}	
 		// // Geef laatste barcode terug.
 		// }
-		$barid =  (int)substr($barcode, -10)+1;
+		$barid =  (int)substr($barcode, -10);
 		// Waarde voor barcode genereren.
 		$barid = str_pad($barid, 10, '0', STR_PAD_LEFT);
 		$barcode = 'F00830'.$barid;
