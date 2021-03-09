@@ -7,29 +7,22 @@ $sm = new ShipmentManager();
 // Load products from the database.
 $zendingen = $sm->getAllShipments();
 
-$output = "<table id='product-table' class=\"ui-widget results\" cellpadding=\"0\" cellspacing=\"0\">";
-$output .= "<thead class=\"ui-widget-header\">";
-$output .= "<td>Lijst</td><td>Shipment_id</td><td>Klant</td><td>Datum</td><td>Verzonden</td>";
+$output = "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
+$output .= "<tr>";
+$output .= "<th>Lijst</th><th>Shipment_id</th><th>Klant</th><th>Datum</th><th>Verzonden</th>";
 
 if($user->level && isset($zending) && !$zending->verzonden){
-	$output .= "<td class='ship'>&nbsp;</td>";	
+	$output .= "<th class='ship'>&nbsp;</th>";	
 } else { 
-	$output .= "<td>&nbsp;</td>";
+	$output .= "<th>&nbsp;</th>";
 }
-$output .= "</thead>";
+$output .= "</tr>";
 
 $c = 0;
 if(count($zendingen)){
 	foreach($zendingen as $zending){
-		if($c == 1) { 
-			$output .= "<tr class=\"grey\">"; 
-			$c = 0;
-		} 
-		else { 
-			$output .= "<tr>"; 
-			$c = $c + 1; 
-		}
 		$output .= "
+			<tr>
 			<td>
 				<a href='pages/generate/generate_pdf.php?ship_id=".$zending->ship_id."' target='_blanc'>
 					<img src='images/printer.png' height='17' />

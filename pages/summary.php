@@ -117,35 +117,29 @@ $rows = $rm->getRegistrationOverviewByPeriod($period, $periode, $today, $selectd
 <?php if ($user->level) {?>
 <form id="deleteform" name="deleteform" action="index.php?page=summary&beheer=1" method="post">
 <?php } ?>
-<table class="ui-widget results" cellpadding="0" cellspacing="0">
-	<thead class="ui-widget-header">
-        <td>Aantal</td>
-        <td>Leverancier</td>
-        <td>Artikel Nummer</td>
-        <td>Omschrijving</td>
-        <td>Datum</td>
-        <?php echo ($user->level == 1 && $period == '' ? '<td style="width: 40px;">Verwijder</td>' : ''); ?>
-    </thead>
-	<tbody class='ui-widget-content'>
+<table class="data-table" cellpadding="0" cellspacing="0">
+	<tr>
+        <th>Aantal</th>
+        <th>Leverancier</th>
+        <th>Artikel Nummer</th>
+        <th>Omschrijving</th>
+        <th>Datum</th>
+        <?php echo ($user->level == 1 && $period == '' ? '<th style="width: 40px;">Verwijder</th>' : ''); ?>
+    </tr>
+	<tbody>
 	<?php
 	if(count($rows)){
 		$c = 0;
 		foreach($rows as $row){
 			if($row->article_desc){
-				if($c == 1){ 
-					echo "	<tr class=\"grey\">"; 
-					$c = 0;
-				} else {
-					echo "	<tr>";
-					$c = $c + 1;
-				}			
-				echo "<td>".str_replace('0.5','H',$row->amount)."</td>"."
-					  <td>".$row->supplier."</td>"."
-					  <td>".$row->article_no."</td>"."
-					  <td>".$row->article_desc."</td>"."
-					  <td>".$row->date." ".($user->level == 1 && $period == '' ? '</td>
-					  <td><span class="delete" id="'.$row->id.'"></span>' : '')."</td>";
-				echo "</tr>";
+				echo "<tr>
+						<td>".str_replace('0.5','H',$row->amount)."</td>"."
+						<td>".$row->supplier."</td>"."
+						<td>".$row->article_no."</td>"."
+						<td>".$row->article_desc."</td>"."
+						<td>".$row->date." ".($user->level == 1 && $period == '' ? '</td>
+						<td><span class="delete" id="'.$row->id.'"></span>' : '')."</td>
+					  </tr>";
 			}
 		}
 	} else {

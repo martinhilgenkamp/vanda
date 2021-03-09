@@ -107,21 +107,24 @@ switch($task){
 
 function showSipments($zendingen) {
 
-	$output = "<table id='product-table' class=\"ui-widget results\" cellpadding=\"0\" cellspacing=\"0\">";
-	$output .= "<thead class=\"ui-widget-header\">";
-	$output .= "<td>ID</td><td>Klant</td><td>Datum</td>";
-	$output .= "</thead><tbody class='ui-widget-content'>";
+	$output = "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
+	$output .= "<tr>";
+	$output .= "<th>ID</th><th>Klant</th><th>Datum</th>";
+	$output .= "</tr><tbody class='ui-widget-content'>";
 	
 	if(count($zendingen) > 0){
-		$c = 0;
 		foreach($zendingen as $zending){
-			if($c == 1){ 
-				$output .= "<tr class=\"grey\">"; $c = 0;} 
-			else { 
-				$output .= "<tr>"; $c = $c + 1;
-			}
-			$output .= "<td class='clickable' id=".$zending->ship_id."><a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".$zending->ship_id."</a></td><td><a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".$zending->klant."</a></td><td><a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".date('d-m-Y',strtotime($zending->datum))."</a></td>";
-			$output .= "</tr>";
+			$output .= "<tr>
+				<td class='clickable' id=".$zending->ship_id.">
+					<a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".$zending->ship_id."</a>
+				</td>
+				<td>
+					<a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".$zending->klant."</a>
+				</td>
+				<td>
+					<a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".date('d-m-Y',strtotime($zending->datum))."</a>
+				</td>
+				</tr>";
 		}
 	}
 	$output .= "</tbody></table>";

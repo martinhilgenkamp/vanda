@@ -1,7 +1,6 @@
 <?php 
 // Include classes.
 require_once('inc/class/class.db.php');
-$nl = "\r\n";
 $cutOffLimit = 100;
 // Load products from the database.
 $db = new DB();
@@ -10,28 +9,27 @@ $zendingen = $db->selectQuery($query);
 
 unset($query);
 
-$output = "<table id='product-table' class=\"ui-widget results\" cellpadding=\"0\" cellspacing=\"0\">".$nl;
-$output .= "<thead class=\"ui-widget-header\">".$nl;
-$output .= "<td>Ritnr</td><td>Datum</td><td>Onderwerp</td><td>Bericht</td><td>Verzonden</td>".$nl;
+$output = "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
+$output .= "<tr>";
+$output .= "<th>Ritnr</th><th>Datum</th><th>Onderwerp</th><th>Bericht</th><th>Verzonden</th>";
 
-$output .= "</thead>".$nl;
+$output .= "</tr>";
 
 $c = 0;
 
 foreach(array_slice($zendingen, 0, $cutOffLimit) as $zending){
-	$c = $c + 1;
-	if($c % 2 == 0){ 
-			$output .= "	<tr class=\"grey\">".$nl;
-	} else {
-		$output .= "<tr>".$nl;
-	}
 
-	$output .= "<td>$zending->id</td><td>$zending->date</td><td>$zending->subject</td><td widht='50%'>".strip_tags($zending->body)."</td><td>".$zending->verstuurd."</td>".$nl;
-	$output .= "</tr>".$nl;
+	$output .= "<tr>
+					<td>$zending->id</td>
+					<td>$zending->date</td>
+					<td>$zending->subject</td>
+					<td widht='50%'>".strip_tags($zending->body)."</td>
+					<td>".$zending->verstuurd."</td>
+				</tr>";
 }
 
-$output .= "</table>".$nl;
-$output .=  "<center>Er zijn ".$cutOffLimit." van " . count($zendingen) . " resultaten weergegeven <br>".$nl;
+$output .= "</table>";
+$output .=  "<center>Er zijn ".$cutOffLimit." van " . count($zendingen) . " resultaten weergegeven <br>";
 
 ?>
 

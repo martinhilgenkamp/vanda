@@ -104,9 +104,8 @@ class TaskManager {
 		$daysofweek[7] = "Zondag";
 		
 		$output = "";
-		$output .= "<table id='product-table' class=\"ui-widget results\" cellpadding=\"0\" cellspacing=\"0\">";
-		$output .= "<thead class=\"ui-widget-header\">";
-		$output .= "<td>File</td><td>Taak</td><td>Opmerking</td><td>Datum</td><td>Adres</td><td>Gereed</td></thead>";
+		$output .= "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
+		$output .= "<tr><th>File</th><th>Taak</th><th>Opmerking</th><th>Datum</th><th>Adres</th><th>Gereed</th></tr>";
 
 		if(count($tasklist) > 0){			
 			foreach($tasklist as $row){

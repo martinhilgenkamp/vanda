@@ -27,7 +27,7 @@
 
 /** Error reporting */
 error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
+ini_set('display_errors', 0);
 ini_set('display_startup_errors', TRUE);
 date_default_timezone_set('Europe/Amsterdam');
 
@@ -35,27 +35,37 @@ if (PHP_SAPI == 'cli')
 	die('This example should only be run from a Web Browser');
 
 /** Include PHPExcel */
-require_once dirname(__FILE__) . '/../class/PHPExcel.php';
-require_once dirname(__FILE__) . '/../class/class.mysql.php';
+require_once dirname(__FILE__) . '/../../inc/class/PHPExcel.php';
+require_once dirname(__FILE__) . '/../../inc/class/class.db.php';
 
 
 // Get the ship id to read data.
 $ship_id = $_GET['ship_id'];
 
-class PHPExcelData extends PHPExcel{
+class PHPExcelData extends PHPExcel {
 	// Var totaal voor totaal leverings gewicht.
 	public $query;
+
+	function __construct() {
+		parent::__construct();
+		$this->db = new DB();
+	}
 	
 		// Load table data from file
     public function LoadData($ship_id) {
 	    global $db;
 		
-		$query = "SELECT barcode, artikelnummer, gewicht,DATE_FORMAT(datum,'%m-%d-%Y') as datum, DATE_FORMAT(datum,'%H:%i') as tijd, ponummer FROM `vanda_production` LEFT JOIN vanda_options ON vanda_options.id =1 WHERE shipping_id = '".$ship_id."' ORDER BY artikelnummer, datum";		
-		
-		$result = $db->query($query);
+		$query = "SELECT barcode, artikelnummer, gewicht,DATE_FORMAT(datum,'%m-%d-%Y') as datum, DATE_FORMAT(datum,'%H:%i') as tijd, ponummer FROM `vanda_production` LEFT JOIN vanda_options ON vanda_options.id =1 WHERE shipping_id = '".$ship_id."' ORDER BY artikelnummer, datum";
+				
+		if($result = $this->db->selectQuery($query)){
+			
+		} else {
+			echo "query failed" .  mysqli_error($db);
+		}
+
 		$i = 2;
-		while($row = $result->fetch_assoc()){
-			$rows[$i] = $row;	
+		foreach($result as $data) {	
+			$rows[$i] = (array)$data;	
 			$i++;
 		}		
 		return $rows;		
@@ -74,7 +84,6 @@ $objPHPExcel->getProperties()->setCreator("Vanda Carpets")
 							 ->setKeywords("office 2007 openxml php")
 							 ->setCategory("Vanda Carpets");
 
-
 // Add some data
 $objPHPExcel->setActiveSheetIndex(0)
 
@@ -86,13 +95,11 @@ $objPHPExcel->setActiveSheetIndex(0)
             ->setCellValue('D1', 'Productie Datum')
 			->setCellValue('E1', 'Productie Tijd')
 			->setCellValue('F1', 'PO Nummer');
-			
-			
+					
 $data = $objPHPExcel->LoadData($ship_id);
 
-
 // Data bewerken voor export
-foreach($data as $row){
+foreach($data as $row) {
 	$patterns = array();
 	$patterns[0] = ' PA';
 	$patterns[1] = ' PP';
