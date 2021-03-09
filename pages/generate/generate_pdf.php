@@ -1,18 +1,26 @@
 <?php 
-
+// Noodzakelijke dingen bij elkaar rapen.
+require_once('../../inc/class/class.db.php');
 require_once('../../tcpdf.php');
-require_once("../../inc/class/class.shipment.php");
+date_default_timezone_set("Europe/Amsterdam");
 
-$sm = new ShipmentManager();
+// prevent notifications
+error_reporting(E_ALL ^ E_NOTICE);
+ini_set("display_errors", 0);
 
 $ship_id = $_GET['ship_id'];
-$shipments = $sm->getExistingShipmentsById($ship_id);
 
 class TablePDF extends TCPDF{
+
+	function __construct() {
+		parent::__construct();
+		$this->db = new DB();
+	}
+
 	// Var totaal voor totaal leverings gewicht.
 	public $totaal;
 	public $query;
-
+	
 	//Page header
     public function Header() {
         $x = $this->SetX(0);
@@ -32,17 +40,21 @@ class TablePDF extends TCPDF{
     }
 	
 	// Load table data from file
-    public function LoadData($conditions = '') {
+    public function LoadData($query, $conditions = '') {
+		$result = $this->db->selectQuery($query);
+		if(!$result){
+			die(mysql_error());	
+		}
 		$rows = array();
 		
 		// get values from database.
-		foreach ($shipments as $row) {
-			if($row['ordernr']){
-				array_push($rows, strtoupper($row['artikelnummer'] . ' - ' . $row['kwaliteit']));
-				//$rows[strtoupper($row['artikelnummer'] . ' - ' . $row['kwaliteit'])][] = $row;
+		foreach($result as $row){
+		 	$data = (array)$row;
+
+			if($data['ordernr']){
+				$rows[strtoupper($data['artikelnummer'] . ' - ' . $data['kwaliteit'])][] = $data;
 			} else {
-				array_push($rows, strtoupper($row['artikelnummer']));
-				//$rows[strtoupper($row['artikelnummer'])][] = $row;
+				$rows[strtoupper($data['artikelnummer'])][] = $data;
 			}
 		}	
 		
@@ -61,20 +73,31 @@ class TablePDF extends TCPDF{
 		return $tables;			
 	}// end of load data function
 	
-	public function CalculateTotal(){
+	public function CalculateTotal($query){
 		$totaal_gewicht = 0;
-		$rows[] = array();
-		foreach($shipments as $row){
-			array_push($rows, $row);
-			$totaal_gewicht = $row['gewicht'] + $totaal_gewicht;
+
+		$result = $this->db->selectQuery($query);
+		if(!$result){
+			die(mysql_error());	
+		}
+		foreach($result as $row){
+		 	$data = (array)$row;
+
+			$rows[] = $data;
+			$totaal_gewicht = $data['gewicht'] + $totaal_gewicht;
 		}
 		return $totaal_gewicht;
 	}
 	
-	public function CalculateAantal(){		
-		$rows = array();
-		foreach($shipments as $row){
-			array_push($rows, $row);
+	public function CalculateAantal($query){
+		$totaal_gewicht = 0;
+
+		$result = $this->db->selectQuery($query);
+		if(!$result){
+			die(mysql_error());	
+		}
+		foreach($result as $row){
+			$rows[] = (array)$row;
 		}
 		return count($rows);
 	}
@@ -178,7 +201,7 @@ class TablePDF extends TCPDF{
 		//Print totaal leverings gewicht.
 		$this->SetY(-12);
 		$this->SetFont('dejavusans', 'B', 12, '', true);
-		$this->Cell(190, 10, 'Totaal aantal colli '.$this->CalculateAantal().' leverings gewicht: ' .$this->CalculateTotal().' Kg/Stk', 0, 0, 'R', 0, '', 0, false, 'T', 'M');
+		$this->Cell(190, 10, 'Totaal aantal colli '.$this->CalculateAantal($this->query).' leverings gewicht: ' .$this->CalculateTotal($this->query).' Kg/Stk', 0, 0, 'R', 0, '', 0, false, 'T', 'M');
 		$this->Ln();	
 
 	
@@ -195,6 +218,11 @@ class TablePDF extends TCPDF{
 
 // create new PDF document
 $pdf = new TablePDF('portrait' , 'mm', 'a4', true, 'UTF-8', false);
+
+// Generate query
+// Get the ship id to read data.
+$ship_id = $_GET['ship_id'];
+$pdf->query = "SELECT * FROM `vanda_production` WHERE shipping_id = '".$ship_id."' AND removed = '0'";
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
@@ -214,6 +242,8 @@ $pdf->SetFooterMargin(14);
 // set auto page breaks
 $pdf->SetAutoPageBreak(TRUE, 14);
 $pdf->AddPage();
+
+
 
 $style = array(
 	  'position' => 'C',
@@ -236,7 +266,7 @@ $x = $pdf->GetX();
 $y = $pdf->GetY();
 
 //Load tables for the shipping list.
-$tables = $pdf->LoadData($shipments, $conditions);
+$tables = $pdf->LoadData($pdf->query,$conditions);
 
 foreach($tables as $key => $table){
 	$pdf->ColoredTable($key, $table);	

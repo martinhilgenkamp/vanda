@@ -132,6 +132,18 @@ class ProductionManager {
 
 		return $res[0];
 	}
+
+	function getProductionByShipId($shipId) {
+		$qry = "SELECT vp.id, vp.barcode, vp.datum AS productie_tijd, vp.geleverd AS verzend_tijd, vs.klant
+				FROM `vanda_production` vp
+
+				LEFT JOIN `vanda_shipment` vs
+				ON vs.ship_id = vp.shipping_id
+
+				WHERE vp.shipping_id = '".$shipId."'";
+
+		return $this->db->selectQuery($qry);
+	}
 }
 
 ?>
