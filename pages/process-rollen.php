@@ -48,7 +48,7 @@ switch($post->task){
 		    }
 
 			if($roll->UpdateRoll($data, $post->rollid)){
-				echo 'Opgeslagon';
+				echo 'Opgeslagen';
 			} else {
 				echo 'Opslaan mislukt'.$db->error;	
 			}

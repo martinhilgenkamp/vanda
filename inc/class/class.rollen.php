@@ -7,15 +7,12 @@ date_default_timezone_set("Europe/Amsterdam");
 // prevent notifications
 error_reporting(E_ALL ^ E_NOTICE);
 ini_set("display_errors", 1);
-$nl = "\r\n";
 
 class RollsManager {
 
 	function __construct() {
 		$this->db = new DB();
 	}
-
-
 
 	function loadRoll($id){
 		// Load article values in to session;		
@@ -173,10 +170,7 @@ class RollsManager {
 	}
 	
 	
-	function getRollForm (){
-		
-		$nl = "\n";
-			
+	function getRollForm (){			
 		// Check if edit and id, load the correct values for the desired id.	
 		//if($_SESSION['task'] == 'edit' && $id ){
 		//	$this->LoadArticle($id);		// Load article values.
@@ -189,70 +183,139 @@ class RollsManager {
 		//}		
 	
 		// Generate output
-		$output = '<div class="roll-form-div">'.$nl;
-		$output .= '<form class="rollform" action="" id="rollform" enctype="multipart/form-data" method="post">';
-		$output .= '<div id="rollform-part1"><ul id="rollformlist">'.$nl;
-		$output .= '<li><label for="rolnummer"><span>Rolnummer:</span><input id="input_rolnummer" name="rolnummer" type="text" value="'.($_SESSION['rolnummer'] ?  $_SESSION['rolnummer'] : '').'" required/></label></li>'.$nl;
-		$output .= '<li><label for="omschrijving"><span>Omschrijving:</span><input id="input_omschrijving" name="omschrijving" type="text" value="'.($_SESSION['omschrijving'] ?  $_SESSION['omschrijving'] : 'Superflex').'" required/></label></li>'.$nl;
-		$output .= '<li><label for="bronlengte"><span>Lengte:</span><input id="input_bronlengte" name="bronlengte" type="text" value="'.($_SESSION['bronlengte'] ?  $_SESSION['bronlengte'] : '').'" required/></label></li>'.$nl;
-		$output .= '<li><label for="breedte"><span>Breedte:</span><input id="input_bronbreedte" name="bronbreedte" type="text" value="'.($_SESSION['bronbreedte'] ?  $_SESSION['bronbreedte'] : '4.12').'" required/></label></li>'.$nl;
-			
-		$output .= '<li><label for="snijlengte"><span>Snijengte:</span><input id="input_snijlengte" name="snijlengte" type="text" value="'.($_SESSION['snijlengte'] ?  $_SESSION['snijlengte'] : '40').'" required/></label></li>'.$nl;
+		$output = '<div class="roll-form-div">';
+			$output .= '<form class="rollform" action="" id="rollform" enctype="multipart/form-data" method="post">';
+				$output .= '<div id="rollform-part1">';
+					$output .= '<table id="rollformlist">';
+						$output .= '<tr>
+										<td>Rolnummer</td>
+										<td><input id="input_rolnummer" name="rolnummer" type="text" value="'.($_SESSION['rolnummer'] ?  $_SESSION['rolnummer'] : '').'" required/></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Omschrijving</td>
+										<td><input id="input_omschrijving" name="omschrijving" type="text" value="'.($_SESSION['omschrijving'] ?  $_SESSION['omschrijving'] : 'Superflex').'" required/></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Lengte</td>
+										<td><input id="input_bronlengte" name="bronlengte" type="text" value="'.($_SESSION['bronlengte'] ?  $_SESSION['bronlengte'] : '').'" required/></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Breedte</td>
+										<td><input id="input_bronbreedte" name="bronbreedte" type="text" value="'.($_SESSION['bronbreedte'] ?  $_SESSION['bronbreedte'] : '4.12').'" required/></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Snijlengte</td>
+										<td><input id="input_snijlengte" name="snijlengte" type="text" value="'.($_SESSION['snijlengte'] ?  $_SESSION['snijlengte'] : '40').'" required/></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Afwijkend</td>
+										<td><input id="input_custom" name="custom" type="checkbox" value="'.($_SESSION['custom'] ?  $_SESSION['custom'] : '1').'"/></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Snijbreedte</td>
+										<td><input id="input_snijbreedte" class="snijbreedte" name="snijbreedte[]" type="text" value="'.($_SESSION['snijbreedte[0]'] ?  $_SESSION['snijbreedte[0]'] : '2.06').'" required/></td>
+									</tr>';
+						$output .= '<tr>
+										<td>EAN</td>
+										<td><input id="input_ean" name="ean" type="text" value="'.$this->getEAN().'" /></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Kleur</td>
+										<td><input id="input_kleur" name="kleur" type="text" value="'.($_SESSION['kleur'] ?  $_SESSION['kleur'] : '').'" /></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Backing</td>
+										<td><input id="input_backing" name="backing" type="text" value="'.($_SESSION['backing'] ?  $_SESSION['backing'] : 'xx').'" /></td>
+									</tr>';
+						$output .= '<tr>
+										<td>Referentie</td>
+										<td><input id="input_referentie" name="referentie" type="text" value="'.($_SESSION['referentie'] ?  $_SESSION['referentie'] : '').'" /></td>
+									</tr>';
+					$output .= '</table>';
+				$output .= '<input type="button" name="verstuur" id="input_verstuur" value="Volgende" />';
+				$output .= '<input id="input_task" name="task" type="hidden" value="generate" />';
+				
+				$output .= '<input id="input_id" name="verzonden" value="'.($_SESSION['verzonden'] ?  $_SESSION['verzonden'] : '0').'" type="hidden" />';
+				$output .= '<input id="input_id" name="verwijderd" value="'.($_SESSION['verwijderd'] ?  $_SESSION['verwijderd'] : '0').'" type="hidden" />';
+				$output .= '<input id="input_id" name="id" value="'.($_SESSION['id'] ?  $_SESSION['id'] : '').'" type="hidden" />';
+				$output .= '<input id="input_ingevoerd" name="ingevoerd" value="'.($_SESSION['ingevoerd'] ?  $_SESSION['ingevoerd'] : '').'" type="hidden" />';
+				
+				$output .= '<br />';
+				$output .= '</div><div class="clr"></div>';
+				$output .= '<div id="childrollform"></div>';
+				$output .= '</div>';
+			$output .= '</form>';
+			$output .= '<div><iframe id="frame"></iframe></div>';
+		$output .= '</div>';
 		
-		$output .= '<li><label for="custom"><span>Afwijkend:</span><input id="input_custom" name="custom" type="checkbox" value="'.($_SESSION['custom'] ?  $_SESSION['custom'] : '1').'"/></label></li>'.$nl;
-		$output .= '<li><label for="snijbreedte"><span>Snijbreedte:</span><div id="snijbreedtes"><input id="input_snijbreedte" class="snijbreedte" name="snijbreedte[]" type="text" value="'.($_SESSION['snijbreedte[0]'] ?  $_SESSION['snijbreedte[0]'] : '2.06').'" required/></div></label></li>'.$nl;
 		
-		$output .= '<li><label for="ean"><span>EAN:</span><input id="input_ean" name="ean" type="text" value="'.$this->getEAN().'" /></label></li>'.$nl;
-			
-		$output .= '<li><label for="kleur"><span>Kleur:</span><input id="input_kleur" name="kleur" type="text" value="'.($_SESSION['kleur'] ?  $_SESSION['kleur'] : '').'" /></label></li>'.$nl;
-		$output .= '<li><label for="backing"><span>Backing:</span><input id="input_backing" name="backing" type="text" value="'.($_SESSION['backing'] ?  $_SESSION['backing'] : 'xx').'" /></label></li>'.$nl;
-		$output .= '<li><label for="referentie"><span>Referentie:</span><input id="input_referentie" name="referentie" type="text" value="'.($_SESSION['referentie'] ?  $_SESSION['referentie'] : '').'" /></label></li>'.$nl;
-
-		//$output .= '<li><label for="verzonden"><span>Verzonden:</span><input id="input_verzonden" name="verzonden" type="text" value="'.($_SESSION['verzonden'] ?  $_SESSION['verzonden'] : '').'" /></label></li>'.$nl;
-		//$output .= '<li><label for="verwijderd"><span>Verwijderd:</span><input id="input_verwijderd" name="verwijderd" type="text" value="'.($_SESSION['verwijderd'] ?  $_SESSION['verwijderd'] : '').'" /></label></li>'.$nl;
-		
-		$output .= '<li class="100-wide"><input type="button" name="verstuur" id="input_verstuur" value="Volgende" /></li>'.$nl;
-		$output .= '<input id="input_task" name="task" type="hidden" value="generate" />'.$nl;
-		
-		$output .= '<input id="input_id" name="verzonden" value="'.($_SESSION['verzonden'] ?  $_SESSION['verzonden'] : '0').'" type="hidden" />'.$nl;
-		$output .= '<input id="input_id" name="verwijderd" value="'.($_SESSION['verwijderd'] ?  $_SESSION['verwijderd'] : '0').'" type="hidden" />'.$nl;
-		$output .= '<input id="input_id" name="id" value="'.($_SESSION['id'] ?  $_SESSION['id'] : '').'" type="hidden" />'.$nl;
-		$output .= '<input id="input_ingevoerd" name="ingevoerd" value="'.($_SESSION['ingevoerd'] ?  $_SESSION['ingevoerd'] : '').'" type="hidden" />'.$nl;
-		
-		$output .= '<br />'.$nl;
-		$output .= '</div><div class="clr"></div>'.$nl;
-		$output .= '<div id="childrollform"></div>'.$nl;
-		$output .= '</ul></form><div>
-        <iframe id="frame"></iframe>
-    </div></div>'.$nl;
+		$output .= '</ul></form></div>';
 		
 		return $output;
 	}
 	
 	function getRollEditForm (){
-		
-		$nl = "\n";
-		// Generate output
-		$output .= '<div class="roll-editform-div">'.$nl;
+				// Generate output
+		$output .= '<div class="roll-editform-div">';
 		$output .= '<form class="editrollform" action="" id="editrollform" enctype="multipart/form-data" method="post">';
-		$output .= '<div id="rollform-edit"><ul id="rollformlist">'.$nl;
-		$output .= '<li><label for="rolnummer"><span>Rolnummer:</span><input id="input_rolnummer" name="rolnummer" type="text" value="'.($_SESSION['rolnummer'] ?  $_SESSION['rolnummer'] : '').'" required/></label></li>'.$nl;
-		$output .= '<li><label for="deelnummer"><span>Deelnummer:</span><input id="input_deelnummer" name="deelnummer" type="text" value="'.($_SESSION['deelnummer'] ?  $_SESSION['deelnummer'] : '').'" required/></label></li>'.$nl;
-		$output .= '<li><label for="omschrijving"><span>Omschrijving:</span><input id="input_omschrijving" name="omschrijving" type="text" value="'.($_SESSION['omschrijving'] ?  $_SESSION['omschrijving'] : '').'" required/></label></li>'.$nl;
-		$output .= '<li><label for="snijlengte"><span>Snijengte:</span><input id="input_snijlengte" name="snijlengte" type="text" value="'.($_SESSION['snijlengte'] ?  $_SESSION['snijlengte'] : '').'" required/></label></li>'.$nl;
-		$output .= '<li><label for="snijbreedte"><span>Snijreedte:</span><input id="input_snijbreedte" name="snijbreedte[]" type="text" value="'.($_SESSION['snijbreedte'] ?  $_SESSION['snijbreedte'] : '').'" required/></label></li>'.$nl;
-		$output .= '<li><label for="ean"><span>EAN:</span><input id="input_ean" name="ean" type="text" value="'.($_SESSION['ean'] ?  $_SESSION['ean'] : '').'" /></label></li>'.$nl;
-		$output .= '<li><label for="kleur"><span>Kleur:</span><input id="input_kleur" name="kleur" type="text" value="'.($_SESSION['kleur'] ?  $_SESSION['kleur'] : '').'" /></label></li>'.$nl;
-		$output .= '<li><label for="backing"><span>Backing:</span><input id="input_backing" name="backing" type="text" value="'.($_SESSION['backing'] ?  $_SESSION['backing'] : '').'" /></label></li>'.$nl;
-		$output .= '<li><label for="verzonden"><span>Verzonden:</span><input id="input_verzonden" name="verzonden" type="text" value="'.($_SESSION['verzonden'] ?  $_SESSION['verzonden'] : '0').'" /></label></li>'.$nl;
-		$output .= '<li><label for="referentie"><span>Referentie:</span><input id="input_referentie" name="referentie" type="text" value="'.($_SESSION['referentie'] ?  $_SESSION['referentie'] : '').'" /></label></li>'.$nl;
-		$output .= '<li><label for="verwijderd"><span>Verwijderd:</span><input id="input_verwijderd" name="verwijderd" type="text" value="'.($_SESSION['verwijderd'] ?  $_SESSION['verwijderd'] : '0').'" /></label></li>'.$nl;
-		$output .= '<li class="100-wide"><input type="button" name="terug" id="input_terug" value="Terug" /><input type="button" name="verstuur" id="input_verstuur" value="Opslaan" /></li>'.$nl;
-		$output .= '<input id="input_task" name="task" type="hidden" value="edit" />'.$nl;
-		$output .= '<input id="input_id" name="rollid" value="'.($_SESSION['rollid'] ?  $_SESSION['rollid'] : '').'" type="hidden" />'.$nl;
-		$output .= '<br />'.$nl;
-		$output .= '</div><div class="clr"></div>'.$nl;
-		$output .= '</ul></form></div>'.$nl;
+		$output .= '<div id="rollform-edit">';
+		$output .= '<table id="rollformlist" style="margin: auto;">';
+		$output .= '<tr>
+						<td>Rolnummer</td>
+						<td><input id="input_rolnummer" name="rolnummer" type="text" value="'.($_SESSION['rolnummer'] ?  $_SESSION['rolnummer'] : '').'" required/></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Deelnummer</td>
+						<td><input id="input_deelnummer" name="deelnummer" type="text" value="'.($_SESSION['deelnummer'] ?  $_SESSION['deelnummer'] : '').'" required/></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Rolnummer</td>
+						<td><input id="input_rolnummer" name="rolnummer" type="text" value="'.($_SESSION['rolnummer'] ?  $_SESSION['rolnummer'] : '').'" required/></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Omschrijving</td>
+						<td><input id="input_omschrijving" name="omschrijving" type="text" value="'.($_SESSION['omschrijving'] ?  $_SESSION['omschrijving'] : '').'" required/></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Snijlengte</td>
+						<td><input id="input_snijlengte" name="snijlengte" type="text" value="'.($_SESSION['snijlengte'] ?  $_SESSION['snijlengte'] : '').'" required/></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Snijbreedte</td>
+						<td><input id="input_snijbreedte" name="snijbreedte" type="text" value="'.($_SESSION['snijbreedte'] ?  $_SESSION['snijbreedte'] : '').'" required/></td>
+					</tr>';
+		$output .= '<tr>
+						<td>EAN</td>
+						<td><input id="input_ean" name="ean" type="text" value="'.($_SESSION['ean'] ?  $_SESSION['ean'] : '').'" /></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Kleur</td>
+						<td><input id="input_kleur" name="kleur" type="text" value="'.($_SESSION['kleur'] ?  $_SESSION['kleur'] : '').'" /></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Backing</td>
+						<td><input id="input_backing" name="backing" type="text" value="'.($_SESSION['backing'] ?  $_SESSION['backing'] : '').'" /></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Verzonden</td>
+						<td><input id="input_verzonden" name="verzonden" type="text" value="'.($_SESSION['verzonden'] ?  $_SESSION['verzonden'] : '0').'" /></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Referentie</td>
+						<td><input id="input_referentie" name="referentie" type="text" value="'.($_SESSION['referentie'] ?  $_SESSION['referentie'] : '').'" /></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Verwijderd</td>
+						<td><input id="input_verwijderd" name="verwijderd" type="text" value="'.($_SESSION['verwijderd'] ?  $_SESSION['verwijderd'] : '0').'" /></td>
+					</tr>';
+		$output .=  '</table>';
+
+		$output .= '<input type="button" name="terug" id="input_terug" value="Terug" /><input type="button" name="verstuur" id="input_verstuur" value="Opslaan" /></li>';
+		$output .= '<input id="input_task" name="task" type="hidden" value="edit" />';
+		$output .= '<input id="input_id" name="rollid" value="'.($_SESSION['rollid'] ?  $_SESSION['rollid'] : '').'" type="hidden" />';
+		$output .= '<br />';
+		$output .= '</div><div class="clr"></div>';
+		$output .= '</form></div>';
 
 		return $output;
 	}
@@ -261,18 +324,14 @@ class RollsManager {
 	function generateChildRolls ($rolnummer,$post){
 		
 		$sourcelength = (floatval($post->bronlengte));
-		
-		
-		
+				
 		// Als er een variabele sbijbreedte is opgegeven hier rekening mee houden.
 		if($post->custom){
 			$colums = count($post->snijbreedte);
 		} else {
 			$colums = round(floatval($post->bronbreedte) / floatval($post->snijbreedte[0]));
 		}
-		
 	
-		
 		// Berekenen hoeveel volle rollen er gemaakt kunnen worden.
 		$vollerollen = floor(floatval($sourcelength) / floatval($post->snijlengte));
 		$volledelen = $vollerollen * $colums;
@@ -285,20 +344,41 @@ class RollsManager {
 		$length = $post->snijlengte;
 		$lengthsum = 0;
 
-		
-		//DEBUGGING
-		//print_r($post);
-		//echo "<hr>";
-		echo "Snijbreedte: ".floatval($post->snijbreedte[0])."<br />";
-		echo "Bereken delen: ".floatval($sourcelength)."/".floatval($post->snijlengte)."<br />";
-		echo "Calculating: ".floatval($post->bronbreedte)."/".floatval($post->snijbreedte[0])."<br />";
-		echo "Colommen: ".$colums."<br />";
-		echo "Volle Delen: ".$volledelen."<br />";
-		echo "Snijdelen: ".$snijdelen."<br />";
-		
-		//echo '<h2>Rolnummer: ' . $rolnummer . "word berekend op " . ($colums - 1) . " keer in de lengte snijden om de ".floatval($post->snijlengte)." wat resulteert in  " . $rows . " rollen.</h2>".$nl ;
+		$output = '<table id="chilldrolllist">';
+		$output .= '<tr>
+						<td>Snijbreedte</td>
+						<td>'.floatval($post->snijbreedte[0]).'</td>
+						<td></td>
+						<td></td>
+					</tr>';
+		$output .= '<tr>
+						<td>Bereken delen</td>
+						<td colspan="3">'.floatval($sourcelength).'/'.floatval($post->snijlengte).'</td>
+					</tr>';
+		$output .= '<tr>
+						<td>Calculating</td>
+						<td colspan="3">'.floatval($post->bronbreedte).'/'.floatval($post->snijbreedte[0]).'</td>
+					</tr>';
+		$output .= '<tr>
+						<td>Colommen</td>
+						<td colspan="3">'.$colums.'</td>
+					</tr>';
+		$output .= '<tr>
+						<td>Volle Delen</td>
+						<td colspan="3">'.$volledelen.'</td>
+					</tr>';
+		$output .= '<tr>
+						<td>Snijdelen</td>
+						<td colspan="3">'.$snijdelen.'</td>
+					</tr>';
+
+		// echo "Snijbreedte: ".floatval($post->snijbreedte[0])."<br />";
+		// echo "Bereken delen: ".floatval($sourcelength)."/".floatval($post->snijlengte)."<br />";
+		// echo "Calculating: ".floatval($post->bronbreedte)."/".floatval($post->snijbreedte[0])."<br />";
+		// echo "Colommen: ".$colums."<br />";
+		// echo "Volle Delen: ".$volledelen."<br />";
+		// echo "Snijdelen: ".$snijdelen."<br />";
 			
-		$output .= '<ul id="chilldrolllist" />';
 		$colum = 0;
 		// Loop through aantal volle
 		for($i = 1; $i <= $volledelen; $i++){
@@ -308,7 +388,22 @@ class RollsManager {
 			}
 			
 			$childnumber = sprintf("%'.02d\n", $i);		
-			$output .= '<li><label for="rolnummer-'.$childnumber.'"><span>Rolnummer '.$rolnummer.$childnumber.' lengte:</span><input id="'.$rolnummer.$childnumber.'" name="rol['.$childnumber.']" type="text" value="'.$length.'" required/> Breedte: <input id="'.$rolnummer.$childnumber.'" name="width['.$childnumber.']" type="text" value="'.$post->snijbreedte[$colum].'" required/> totaal '.$lengthsum.'mtr.</label></li>'.$nl;
+			$output .= '<tr>
+							<td>
+								<label for="rolnummer-'.$childnumber.'">
+									<span>Rolnummer '.$rolnummer.$childnumber.'</span>
+								</label>
+							</td>
+							<td>
+								Lengte: <input id="'.$rolnummer.$childnumber.'" name="rol['.$childnumber.']" type="text" value="'.$length.'" required/> 
+							</td>
+							<td>
+								Breedte: <input id="'.$rolnummer.$childnumber.'" name="width['.$childnumber.']" type="text" value="'.$post->snijbreedte[$colum].'" required/> 
+							</td>
+							<td>
+								Totaal '.$lengthsum.'mtr.
+							</td>
+						</tr></br />';
 			$lengthsum = $lengthsum + $length;
 			if($colums > 2){
 				$colum++;
@@ -320,8 +415,23 @@ class RollsManager {
 				if($colum >= $colums){ // Loop throug custom width
 				 $colum = 0;	
 				}
-				$childnumber = sprintf("%'.02d\n", $i);	
-				$output .= '<li><label for="rolnummer-'.$childnumber.'"><span>Rolnummer '.$rolnummer.$childnumber.' lengte:</span><input id="'.$rolnummer.$childnumber.'" name="rol['.$childnumber.']" type="text" value="'.$restlengte.'" required/> Breedte: <input id="'.$rolnummer.$childnumber.'" name="width['.$childnumber.']" type="text" value="'.$post->snijbreedte[$colum].'" required/> totaal '.($lengthsum + $restlengte).' mtr.</label></li>'.$nl;
+				$childnumber = sprintf("%'.02d\n", $i);
+				$output .= '<tr>
+								<td>
+									<label for="rolnummer-'.$childnumber.'">
+										<span>Rolnummer '.$rolnummer.$childnumber.'</span>
+									</label>
+								</td>
+								<td>
+									Lengte <input id="'.$rolnummer.$childnumber.'" name="rol['.$childnumber.']" type="text" value="'.$restlengte.'" required/> 
+								</td>
+								<td>
+									Breedte <input id="'.$rolnummer.$childnumber.'" name="width['.$childnumber.']" type="text" value="'.$post->snijbreedte[$colum].'" required/>
+								</td>
+								<td>
+									Totaal '.($lengthsum + $restlengte).' mtr.
+								</td>
+							</tr>';
 				$lengthsum = $lengthsum + $restlengte;
 				$i++;
 				if($colums > 2){
@@ -329,8 +439,10 @@ class RollsManager {
 				}
 			}
 		}
-		$output .= '<li class="100-wide"><input type="button" name="vorige" id="childroll-vorige" value="Vorige" /><input type="submit" name="save" id="input_save" value="Opslaan" disabled="true"/></li>'.$nl;
-		$output .= '</ul><div class="clr"></div>'.$nl;
+		$output .= '</table>';
+
+		$output .= '<li class="100-wide"><input type="button" name="vorige" id="childroll-vorige" value="Vorige" /><input type="submit" name="save" id="input_save" value="Opslaan" disabled="true"/></li>';
+		$output .= '</ul><div class="clr"></div>';
 		
 		return $output;
 	}
@@ -342,31 +454,31 @@ class RollsManager {
 		if (isset($_GET["free_search"])) { 	$free_search  = $_GET["free_search"];	} elseif (isset($_POST['free_search'])){	$free_search = $_POST['free_search'];	} else { $free_search='';	};		
 		//$user = getUser($_SESSION['username']);
 		
-		$output .= "<div id='filter_form_div'>".$nl;
-		$output .= "<form id='filter_form' action='index.php?page=rolltable' method='post'>".$nl;
-		$output .= "<label for='free_search' class='left'>Zoek:</label><input type='text' name='free_search' id='input_free_search' value='".$free_search."' class='left'/><input type='submit' name='submit_search' id='submit_free_search' value='Zoek' class='left' /><input type='button' id='reset_free_form' value='Herstel' class='left'/>".$nl;
+		$output .= "<div id='filter_form_div'>";
+		$output .= "<form id='filter_form' action='index.php?page=rolltable' method='post'>";
+		$output .= "<label for='free_search' class='left'>Zoek:</label><input type='text' name='free_search' id='input_free_search' value='".$free_search."' class='left'/><input type='submit' name='submit_search' id='submit_free_search' value='Zoek' class='left' /><input type='button' id='reset_free_form' value='Herstel' class='left'/>";
 		
 		// Check if user has rights
 		//if($user->level == 1){
-			//$output .= "<label for='voorraadLijst' class='left'>Voorraadlijst: </label><a href='pages/generate_balans.php' target='_blank'><image src='images/pdf.png' class='left' name='voorraadLijst'/></a>".$nl;
+			//$output .= "<label for='voorraadLijst' class='left'>Voorraadlijst: </label><a href='pages/generate_balans.php' target='_blank'><image src='images/pdf.png' class='left' name='voorraadLijst'/></a>";
 		//}
 		
 		//Show Locatie dropdown.
 		//$output .= $this->BuildLocationDropdown();
-		$output .= '<Label for="viewtype"><span>Weergave:</label><select class="viewtype" name="viewtype">'.$nl;
-		$output .= '<option value="0" '.($_SESSION['viewtype'] == '0' ? 'selected="selected"' : '').'>Voorraad</option>'.$nl;
-		$output .= '<option value="1" '.($_SESSION['viewtype'] == '1' ? 'selected="selected"' : '').'>Verzonden</option>'.$nl;
-		$output .= '<option value="2" '.($_SESSION['viewtype'] == '2' ? 'selected="selected"' : '').'>Alles</option>'.$nl;
-		$output .= '</select>'.$nl;
+		$output .= '<Label for="viewtype"><span>Weergave:</label><select class="viewtype" name="viewtype">';
+		$output .= '<option value="0" '.($_SESSION['viewtype'] == '0' ? 'selected="selected"' : '').'>Voorraad</option>';
+		$output .= '<option value="1" '.($_SESSION['viewtype'] == '1' ? 'selected="selected"' : '').'>Verzonden</option>';
+		$output .= '<option value="2" '.($_SESSION['viewtype'] == '2' ? 'selected="selected"' : '').'>Alles</option>';
+		$output .= '</select>';
 			
 		// Set $options in hidden fields to keep the values
 		foreach($options as $key => $val) {
 			if(isset($val)){
-				$output .= "<input type='hidden' id='filter_".$key."' name='".$key."' value='".$val."' />".$nl;
+				$output .= "<input type='hidden' id='filter_".$key."' name='".$key."' value='".$val."' />";
 			}
 		}
-		$output .= "</form>".$nl;
-		$output .= "</div>".$nl;
+		$output .= "</form>";
+		$output .= "</div>";
 		echo $output;
 	}
 	
@@ -467,10 +579,7 @@ class RollsManager {
 		// Tel het aantal waardes en bepaal hoeveel paginas er moeten komen
 		$result = $this->db->selectQuery($query);
 		$total_records = $result->num_rows;
-		$total_pages = ceil($total_records / $range[1]);
-		$nl = "\n";
-		
-		
+		$total_pages = ceil($total_records / $range[1]);	
 		
 		// generate output
 		// Load the filter form
@@ -478,53 +587,52 @@ class RollsManager {
 		
 		// Generate table header
 		$output .= "<form name='shipform' id='roll-shipform' action='pages/process-rollen.php' method='post'>";
-		$output .= "<table class=\"data-table\">".$nl;
-		$output .= "	<tr>".$nl;
-		$output .= "		<th><input type='checkbox' id='roll-select-all' name='roll-select-all'></th>".$nl;
-		$output .= "		<th>Label</th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=rolnummer&order=".$order."&pg=".$pg."'>Rolnummer</a></th>".$nl;
-		$output .= "		<th id='ordernummer_col'><a href='?".$link_array['page']."&sort=deelnummer&order=".$order."&pg=".$pg."'>Deelnummer</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=snijbreedte&order=".$order."&pg=".$pg."'>Snijbreedte</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=snijlengte&order=".$order."&pg=".$pg."'>Snijlengte</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=omschrijving&order=".$order."&pg=".$pg."'>Omschrijving</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=kleur&order=".$order."&pg=".$pg."'>Kleur</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=backing&order=".$order."&pg=".$pg."'>Backing</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=referentie&order=".$order."&pg=".$pg."'>Referentie</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=ingevoerd&order=".$order."&pg=".$pg."'>Ingevoerd</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=gewijzigd&order=".$order."&pg=".$pg."'>Gewijzigd</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=verzonden&order=".$order."&pg=".$pg."'>verzonden</a></th>".$nl;
-		$output .= "	</tr>".$nl;
-		
+		$output .= "<table class=\"data-table\">";
+		$output .= "	<tr>";
+		$output .= "		<th><input type='checkbox' id='roll-select-all' name='roll-select-all'></th>";
+		$output .= "		<th>Label</th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=rolnummer&order=".$order."&pg=".$pg."'>Rolnummer</a></th>";
+		$output .= "		<th id='ordernummer_col'><a href='?".$link_array['page']."&sort=deelnummer&order=".$order."&pg=".$pg."'>Deelnummer</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=snijbreedte&order=".$order."&pg=".$pg."'>Snijbreedte</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=snijlengte&order=".$order."&pg=".$pg."'>Snijlengte</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=omschrijving&order=".$order."&pg=".$pg."'>Omschrijving</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=kleur&order=".$order."&pg=".$pg."'>Kleur</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=backing&order=".$order."&pg=".$pg."'>Backing</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=referentie&order=".$order."&pg=".$pg."'>Referentie</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=ingevoerd&order=".$order."&pg=".$pg."'>Ingevoerd</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=gewijzigd&order=".$order."&pg=".$pg."'>Gewijzigd</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=verzonden&order=".$order."&pg=".$pg."'>verzonden</a></th>";
+		$output .= "	</tr>";
 		
 		$records = 0;
 		foreach ($result as $row) {
 			$row->omschrijving = (isset($row->omschrijving) && trim($row->omschrijving) != '' ? $row->omschrijving : '-');
 									
 			// Generate table rows
-			$output .= "	<tr id='row_".$row->rollid."' class='data-table-row'>".$nl;
-			$output .= "		<td><input class='roll-checkbox' type='checkbox' name='rollid[]' value='".$row->rollid."' /></td>".$nl;
+			$output .= "	<tr id='row_".$row->rollid."' class='data-table-row'>";
+			$output .= "		<td><input class='roll-checkbox' type='checkbox' name='rollid[]' value='".$row->rollid."' /></td>";
 		    $output .= "		<td><a href='pages/generate/generate_rol.php?rolnummer=".$row->rolnummer."' target='_blanc'><img src='images/printer.png' height='17'></a>";
-			$output .= "		<td>".$row->rolnummer."</td>".$nl;
-			$output .= "		<td>".$row->deelnummer."</td>".$nl;
-			$output .= "		<td>".$row->snijbreedte."</td>".$nl;
-			$output .= "		<td>".$row->snijlengte."</td>".$nl;		
-			$output .= "		<td><a href='index.php?page=editroll&id=".$row->rollid."' >".$row->omschrijving."</a></td>".$nl;
-			$output .= "		<td>".$row->kleur."</td>".$nl;	
-			$output .= "		<td>".$row->backing."</td>".$nl;
-			$output .= "		<td>".$row->referentie."</td>".$nl;
-			$output .= "		<td>".date('Y-m-d',strtotime($row->ingevoerd))."</td>".$nl;
-			$output .= "		<td>".date('Y-m-d',strtotime($row->gewijzigd))."</td>".$nl;
-			$output .= "		<td>".$row->verzonden."</td>".$nl;
+			$output .= "		<td>".$row->rolnummer."</td>";
+			$output .= "		<td>".$row->deelnummer."</td>";
+			$output .= "		<td>".$row->snijbreedte."</td>";
+			$output .= "		<td>".$row->snijlengte."</td>";		
+			$output .= "		<td><a href='index.php?page=editroll&id=".$row->rollid."' >".$row->omschrijving."</a></td>";
+			$output .= "		<td>".$row->kleur."</td>";	
+			$output .= "		<td>".$row->backing."</td>";
+			$output .= "		<td>".$row->referentie."</td>";
+			$output .= "		<td>".date('Y-m-d',strtotime($row->ingevoerd))."</td>";
+			$output .= "		<td>".date('Y-m-d',strtotime($row->gewijzigd))."</td>";
+			$output .= "		<td>".$row->verzonden."</td>";
 				
 				
-			$output .= "	</tr>".$nl;
+			$output .= "	</tr>";
 			$records++;
 		}
 		
 		if($records == 0){
-			$output .=  '<tr class=\'data-table-row\'>'.$nl;	
-			$output .=  '<td colspan="16"><strong>Er zijn geen resultaten om weer te geven</strong></td>'.$nl;
-			$output .=  '</tr>'.$nl;
+			$output .=  '<tr class=\'data-table-row\'>';	
+			$output .=  '<td colspan="16"><strong>Er zijn geen resultaten om weer te geven</strong></td>';
+			$output .=  '</tr>';
 		}
 		
 		// Close Table
@@ -541,7 +649,7 @@ class RollsManager {
 		// Paginatie Staat nu uit maar kan aangezet worden		   *
 		************************************************************
 		
-		$output .= "<div id='pagination'>".$nl;
+		$output .= "<div id='pagination'>";
 		for ($i=1; $i<=$total_pages; $i++) { 
 			// Generate link for pagination.	
 			$output .= "<a href='?";

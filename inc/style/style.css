@@ -346,8 +346,12 @@ margin: 10px;
 
 
 .roll-form-div { 
-	font-size:  1.4em;
-	text-align: center;
+	margin: auto;
+	width: 25%;
+}
+
+.roll-form-div tr td:first-child {
+	width:50%;
 }
 
 #rollformlist,#childrollformlist {
@@ -357,6 +361,14 @@ margin: 10px;
 #rollformlist label span{
 	display:  inline-block;
 	width: 300px;
+}
+
+#chilldrolllist {
+	width: 100%;
+}
+
+#chilldrolllist tr td input {
+	max-width: 80px;
 }
 
 #childrollformlist label span {
@@ -381,13 +393,21 @@ margin: 10px;
 #childrollform{
 	display: none;
 }
-
 	
 #childrollform li label span {
 	font-size:  1.0em;
 	display: inline-block;
 	width:300px;
 	text-align:  left;
+}
+
+#rollform-edit {
+	text-align: center;
+}
+
+#rollform-edit #rollformlist tr td:first-child {
+	text-align: left;
+	width:50%;
 }
 
 /* Overzichts tabellen */

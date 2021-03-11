@@ -1,7 +1,8 @@
+<h1>Rol wijzigen</h1>
+
 <?php
+
 require_once('inc/class/class.rollen.php');
-
-
 
 $roll = new RollsManager;
 

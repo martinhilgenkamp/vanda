@@ -24,7 +24,7 @@ switch($task){
 		$barcode = $_POST['barcode'];
 		
 		if($klant == ''){
-			echo "Geen klant ingegeven. <A HREF='scanner.php'>Klik hier</a> om terug te gaan";	
+			echo "Geen klant ingegeven. <A HREF='pages/scanner/scanner.php'>Klik hier</a> om terug te gaan";	
 			exit;
 		}	
 		
@@ -75,7 +75,7 @@ switch($task){
 			
 			echo showSipments($zendingen);
 		} else {
-			echo "Geen juiste barcode ingegeven. <A HREF='scanner.php'>Klik hier</a> om terug te gaan";	
+			echo "Geen juiste barcode ingegeven. <A HREF='pages/scanner/scanner.php'>Klik hier</a> om terug te gaan";	
 		}
 
 		break;

@@ -63,12 +63,7 @@ $(document).ready(function(){
 			$('#input_kleur').css('border', '1px solid #999');
 		}
 		
-			  
-		
-		
-		
 		// Als alles goed is gegaan de rollen verwerken.
-		
 		$.post( "pages/process-rollen.php", $('#rollform').serializeArray())
   			.done(function( data ) {
 			$("#childrollform").html(data);
@@ -76,7 +71,6 @@ $(document).ready(function(){
 			$("#input_task").val('add');
 			$("#input_save").prop('disabled', false);
 			$("#rollform-part1").slideUp(500);
-		    //console.log( data );
 			
 		}).fail(function() {
     		alert( "error");
@@ -88,9 +82,7 @@ $(document).ready(function(){
 		
 	});
 	
-	
 	$('#editrollform #input_verstuur').on('click', function(){
-	    console.log('klik');
 		$.post( "pages/process-rollen.php", $('#editrollform').serializeArray())
   			.done(function( data ) {
 			
@@ -109,7 +101,6 @@ $(document).ready(function(){
 		window.location.href = 'index.php?page=rolltable';
 	});
 	
-	
 	$('body').on('click','#childroll-vorige',function(){
 		$("#childrollform").slideUp(500);
 		$("#rollform-part1").slideDown(500);
@@ -124,16 +115,19 @@ $(document).ready(function(){
 			if(data !== 'error'){
 				console.log(data);
 				//getRolWindow($('#input_rolnummer').val());
-				$("#frame").attr("src", 'inc/generate_rol.php?rolnummer='+$('#input_rolnummer').val());
+				$("#frame").attr("src", 'pages/generate/generate_rol.php?rolnummer='+$('#input_rolnummer').val());
 				$("#childrollform").slideUp(500);
 				$('#errorbox').html('Opgeslagen'+data);
+
+				window.location.href = 'index.php?page=rollen';
 			}
 			
 		}).fail(function(data) {
     		alert( "error"+data);
+			window.location.href = 'index.php?page=rollen';
   		});
+
 		console.log('opgeslagen');
-		
 	});
 	
 	// Check if custom value is asked an clear width.
@@ -162,7 +156,6 @@ $(document).ready(function(){
 		
 	});
 	
-	
 	function calculateRB(){
 		var rolbreedte = parseFloat($('#input_bronbreedte').val(),2);
 		var optelbreedte = 0;
@@ -190,8 +183,6 @@ $(document).ready(function(){
 		//var url = "https://www.google.com";
 			window.open(url);	
 	}
-	
-
 	
 	// Einde van functies voor Rol //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 });
