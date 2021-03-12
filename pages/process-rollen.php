@@ -26,8 +26,6 @@ switch($post->task){
 		$roll->ProcessChildRolls($post);
 	break;
 	
-		
-		
 	///////////////////////////////moet nog worden geprogrammeerd ////////////////////////////////////////	
 	case 'edit':
 		
@@ -37,7 +35,6 @@ switch($post->task){
 			$hidden = array('task', 'rollid'); //prevent program parameters to land in table
 			$post->gewijzigd = date('Y-m-d H:i:s');
 			
-
 			$data = [];
 			// Loop through post values			
 			foreach($post as $col => $val) {

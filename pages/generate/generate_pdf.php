@@ -272,5 +272,5 @@ foreach($tables as $key => $table){
 	$pdf->ColoredTable($key, $table);	
 }
 
-$pdf->Output('label-'.$barcode.'.pdf', 'I');
+$pdf->Output('pakbon-'.$ship_id.'.pdf', 'I');
 ?>

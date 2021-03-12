@@ -170,18 +170,7 @@ class RollsManager {
 	}
 	
 	
-	function getRollForm (){			
-		// Check if edit and id, load the correct values for the desired id.	
-		//if($_SESSION['task'] == 'edit' && $id ){
-		//	$this->LoadArticle($id);		// Load article values.
-		//} elseif ($_SESSION['task'] == 'add') {
-		//	$this->RestoreSession();		// Clear session
-		//	$_SESSION['task'] = 'add';		// Set add.
-		//} else {
-		//	echo 'Fout: er is geen taak of id aangeleverd';	// Throw error
-		//	exit();
-		//}		
-	
+	function getRollForm (){				
 		// Generate output
 		$output = '<div class="roll-form-div">';
 			$output .= '<form class="rollform" action="" id="rollform" enctype="multipart/form-data" method="post">';
@@ -215,8 +204,9 @@ class RollsManager {
 										<td>Snijbreedte</td>
 										<td><input id="input_snijbreedte" class="snijbreedte" name="snijbreedte[]" type="text" value="'.($_SESSION['snijbreedte[0]'] ?  $_SESSION['snijbreedte[0]'] : '2.06').'" required/></td>
 									</tr>';
+						//Batchnummer was EAN in vorige versies
 						$output .= '<tr>
-										<td>EAN</td>
+										<td>Batchnummer</td>
 										<td><input id="input_ean" name="ean" type="text" value="'.$this->getEAN().'" /></td>
 									</tr>';
 						$output .= '<tr>
@@ -240,7 +230,6 @@ class RollsManager {
 				$output .= '<input id="input_id" name="id" value="'.($_SESSION['id'] ?  $_SESSION['id'] : '').'" type="hidden" />';
 				$output .= '<input id="input_ingevoerd" name="ingevoerd" value="'.($_SESSION['ingevoerd'] ?  $_SESSION['ingevoerd'] : '').'" type="hidden" />';
 				
-				$output .= '<br />';
 				$output .= '</div><div class="clr"></div>';
 				$output .= '<div id="childrollform"></div>';
 				$output .= '</div>';
@@ -284,8 +273,9 @@ class RollsManager {
 						<td>Snijbreedte</td>
 						<td><input id="input_snijbreedte" name="snijbreedte" type="text" value="'.($_SESSION['snijbreedte'] ?  $_SESSION['snijbreedte'] : '').'" required/></td>
 					</tr>';
+		//Batchnummer was EAN in vorige versies
 		$output .= '<tr>
-						<td>EAN</td>
+						<td>Batchnummer</td>
 						<td><input id="input_ean" name="ean" type="text" value="'.($_SESSION['ean'] ?  $_SESSION['ean'] : '').'" /></td>
 					</tr>';
 		$output .= '<tr>
@@ -309,7 +299,6 @@ class RollsManager {
 						<td><input id="input_verwijderd" name="verwijderd" type="text" value="'.($_SESSION['verwijderd'] ?  $_SESSION['verwijderd'] : '0').'" /></td>
 					</tr>';
 		$output .=  '</table>';
-
 		$output .= '<input type="button" name="terug" id="input_terug" value="Terug" /><input type="button" name="verstuur" id="input_verstuur" value="Opslaan" /></li>';
 		$output .= '<input id="input_task" name="task" type="hidden" value="edit" />';
 		$output .= '<input id="input_id" name="rollid" value="'.($_SESSION['rollid'] ?  $_SESSION['rollid'] : '').'" type="hidden" />';
@@ -403,7 +392,7 @@ class RollsManager {
 							<td>
 								Totaal '.$lengthsum.'mtr.
 							</td>
-						</tr></br />';
+						</tr>';
 			$lengthsum = $lengthsum + $length;
 			if($colums > 2){
 				$colum++;
@@ -447,21 +436,12 @@ class RollsManager {
 		return $output;
 	}
 	
-	
-	
-	
 	function loadFilterForm($options){
 		if (isset($_GET["free_search"])) { 	$free_search  = $_GET["free_search"];	} elseif (isset($_POST['free_search'])){	$free_search = $_POST['free_search'];	} else { $free_search='';	};		
-		//$user = getUser($_SESSION['username']);
 		
 		$output .= "<div id='filter_form_div'>";
 		$output .= "<form id='filter_form' action='index.php?page=rolltable' method='post'>";
 		$output .= "<label for='free_search' class='left'>Zoek:</label><input type='text' name='free_search' id='input_free_search' value='".$free_search."' class='left'/><input type='submit' name='submit_search' id='submit_free_search' value='Zoek' class='left' /><input type='button' id='reset_free_form' value='Herstel' class='left'/>";
-		
-		// Check if user has rights
-		//if($user->level == 1){
-			//$output .= "<label for='voorraadLijst' class='left'>Voorraadlijst: </label><a href='pages/generate_balans.php' target='_blank'><image src='images/pdf.png' class='left' name='voorraadLijst'/></a>";
-		//}
 		
 		//Show Locatie dropdown.
 		//$output .= $this->BuildLocationDropdown();
@@ -674,7 +654,6 @@ class RollsManager {
 		$_SESSION['username'] = $name;
 		$_SESSION['referentie'] = $referentie;
 	}
-	
 }
 
 ?>

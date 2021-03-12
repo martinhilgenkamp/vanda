@@ -77,7 +77,7 @@ class DB {
 	}
 
 	function sanitizeString($value) {
-		return mysqli_real_escape_string($this->link, $value);
+		return mysqli_real_escape_string($this->link, strval($value));
 	}
 
 	function deleteQuery($table, $where) {

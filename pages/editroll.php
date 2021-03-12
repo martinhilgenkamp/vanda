@@ -25,6 +25,4 @@ if($id){
 	'<div><h2>Fout er is geen rolnummer opgegeven</h2></div>';
 }
 
-// DEBUG
-//print_r($_SESSION);
 ?>

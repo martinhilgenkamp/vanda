@@ -14,7 +14,7 @@ switch($task){
 	case "ship":	
 		// Variabele uit de post halen
 		$ship_id = '';	
-		if($_GET['leverid']){
+		if(isset($_GET['leverid'])){
 			$ship_id = $_GET['leverid'];
 		} else {
 			$ship_id = $_POST['leverid'];
@@ -72,6 +72,8 @@ switch($task){
 
 			// Alles is verwerkt, nu weer een formulier laten zien om verder te kunnen
 			showform($klant, $ship_id, $shippingCount->aantal);
+
+			$zendingen = $sm->getAllShippedShipments();
 			
 			echo showSipments($zendingen);
 		} else {
@@ -106,7 +108,6 @@ switch($task){
 }
 
 function showSipments($zendingen) {
-
 	$output = "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
 	$output .= "<tr>";
 	$output .= "<th>ID</th><th>Klant</th><th>Datum</th>";

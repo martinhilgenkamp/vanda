@@ -11,10 +11,6 @@ ini_set("display_errors",0);
 
 $rolnummer= $_GET['rolnummer'];
 $rollen = $rollManager->loadActiveRolls($rolnummer);
-//$query = "SELECT * FROM `vanda_rolls` WHERE rolnummer = '".$rolnummer."' AND verwijderd = '0'";
-
-//$result = $db->query($query);
-//$rollen = $result->fetch_all();
 $aantal = count($rollen);
 
 class MYPDF extends TCPDF {
@@ -26,7 +22,6 @@ class MYPDF extends TCPDF {
         // Page number
        // $this->writeHTMLCell(200, 0, '10', '80', '<span style="font-size: 18px; font-weight: bold; line-height:20px;">'.$post->opmerking.'</span>', 0, 1, 0, false, '', true);
     }
-	
 }
 
 // create new PDF document
@@ -121,14 +116,13 @@ for($i = 0; $i < $aantal;$i++){
 	
 	$pdf->Line(0, 61, 150, 61, $linestyle);
 	
-	
-	$pdf->writeHTMLCell(20, 0, '0', '62', '<span style="font-size: 18px; font-weight: bold;">EAN:</span>', 0, 1, 0, false, 'L', true);
-	$pdf->write1DBarcode($rollen[$i]->ean, 'C128', '20', '62', '50' , 15, 0.4, $substyle, 'L');
+	//Batchnummer was EAN in vorige versies
+	$pdf->writeHTMLCell(35, 0, '0', '62', '<span style="font-size: 18px; font-weight: bold;">Batchnr:</span>', 0, 1, 0, false, 'L', true);
+	$pdf->write1DBarcode($rollen[$i]->ean, 'C128', '35', '62', '50' , 15, 0.4, $substyle, 'L');
 	
 	
 	$pdf->writeHTMLCell(50, 0, '100', '64', '<span style="font-size: 15px; font-weight: bold;">Kleur: '.$rollen[$i]->kleur.'</span>', 0, 1, 0, false, 'R', true);
 	$pdf->writeHTMLCell(50, 0, '100', '74', '<span style="font-size: 15px; font-weight: bold;">Backing: '.$rollen[$i]->backing.'</span>', 0, 1, 0, false, 'R', true);
-	
 	
 	$pdf->SetMargins(0, 0, 0,0);
 }
