@@ -116,9 +116,9 @@ for($i = 0; $i < $aantal;$i++){
 	
 	$pdf->Line(0, 61, 150, 61, $linestyle);
 	
-	//Batchnummer was EAN in vorige versies
-	$pdf->writeHTMLCell(35, 0, '0', '62', '<span style="font-size: 18px; font-weight: bold;">Batchnr:</span>', 0, 1, 0, false, 'L', true);
-	$pdf->write1DBarcode($rollen[$i]->ean, 'C128', '35', '62', '50' , 15, 0.4, $substyle, 'L');
+	//Locatie was EAN in vorige versies
+	$pdf->writeHTMLCell(35, 0, '0', '62', '<span style="font-size: 18px; font-weight: bold;">Loc:</span>', 0, 1, 0, false, 'L', true);
+	$pdf->write1DBarcode($rollen[$i]->ean, 'C128', '20', '62', '50' , 15, 0.4, $substyle, 'L');
 	
 	
 	$pdf->writeHTMLCell(50, 0, '100', '64', '<span style="font-size: 15px; font-weight: bold;">Kleur: '.$rollen[$i]->kleur.'</span>', 0, 1, 0, false, 'R', true);

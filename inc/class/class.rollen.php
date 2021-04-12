@@ -204,9 +204,9 @@ class RollsManager {
 										<td>Snijbreedte</td>
 										<td><input id="input_snijbreedte" class="snijbreedte" name="snijbreedte[]" type="text" value="'.($_SESSION['snijbreedte[0]'] ?  $_SESSION['snijbreedte[0]'] : '2.06').'" required/></td>
 									</tr>';
-						//Batchnummer was EAN in vorige versies
+						//Locatie was EAN in vorige versies
 						$output .= '<tr>
-										<td>Batchnummer</td>
+										<td>Locatie</td>
 										<td><input id="input_ean" name="ean" type="text" value="'.$this->getEAN().'" /></td>
 									</tr>';
 						$output .= '<tr>
@@ -273,9 +273,9 @@ class RollsManager {
 						<td>Snijbreedte</td>
 						<td><input id="input_snijbreedte" name="snijbreedte" type="text" value="'.($_SESSION['snijbreedte'] ?  $_SESSION['snijbreedte'] : '').'" required/></td>
 					</tr>';
-		//Batchnummer was EAN in vorige versies
+		//Locatie was EAN in vorige versies
 		$output .= '<tr>
-						<td>Batchnummer</td>
+						<td>Locatie</td>
 						<td><input id="input_ean" name="ean" type="text" value="'.($_SESSION['ean'] ?  $_SESSION['ean'] : '').'" /></td>
 					</tr>';
 		$output .= '<tr>
