@@ -6,30 +6,42 @@
 </head>
 <body>
 <!-- Form for logging in the users -->
-<h1>Login</h1>
-<div class="register-form">
+
+<div class="register-form centered">
 <?php
 	if(isset($msg) & !empty($msg)){
 		echo $msg;
 	}
  ?>
 
-<form action="index.php" method="POST">
-    <p><label>Gebruikersnaam : </label>
-	<input id="username" type="text" name="username" placeholder="username"/></p>
- 
-     <p><label>Wachtwoord&nbsp;&nbsp; : </label>
-	 <input id="password" type="password" name="password" placeholder="password" /></p>
-    
-    <input class="btn register" type="submit" name="submit" value="Login" />
-    </form>
+	<form action="index.php" method="POST">
+		<div class="login"> 
+			<div class="login-header">
+				<h1>Login</h1>
+			</div>
+			<div class="login-body">
+				<div class="labels">
+					<label>Gebruikersnaam:</label>
+					<label>Wachtwoord:</label>
+				</div>
+				<div class="inputfields">
+					<input id="username" type="text" name="username" placeholder="gebruikersnaam"/>
+					<input id="password" type="password" name="password" placeholder="wachtwoord" />
+				</div>
+			</div>
+			<div class="login-footer">
+				<input class="btn register" type="submit" name="submit" value="Login" />
+			</div>
+			<div class="error_message">
+			<?php 
+				if(is_string($user_loggedin)){
+					echo $user_loggedin;	
+				}
+			?>
+			</div>
+		</div>
+	</form>
 </div>
-<div class="error_message">
-<?php 
-if(is_string($user_loggedin)){
-	echo $user_loggedin;	
-}
-?>
-</div>
+
 </body>
 </html>
