@@ -118,7 +118,6 @@ class ProductionManager {
 		
 		$res = $this->db->selectQuery($qry);
 
-
 		return $res ? $res[0] : null;
 	}
 

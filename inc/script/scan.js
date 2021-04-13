@@ -30,6 +30,7 @@ function SubmitShipment() {
 			"barcode": $('#barcode').val(),
 			"leverid": $('#leverid').val()
 		},
+		dataType: 'json',
 		success: function (data) {				
 			//Notify user 		
 			$('#notice').html(data.message);
