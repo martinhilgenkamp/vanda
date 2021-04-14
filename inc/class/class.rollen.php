@@ -471,7 +471,7 @@ class RollsManager {
 		$selected_roll = isset($_SESSION['selected_roll']) ? $_SESSION['selected_roll'] : null;
 		unset($_SESSION['selected_roll']);
 		
-		$cols = array('rolnummer','deelnummer','snijbreedte','snijlengte','bronbreedte','bronlengte','omschrijving','ingevoerd','gewijzigd','verzonden');
+		$cols = array('rolnummer','deelnummer','snijbreedte','snijlengte','bronbreedte','bronlengte','omschrijving','locatie' ,'ingevoerd','gewijzigd','verzonden');
 		
 		// Variabelen definieren
 		if(isset($_GET['page'])){	$page = $_GET['page']; } else if (isset($_POST['page'])){ $page = $_POST['page']; }
@@ -491,7 +491,7 @@ class RollsManager {
 		if(isset($free_search)) { $_SESSION['free_search'] = $free_search; } else { $free_search = $_SESSION['free_search']; }
 		
 		// Set aantal resultaten per pagina
-		$range[1] = 5000;	
+		$range[1] = 1000;	
 		$range[0] = ($pg-1) * $range[1];
 		
 		if(!in_array($sort,$cols)){
@@ -525,7 +525,7 @@ class RollsManager {
 		//($filter_locatie ? $where_array[] = '`locatie` LIKE "%' . $filter_locatie . '%" ': '');
 		
 		if($free_search && $free_search != ''){
-			($free_search ? $where_array[] = '(`rolnummer` LIKE "%' . $free_search . '%" OR `ingevoerd` LIKE "%' . $free_search . '%" OR `omschrijving` LIKE "%' . $free_search . '%" OR `kleur` LIKE "%' . $free_search . '%" OR `backing` LIKE "%' . $free_search . '%") ': '');		
+			($free_search ? $where_array[] = '(`rolnummer` LIKE "%' . $free_search . '%" OR `ingevoerd` LIKE "%' . $free_search . '%" OR `omschrijving` LIKE "%' . '%" OR `ean` LIKE "%' . $free_search . '%" OR `kleur` LIKE "%' . $free_search . '%" OR `backing` LIKE "%' . $free_search . '%") ': '');		
 		}
 		
 		
@@ -549,7 +549,7 @@ class RollsManager {
 		}
 			
 		//Query om te tellen hoeveel waarden er in de tabel zitten.
-		$query = "SELECT * FROM vanda_rolls ".$where.$orderby;
+		$query = "SELECT * FROM vanda_rolls ".$where.$orderby.$limit;
 		
 		//echo $query;
 						
@@ -576,6 +576,7 @@ class RollsManager {
 		$output .= "		<th><a href='?".$link_array['page']."&sort=snijbreedte&order=".$order."&pg=".$pg."'>Snijbreedte</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=snijlengte&order=".$order."&pg=".$pg."'>Snijlengte</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=omschrijving&order=".$order."&pg=".$pg."'>Omschrijving</a></th>";
+		$output .= "		<th><a href='?".$link_array['page']."&sort=ean&order=".$order."&pg=".$pg."'>Locatie</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=kleur&order=".$order."&pg=".$pg."'>Kleur</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=backing&order=".$order."&pg=".$pg."'>Backing</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=referentie&order=".$order."&pg=".$pg."'>Referentie</a></th>";
@@ -592,11 +593,12 @@ class RollsManager {
 			$output .= "	<tr id='row_".$row->rollid."' class='data-table-row'>";
 			$output .= "		<td><input class='roll-checkbox' type='checkbox' name='rollid[]' value='".$row->rollid."' /></td>";
 		    $output .= "		<td><a href='pages/generate/generate_rol.php?rolnummer=".$row->rolnummer."' target='_blanc'><img src='images/printer.png' height='17'></a>";
-			$output .= "		<td>".$row->rolnummer."</td>";
+			$output .= "		<td><a href='index.php?page=editroll&id=".$row->rollid."' >".$row->rolnummer."</a></td>";
 			$output .= "		<td>".$row->deelnummer."</td>";
 			$output .= "		<td>".$row->snijbreedte."</td>";
 			$output .= "		<td>".$row->snijlengte."</td>";		
 			$output .= "		<td><a href='index.php?page=editroll&id=".$row->rollid."' >".$row->omschrijving."</a></td>";
+			$output .= "		<td>".$row->ean."</td>";	
 			$output .= "		<td>".$row->kleur."</td>";	
 			$output .= "		<td>".$row->backing."</td>";
 			$output .= "		<td>".$row->referentie."</td>";
@@ -611,7 +613,7 @@ class RollsManager {
 		
 		if($records == 0){
 			$output .=  '<tr class=\'data-table-row\'>';	
-			$output .=  '<td colspan="16"><strong>Er zijn geen resultaten om weer te geven</strong></td>';
+			$output .=  '<td colspan="17"><strong>Er zijn geen resultaten om weer te geven</strong></td>';
 			$output .=  '</tr>';
 		}
 		
@@ -628,6 +630,7 @@ class RollsManager {
 		/***********************************************************
 		// Paginatie Staat nu uit maar kan aangezet worden		   *
 		************************************************************
+		
 		
 		$output .= "<div id='pagination'>";
 		for ($i=1; $i<=$total_pages; $i++) { 

@@ -58,7 +58,7 @@ class TablePDF extends TCPDF{
 		foreach($rows as $key => $group){
 			// Werk de groep uit.
 			foreach($group as $row){
-				$return[] = array($row['rolnummer'].sprintf('%02d', $row['deelnummer']),$row['omschrijving'],$row['kleur'],$row['backing'],round($row['snijlengte'],2),round($row['snijbreedte'],2),round(($row['snijlengte']*$row['snijbreedte']),2),$row['referentie']);	
+				$return[] = array($row['rolnummer'].sprintf('%02d', $row['deelnummer']),$row['omschrijving'],$row['kleur'],$row['backing'],round($row['snijlengte'],2),round($row['snijbreedte'],2),round(($row['snijlengte']*$row['snijbreedte']),2),$row['referentie'],$row['ean']);	
 			}
 			$tables[$key] = $return;
 			unset($return);
@@ -79,7 +79,7 @@ class TablePDF extends TCPDF{
 	 // Colored table
     public function ColoredTable($key, $data) {
         // Header
-		$w = array(28, 30, 30, 18, 18, 18, 18, 20);
+		$w = array(25, 25, 25, 25, 16, 16, 16, 16, 16);
 		$rows = 25; 
 			
 		// Data
@@ -102,11 +102,12 @@ class TablePDF extends TCPDF{
 				$this->Cell($w[0], 7, 'Rolnummer', 1, 0, 'L', 1);
 				$this->Cell($w[1], 7, 'Kwaliteit', 1, 0, 'L', 1);
 				$this->Cell($w[2], 7, 'Referentie', 1, 0, 'L', 1);
-				$this->Cell($w[3], 7, 'Kleur', 1, 0, 'L', 1);
-				$this->Cell($w[4], 7, 'Backing', 1, 0, 'L', 1);
-				$this->Cell($w[5], 7, 'Lengte', 1, 0, 'C', 1);
-				$this->Cell($w[6], 7, 'Breedte', 1, 0, 'C', 1);
-				$this->Cell($w[7], 7, 'M2', 1, 0, 'C', 1);
+				$this->Cell($w[3], 7, 'Locatie', 1, 0, 'L', 1);
+				$this->Cell($w[4], 7, 'Kleur', 1, 0, 'L', 1);
+				$this->Cell($w[5], 7, 'Backing', 1, 0, 'L', 1);
+				$this->Cell($w[6], 7, 'Lengte', 1, 0, 'L', 1);
+				$this->Cell($w[7], 7, 'Breedte', 1, 0, 'L', 1);
+				$this->Cell($w[8], 7, 'M2', 1, 0, 'L', 1);
 				$this->Ln();
 				
 				// Color and font restoration
@@ -139,10 +140,11 @@ class TablePDF extends TCPDF{
 			$this->Cell($w[0], 4, $row[0], 'LR', 0, 'L', $fill);
 			$this->Cell($w[1], 4, $row[1], 'LR', 0, 'L', $fill);
 			$this->Cell($w[2], 4, $row[7], 'LR', 0, 'L', $fill);
-			$this->Cell($w[3], 4, $row[2], 'LR', 0, 'L', $fill);
-			$this->Cell($w[4], 4, $row[3], 'LR', 0, 'L', $fill);
-			$this->Cell($w[5], 4, number_format($row[4],2).' M', 'LR', 0, 'C', $fill);
-			$this->Cell($w[6], 4, number_format($row[5],2).' M', 'LR', 0, 'C', $fill);
+			$this->Cell($w[3], 4, $row[8], 'LR', 0, 'L', $fill);
+			$this->Cell($w[4], 4, $row[2], 'LR', 0, 'L', $fill);
+			$this->Cell($w[5], 4, $row[3], 'LR', 0, 'L', $fill);
+			$this->Cell($w[6], 4, number_format($row[4],2).' M', 'LR', 0, 'C', $fill);
+			$this->Cell($w[7], 4, number_format($row[5],2).' M', 'LR', 0, 'C', $fill);
 			$this->Cell($w[7], 4, number_format($row[6],2).' M2', 'LR', 0, 'C', $fill);
 			$this->Ln();
 			

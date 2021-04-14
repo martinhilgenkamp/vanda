@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set("Europe/Amsterdam");
 require_once("class.user.php");
 require_once("class.db.php");
 
@@ -13,7 +14,7 @@ class RollsShipment {
 		
 		$insert = [
 			"klant" => $klant,
-			"datum" => CURRENT_TIMESTAMP
+			"datum" => date('Y-m-d H:i:s')
 		];
 		$newId = $this->db->insertQuery("vanda_roll_ship", $insert);
 

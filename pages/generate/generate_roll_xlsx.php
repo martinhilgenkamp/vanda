@@ -55,7 +55,7 @@ class PHPExcelData extends PHPExcel{
     public function LoadData($ship_id) {
 	    global $db;
 		
-		$query = "SELECT rolnummer, deelnummer, omschrijving AS kwaliteit, referentie, snijlengte, snijbreedte,  kleur, backing FROM `vanda_rolls` WHERE `verzonden` = ".$ship_id." AND `verwijderd` = 0";	
+		$query = "SELECT rolnummer, deelnummer, omschrijving AS kwaliteit, ean AS Locatie, referentie, snijlengte, snijbreedte,  kleur, backing FROM `vanda_rolls` WHERE `verzonden` = ".$ship_id." AND `verwijderd` = 0";	
 		
 		
 		
@@ -98,6 +98,7 @@ $objPHPExcel->setActiveSheetIndex(0)
             ->setCellValue('A1', 'Rolnummer')
             ->setCellValue('B1', 'Kwaliteit')
             ->setCellValue('C1', 'Referentie')
+			->setCellValue('C1', 'Locatie')
             ->setCellValue('D1', 'Snijlengte')
 			->setCellValue('E1', 'Snijbreedte')
 			->setCellValue('F1', 'Kleur')
