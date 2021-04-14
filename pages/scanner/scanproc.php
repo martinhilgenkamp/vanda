@@ -1,5 +1,5 @@
 <?php 
-
+date_default_timezone_set("Europe/Amsterdam");
 require_once("../../inc/class/class.production.php");
 require_once("../../inc/class/class.shipment.php");
 

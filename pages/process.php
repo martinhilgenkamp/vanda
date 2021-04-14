@@ -35,6 +35,7 @@
 
 // if($article_no){$article = $articles[$article_no];}
 // if($article_no){$supplier = $resSuppliers[$supplier_no];}
+date_default_timezone_set("Europe/Amsterdam");
 
 require_once("../inc/class/class.supplier.php");
 require_once("../inc/class/class.product.php");
