@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set("Europe/Amsterdam");
 require_once("class.db.php");
 
 class MachineManager {
