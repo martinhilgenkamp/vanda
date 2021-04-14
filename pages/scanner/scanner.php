@@ -74,17 +74,14 @@
     <div id="shipform-container">
     	<form id="shipform" name="shipform" method="post">	
          <ul class="mobilelist" id="shiplist">
-            <li><label for="klant">Klant: </label><input type="text" id="klant" name="klant" value=""/></li>
-            <li><label for="barcode">barcode: </label><input type="text" id="barcode" name="barcode" value="" autofocus/></li>
+            <li><label for="klant">Klant: </label><input type="text" id="klant" name="klant" value="" /></li>
+            <li><label for="barcode">Barcode: </label><input type="text" id="barcode" name="barcode" value="" autofocus /></li>
+            <li><label for="leverid">LeverId: </label><input type="text" id="leverid" name="leverid" value="" readonly="true" />
             <li><center><input type="submit" onClick="SubmitShipment();" value="Verstuur"></center></li>
          </ul>
-         <input type="text" id="leverid" name="leverid" value="" />
         </form>
     </div>
-    
-    <table id="excelDataTable" border="0">
-    
-    
+    <table id="excelDataTable" border="0">    
     </table>
   </body>
 </html>
