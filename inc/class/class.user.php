@@ -51,7 +51,7 @@ class UserManager {
 	}
 
 	function updateHash($password, $userId) {
-		$hash = password_hash($password, PASSWORD_DEFAULT,);
+		$hash = password_hash($password, PASSWORD_DEFAULT);
 		
 		/* Update the password hash on the database. */
 		$data = ["password" => $hash];
