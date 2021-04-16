@@ -203,13 +203,6 @@ switch($task){
 	
 	case 'delete':
 		$result = $rm->deleteRegistration($_POST['rowid']);
-		// unset($rowid);
-		// $rowid = mysqli_real_escape_string($db,$_POST['rowid']);
-		// if($rowid != '') {
-		// 	$query = "DELETE FROM vanda_registrations WHERE vanda_registrations.id = ".$rowid.";";	
-		// 	$db->query($query) or die('fail');
-		// 	echo "success";
-		// }
 	break;
 	
 	case 'delete-stock':
@@ -218,13 +211,6 @@ switch($task){
 		} else {
 			echo "fail";
 		}
-		// unset($rowid);
-		// $rowid = mysqli_real_escape_string($db,$_POST['rowid']);
-		// if($rowid != '') {
-		// 	$query = "UPDATE vanda_production SET removed = '1' WHERE id = '".$rowid."';";
-		// 	$db->query($query) or die('fail'.$db->error());
-		// 	echo "success";
-		// }
 	break;
 	
 	case 'ship':
@@ -233,13 +219,6 @@ switch($task){
 		} else {
 			echo "fail";
 		}
-		// unset($rowid);
-		// $rowid = mysqli_real_escape_string($db,$_POST['rowid']);
-		// if($rowid != '') {
-		// 	$query = "UPDATE vanda_shipment SET verzonden = '1' WHERE ship_id = '".$rowid."';";	
-		// 	$db->query($query) or die('fail');
-		// 	echo "success";
-		// }
 	break;
 	
 	case 'unship':
@@ -248,13 +227,6 @@ switch($task){
 		} else {
 			echo "fail";
 		}
-		// unset($rowid);
-		// $rowid = mysqli_real_escape_string($db,$_POST['rowid']);
-		// if($rowid != '') {
-		// 	$query = "UPDATE vanda_shipment SET verzonden = '0' WHERE ship_id = '".$rowid."';";	
-		// 	$db->query($query) or die('fail');
-		// 	echo "success";
-		// }
 	break;
 	
 	case 'unship-article':
@@ -263,13 +235,6 @@ switch($task){
 		} else {
 			echo "fail";
 		}
-
-		// $rowid = mysqli_real_escape_string($db,$_POST['rowid']);
-		// if($rowid != '') {
-		// 	$query = "UPDATE vanda_production SET  shipping_id =  '0', geleverd =  '0000-00-00 00:00:00'  WHERE  id = '".$rowid."';" ;
-		// 	$db->query($query) or die('fail'.$db->error());
-		// 	echo "success";
-		// }
 	break;
 	
 	case 'insertartikel':
@@ -289,34 +254,11 @@ switch($task){
 		} else {
 			echo "Er is een fout opgetreden bij het opslaan! Probeer het opnieuw";	
 		}
-
-		// $post = $_POST;	
-		// $artikelnummer = strtoupper(mysqli_real_escape_string ($db,$post['artikelnummer']));
-		// $kwaliteit = mysqli_real_escape_string ($db,$post['kwaliteit']);
-		// $gewicht = mysqli_real_escape_string ($db,$post['gewicht']);
-		// $datum = date('Y-m-d H:i:s');
-		// $barcode = mysqli_real_escape_string ($db,$post['barcode']);
-		// $ordernr = mysqli_real_escape_string ($db,$post['ordernr']);
-		
-		// $query = "INSERT INTO `vanda_production` (`id`, `artikelnummer`, `kwaliteit`, `gewicht`, `datum`, `geleverd`, `shipping_id`, `barcode`, `ordernr`) VALUES (NULL, '".$artikelnummer."', '".$kwaliteit."', '".$gewicht."', '".$datum."', '', '', '".$barcode."', '".$ordernr."');";
-		
-		// if($db->query($query)){
-		// 	echo "success";
-		// } else {
-		// 	echo "Er is een fout opgetreden bij het opslaan! Probeer het opnieuw" . $db->error();	
-		// }
 	break;
 	
 	case 'getnewbarcode':
 		$barcode = $prm->getNewBarcode();
 		
-		// $query = "SELECT barcode FROM `vanda_production` ORDER BY barcode DESC LIMIT 1;";
-		// if($result =$db->query($query)){
-		// 	while($row = $result->fetch_object()){
-		// 		$barcode = $row->barcode;
-		// 	}	
-		// // Geef laatste barcode terug.
-		// }
 		$barid =  (int)substr($barcode, -10);
 		// Waarde voor barcode genereren.
 		$barid = str_pad($barid, 10, '0', STR_PAD_LEFT);
@@ -327,28 +269,16 @@ switch($task){
 	case 'getshipid':
 		header('Content-Type: application/json');
 
-		$klanten[] = $stm->getShipmentId();
+		$shipIds[] = $stm->getShipmentId();
 
-		// $query = "SELECT ship_id FROM `vanda_shipment`;";
-		// if($result =$db->query($query)){
-		// 	while($row = $result->fetch_array()){
-		// 		$klanten[] = $row[0];
-		// 	}	
-		// }
-		echo json_encode($klanten);
+		echo json_encode($shipIds);
 	break;
 	
 	case 'getbarcode':
 		header('Content-Type: application/json');
 
-		$barcode[] = $prm->getBarcode();
+		$barcode = $prm->getBarcode();
 
-		// $query = "SELECT barcode FROM vanda_production WHERE shipping_id = 0 ORDER BY barcode ASC;";
-		// if($result =$db->query($query)){
-		// 	while($row = $result->fetch_array()){
-		// 		$barcode[] = $row[0];
-		// 	}	
-		// }
 		echo json_encode($barcode);
 	break;
 		
@@ -380,40 +310,6 @@ switch($task){
 			$tm->UpdateStatus($ritnummer,$subject,$body, '1');	
 			echo 'transport onderweg van '.$resSuppliers[$supplier_no]->supplier_desc." naar Vanda met ritnummer ".$ritnummer;
 		}
-
-		// $supplier_no = mysqli_real_escape_string($db,$_POST['supplier']);
-
-		// require_once('../class/class.transportmailer.php');
-		
-		// // Generate mail object and create ritnr in the database
-		// $mail = new TransportMailer();
-		// $ritnummer = $mail->save();
-		
-		// // Prepare subject ande messagebody
-		
-		// $subject = 'Transportverzoek Ritnr: '.$ritnummer;
-		// $body = $mail->BuildGetBody($ritnummer,$resSuppliers[$supplier_no]->supplier_desc,$resSuppliers[$supplier_no]->transporttype);
-		
-		// $mail->Subject = $subject;
-		
-		// //Set who the message is to be sent to
-		// $mail->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie');
-		// //$mail->addAddress('martin@pruim.eu', 'Martin Hilgenkamp');
-		
-		// $mail->msgHTML($body);
-		// //Replace the plain text body with one created manually
-		// $mail->AltBody = strip_tags($body);
-
-		// //send the message, check for errors
-		// // Function to use UpdateStatus($id, $subject, $body, $status){
-		// if (!$mail->send()) {
-		// 	echo "Mailer Error: " . $mail->ErrorInfo;
-		// 	$mail->UpdateStatus($ritnummer,$subject,$body, '0');
-		// } else {
-		// 	$mail->UpdateStatus($ritnummer,$subject,$body, '1');	
-		// 	echo 'transport onerweg van '.$resSuppliers[$supplier_no]->supplier_desc." naar Vanda met ritnummer ".$ritnummer;
-		// //	echo "Message sent!";
-		// }
 	break;
 		
 	case 'returntransport':
@@ -443,40 +339,6 @@ switch($task){
 			$tm->UpdateStatus($ritnummer,$subject,$body, '1');	
 			echo 'transport onderweg van Vanda naar '.$resSuppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
 		}
-
-		// $supplier_no = mysqli_real_escape_string($db,$_POST['supplier']);
-		// require_once('../class/class.transportmailer.php');
-		
-		// // Generate mail object and create ritnr in the database
-		// $mail = new TransportMailer();
-		// $ritnummer = $mail->save();
-		
-		// // Prepare subject ande messagebody
-		
-		// $subject = 'Transportverzoek Ritnr: '.$ritnummer;
-		// $body = $mail->BuildReturnBody($ritnummer,$resSuppliers[$supplier_no]->supplier_desc,$resSuppliers[$supplier_no]->transporttype);
-		
-		// $mail->Subject = $subject;
-		
-		// //Set who the message is to be sent to
-		// $mail->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie');
-		// //$mail->addAddress('martin@pruim.eu', 'Martin Hilgenkamp');
-		
-		
-		// $mail->msgHTML($body);
-		// //Replace the plain text body with one created manually
-		// $mail->AltBody = strip_tags($body);
-
-		// //send the message, check for errors
-		// // Function to use UpdateStatus($id, $subject, $body, $status){
-		// if (!$mail->send()) {
-		// 	echo "Mailer Error: " . $mail->ErrorInfo;
-		// 	$mail->UpdateStatus($ritnummer,$subject,$body, '0');
-		// } else {
-		// 	$mail->UpdateStatus($ritnummer,$subject,$body, '1');	
-		// 	echo 'transport onerweg van Vanda naar '.$resSuppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
-		// //	echo "Message sent!";
-		// }
 	break;
 	default:
 	

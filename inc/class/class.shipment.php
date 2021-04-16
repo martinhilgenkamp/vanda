@@ -27,7 +27,12 @@ class ShipmentManager {
 		
 		$res = $this->db->selectQuery($qry);
 
-		return $res[0];
+		$shipmentIds = [];
+		foreach ($res as $shipment) {
+			$shipmentIds[] = $shipment->ship_id;
+		}
+
+		return $shipmentIds;
 	}
 
 	function getAllShipments() {

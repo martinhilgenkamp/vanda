@@ -58,7 +58,12 @@ class ProductionManager {
 		
 		$res = $this->db->selectQuery($qry);
 
-		return $res[0];
+		$barcodes = [];
+		foreach ($res as $barcode) {
+			$barcodes[] = $barcode->barcode;
+		}
+
+		return $barcodes;
 	}
 
 	function getArticleNumbers() {

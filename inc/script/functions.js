@@ -447,21 +447,44 @@ $(document).ready(function(){
 		});
 		
 		// Autocomplete shipid	
-		$.getJSON('pages/process.php?task=getshipid',function(jsonData){
-			var shipids = jsonData; 
-			$("#leverid").autocomplete({
-			  source: shipids
-			}); // end autocomplete
-		}); // end json
+		$.ajax({  
+			  type: "POST",  
+			  url: "pages/process.php",  
+			  data: { 
+			  	task: 'getshipid'
+			  }, 
+			  success: function(data) {  
+				$("#leverid").autocomplete({
+				  source: data
+				});
+			  },
+			  error: function (xhr, ajaxOptions, thrownError) {
+				  debugger;
+				var error = (xhr.status);
+				error = error + ' ' + thrownError;
+				$('#errorbox').html(error);
+			  }  
+		});
 	} // endif leverid.length
 	
 	// Autocomplete barcode
-	$.getJSON('pages/process.php?task=getbarcode',function(jsonData){
-			var barcodes = jsonData; 
+	$.ajax({  
+		type: "POST",  
+		url: "pages/process.php", 
+		data: { 
+		  	task: 'getbarcode'
+	  	}, 
+		success: function(data) {  
 			$("#barcode").autocomplete({
-			  source: barcodes
-			}); // end autocomplete
-		}); // end json
+			  source: data
+			});
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			var error = (xhr.status);
+			error = error + ' ' + thrownError;
+			$('#errorbox').html(error);
+		}  
+	});
 });  // close document.ready()
 
 // Process Layout of dynamic generated content
