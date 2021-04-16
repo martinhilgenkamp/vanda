@@ -202,7 +202,7 @@ class RollsManager {
 									</tr>';
 						$output .= '<tr>
 										<td>Snijbreedte</td>
-										<td><input id="input_snijbreedte" class="snijbreedte" name="snijbreedte[]" type="text" value="'.($_SESSION['snijbreedte[0]'] ?  $_SESSION['snijbreedte[0]'] : '2.06').'" required/></td>
+										<td><div id="snijbreedtes"><input id="input_snijbreedte" class="snijbreedte" name="snijbreedte[]" type="text" value="'.($_SESSION['snijbreedte[0]'] ?  $_SESSION['snijbreedte[0]'] : '2.06').'" required/></div></td>
 									</tr>';
 						//Locatie was EAN in vorige versies
 						$output .= '<tr>
