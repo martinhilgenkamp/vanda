@@ -110,8 +110,9 @@ $(document).ready(function(){
   			.done(function( data ) {
 			if(data !== 'error'){
 				console.log(data);
-				//getRolWindow($('#input_rolnummer').val());
-				$("#frame").attr("src", 'pages/generate/generate_rol.php?rolnummer='+$('#input_rolnummer').val());
+				
+				window.open('pages/generate/generate_rol.php?rolnummer='+$('#input_rolnummer').val(), '_blank');
+
 				$("#childrollform").slideUp(500);
 				$('#errorbox').html('Opgeslagen'+data);
 
