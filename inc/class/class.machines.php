@@ -297,7 +297,7 @@ class MachineManager {
 			$title = "Aangepast Overzicht van ".$startdate.' tot '.$stopdate;
 		} else {
 		  $time = strtotime(date("Y-m-d"));
-		  $final = date("Y-m-d", strtotime("-1 month", $time));
+		  $final = date("Y-m-d", strtotime("-1 week", $time));
 		  $where = "WHERE  vanda_machines.datum BETWEEN '".$final."' AND '".date('Y-m-d',$time)." 23:59:59' ";
 		}
 		

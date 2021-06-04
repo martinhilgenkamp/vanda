@@ -66,18 +66,18 @@ class TaskManager {
 	}
 	
 	function showForm($action = 'new') {
-		$viewType = isset($_SESSION['viewtype']) ? $_SESSION['viewtype'] : '';
-
+		$currentview = preg_replace('/[^0-9]/', '',$_GET['view']);
+		
 		$output = '';
 		$output .= '<div id="taskformcontainer">';
-		$output .= '<form name="taskform" id="taskform" method="post" action="index.php?page=task">';
+		$output .= '<form name="taskform" id="taskform" method="post" action="index.php?page=task'.($currentview ? '&view='.$currentview : '').'">';
 		$output .= '<label for="name">Taak</label><input type="text" name="taak" id="name">';
 		$output .= '<label for="description">Opmerking</label><input type="text" name="description" id="description">';
 		
 		$output .= '<Label for="adres"><span>Adres:</label><select id="adres" class="adres" name="adres">';
-		$output .= '<option value="" '.($viewType == '' ? 'selected="selected"' : '').'>Adres</option>';
-		$output .= '<option value="63" '.($viewType == '63' ? 'selected="selected"' : '').'>63</option>';
-		$output .= '<option value="51" '.($viewType == '51' ? 'selected="selected"' : '').'>51</option>';
+		$output .= '<option value="" '.($currentview == '' ? 'selected="selected"' : '').'>Adres</option>';
+		$output .= '<option value="63" '.($currentview == '63' ? 'selected="selected"' : '').'>63</option>';
+		$output .= '<option value="51" '.($currentview == '51' ? 'selected="selected"' : '').'>51</option>';
 		$output .= '</select>';		
 		$output .= '<label for="date">Datum</label><input type="text" name="date" id="date">';
 		$output .= '<input type="file" id="file" name="file" />';
