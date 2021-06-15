@@ -196,7 +196,7 @@ $(document).ready(function(){
 	 $(document).on('click','.open',function(){
 		$.post( "index.php?page=task", { id: $(this).attr('id'), action: "behandeling" }) 
 		.done(function(data){
-			location.href = "index.php?page=task";
+			location.href = window.location.href;
 		})
 		.fail(function( data ) {
 			alert( "Fail: " + data );
@@ -207,7 +207,7 @@ $(document).ready(function(){
 	 $(document).on('click','.behandeling',function(){
 		$.post( "index.php?page=task", { id: $(this).attr('id'), action: "gereed" }) 
 		 .done(function(data){
-			location.href = "index.php?page=task";
+			location.href = window.location.href;
 			})
 			.fail(function( data ) {
 			alert( "Fail: " + data );

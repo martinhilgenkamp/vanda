@@ -117,7 +117,7 @@ class MachineManager {
 		};		
 
 		$time = strtotime(date("Y-m-d"));
-		$final = date("Y-m-d", strtotime("-1 week", $time));
+		$final = date("Y-m-d");
 
 		$output = "";
 		$output .= "<div id='filter_form_div'>";
@@ -297,8 +297,7 @@ class MachineManager {
 			$title = "Aangepast Overzicht van ".$startdate.' tot '.$stopdate;
 		} else {
 		  $time = strtotime(date("Y-m-d"));
-		  $final = date("Y-m-d", strtotime("-1 week", $time));
-		  $where = "WHERE  vanda_machines.datum BETWEEN '".$final."' AND '".date('Y-m-d',$time)." 23:59:59' ";
+		  $where = "WHERE  vanda_machines.datum BETWEEN '".date('Y-m-d',$time)." 00:00:00"."' AND '".date('Y-m-d',$time)." 23:59:59' ";
 		}
 		
 		

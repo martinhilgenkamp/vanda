@@ -32,10 +32,6 @@ if ($_POST) {
 	} 
 }
 
-echo "<h1>Verlopen Taken</h1>";
-$tm->buildTable($tm->getExpired($view));	
-echo "<br /><br />";
-
 echo "<h1>Open Taken</h1>";
 $tm->buildTable($tm->getAllOpen($view));	
 echo "<br /><br />";

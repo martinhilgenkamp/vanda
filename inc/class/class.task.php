@@ -66,7 +66,11 @@ class TaskManager {
 	}
 	
 	function showForm($action = 'new') {
-		$currentview = preg_replace('/[^0-9]/', '',$_GET['view']);
+		if(isset($_GET['view'])){
+			$currentview = preg_replace('/[^0-9]/', '',$_GET['view']);
+		} else {
+			$currentview = null;
+		}
 		
 		$output = '';
 		$output .= '<div id="taskformcontainer">';
@@ -119,7 +123,10 @@ class TaskManager {
 					$row->status = 'gereed'; 
 				}
 				
-				if ($c == 1) { 
+				 
+				if(date("Y-m-d") > $row->date){
+					$output .= "<tr class=\"red\">";
+				} elseif ($c == 1) {
 					$output .= "<tr class=\"grey\">"; 
 					$c = 0;
 				} 
@@ -136,7 +143,7 @@ class TaskManager {
 				}
 
 				if ($lastadres != '' && $row->adres != $lastadres) { 
-					$output .= "<tr class=\"blue-divider\"><td colspan=6>&nbsp;</td></tr>"; 
+					//$output .= "<tr class=\"blue-divider\"><td colspan=6>&nbsp;</td></tr>"; 
 				}
 
 				$output .= "

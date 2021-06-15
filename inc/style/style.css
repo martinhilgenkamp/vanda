@@ -573,3 +573,7 @@ margin: 10px;
 .login-footer {
 	float: right;
 }
+
+.red {
+ background: #FFEDED !important; 
+}
