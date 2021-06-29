@@ -1,0 +1,59 @@
+V2.00
+- Complete Rebuild onder PHP 7.1
+- Overbodige bestanden gereidigd.
+- Wachtwoorden worden verlsleuteld opgeslagen.
+-
+
+HIER ONDER IS HET HEEL OUD EN KAN WORDEN VERGETEN
+V1.07
+- 3 Leveranciers toegevoegd
+- Optie om alleen aangepast bij een leverancier te hebben toegevoegd.
+
+V1.06
+Bugfixes
+- De totaalwaarden kloppen niet in het maandoverzicht. (waardes van vorig jaar werden mee genomen)
+
+v1.05
+Toevoegingen
+- PP Headset – Bont aan artikelen toegevoegd.
+- Nieuwe huisstijl doorgevoerd.
+
+V1.04
+Toevoegingen
+- Half aan de waardes toegevoed.
+- Database aangepast om comma waardes te accepteren.
+- Nieuw IP Pruim automatisering toegevoegd.
+
+
+V1.03
+Bugfixes
+- Enter zal het formulier nier meer versturen.
+- Query word weergegeven bij het invoeren van aangepast art.
+- Logo weer terug geplaatst in de header.
+- Klok wijkt 2 uur af. gerepareerda vanaf 6-4-2013 11:15:00
+
+Toevoegingen
+- PET artikel toegevoegd.
+- Belakos als leverancier toegevoegd
+
+v1.02
+Bugfixes
+- Registratie overzicht laat niets zien als er een leverancier is geselecteerd.
+Toevoegingen.
+- tot datum in het registratie overzicht
+
+v1.01
+Bugfixes.
+- CSV functie gerepareerd (Slashes)
+- Database geupdate zat dubbel grasvezel in.
+- Beheer functie werkt ook met internet explorer <= 9
+- Belrey laad nu correct en alphabetisch
+- Standaard hoeveelheid word meegenomen uit de database.
+Toevoegingen.
+- laatste 2 registraties laten zien op dashboard.
+- Terug bij bevestiging menu.
+- week selector
+- Dag Selector
+- Maand Selector
+Known issues
+- Paginatie in de registraties
