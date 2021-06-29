@@ -8,7 +8,7 @@
 
 	//Check if user logged in
 	$user_loggedin = $um->checkLogin($_POST);
-	  if(!$user_loggedin || is_string($user_loggedin)){
+	if(!$user_loggedin || is_string($user_loggedin)){
 		require_once('pages/loginform.php');
 		exit;	
 	}
@@ -113,14 +113,9 @@
 	        <div id="content">
 				<?php
 				   if (file_exists('pages/'.$page.'.php')) {
-				   	include('pages/'.$page.'.php'); 
+				   	    include('pages/'.$page.'.php'); 
 				   } else {
-					   echo '<div class="ui-state-error ui-corner-all" style="padding: 0 1em; font-size: 1.2em">
-								<p>
-									<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em; top: .4em"></span>
-									<strong>404</strong> De gevraagde pagina bestaat niet.
-								</p>
-							</div>';
+				        include('pages/404.php'); 
 				   }
 	            ?>
 	        </div>

@@ -106,6 +106,37 @@ class UserManager {
 
 		return true;
 	}
+
+    function listUsers() {
+        $qry = "SELECT * FROM `vanda_user` WHERE active = 1";
+        
+        return $this->db->selectQuery($qry);
+    }
+
+    function getUserById($id) {
+        $qry = "SELECT * FROM vanda_user WHERE id = ".$id;
+        
+        $res = $this->db->selectQuery($qry);
+
+        return count($res) > 0 ? $res[0] : null;
+    }
+
+    function addUser($data) {
+        return $this->db->insertQuery("vanda_user", $data);
+    }
+
+    function editUser($data, $id) {
+        $where = "id = ".$id;
+
+        return $this->db->updateQuery('vanda_user', $data, $where);
+    }
+
+    function deleteUser($id) {
+        $where = "id = ".$id;
+        $data["active"] = 0;
+
+        return $this->db->updateQuery('vanda_user', $data, $where);
+    }
 }
 
 ?>

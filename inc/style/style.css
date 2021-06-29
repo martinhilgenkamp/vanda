@@ -577,3 +577,77 @@ margin: 10px;
 .red {
  background: #FFEDED !important; 
 }
+
+.forbidden-page {
+    padding: 0 1em;
+    font-size: 1.2em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
+}
+
+.forbidden-page > p {
+    margin-left: auto; 
+    margin-right: auto; 
+    margin-top: 5%; 
+    width: 200px; 
+    margin-bottom: 5%; 
+    height: 17px;
+}
+
+.forbidden-page > p > span {
+    float: left; 
+    margin-right: .3em; 
+    top: .4em
+}
+
+.error-page {
+    padding: 0 1em;
+    font-size: 1.2em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
+}
+
+.error-page > p {
+    margin-left: auto; 
+    margin-right: auto; 
+    margin-top: 5%; 
+    width: 350px; 
+    margin-bottom: 5%; 
+    height: 17px;
+}
+
+.error-page > p > span {
+    float: left; 
+    margin-right: .3em; 
+    top: .4em
+}
+
+.userform-edit { 
+    margin: auto;
+    width: 25%;
+}
+
+.userform-edit tr td:first-child {
+    width:50%;
+}
+
+.userform-edit input[type="text"] {
+    height: 24px;
+    line-height: 25px;
+    font-size: 14px;
+    padding: 0px 5px;
+    margin-top: 2px;
+    margin-right: 10px;
+}
+
+.userform-edit select {
+    height: 28px;
+    line-height: 29px;
+    font-size: 14px;
+    padding: 0px 5px;
+    margin-top: 2px;
+    margin-right: 10px;
+    width: 95%;
+}
