@@ -222,7 +222,7 @@ $pdf = new TablePDF('portrait' , 'mm', 'a4', true, 'UTF-8', false);
 // Generate query
 // Get the ship id to read data.
 $ship_id = $_GET['ship_id'];
-$pdf->query = "SELECT * FROM `vanda_production` WHERE shipping_id = '".$ship_id."' AND removed = '0'";
+$pdf->query = "SELECT * FROM `vanda_production` WHERE shipping_id = '".$ship_id."'"; // " AND removed = '0'"; 	## 18-6-2021 Removed filter removed on customer request.
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
