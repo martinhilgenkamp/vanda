@@ -155,7 +155,7 @@ class TablePDF extends TCPDF{
 			$i++;	// Check if last row in data
 			
 			// Header repeaten na aantal regels
-			if($t == 63){
+			if($t == 62){
 				$this->SetFont('dejavusans', 'B', 11, '', true);
 				$this->Cell(array_sum($w), 0, '', 'T');
 				$this->Ln();

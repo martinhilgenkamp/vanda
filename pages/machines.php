@@ -3,8 +3,12 @@
 
 <?php
 require_once("inc/class/class.machines.php");
+require_once("inc/class/class.user.php");
 
 $mm = new MachineManager;
+$um = new UserManager;
+
+$users = $um->listUsers();
 
 $machines = 8;		
 ?>
@@ -18,13 +22,26 @@ $machines = 8;
 		</ul>
 		<?php
 		for ($i = 1; $i <= $machines; $i++) {
+            $lastPerson = $mm->getLastPersoon($i);
 		?>			
 			<ul>
-				<?php 
-				echo "<li><input type=\"text\" class=\"ui-widget ui-state-default ui-corner-all machine-input-text\" name=\"operator".$i."\" id=\"input_operator".$i."\" value=\"".$mm->getLastPersoon($i)."\"></li>";
-				echo "<li><input type=\"text\" class=\"ui-widget ui-state-default ui-corner-all machine-input-text\" name=\"kwalitet".$i."\" id=\"input_kwaliteit".$i."\" value=\"".$mm->getLastKwaliteit($i)."\"></li>";
-				echo '<input type="button" class="ui-button ui-corner-all ui-widget machinebutton"  id="machine'.$i.'" name="machine'.$i.'" value="Machine'.$i.'">';
-				?>
+				<li>
+                   <!--  <input type="text" class="ui-widget ui-state-default ui-corner-all machine-input-text" name="operator<?= $i ?>" id="input_operator<?= $i ?>" value="<?= $mm->getLastPersoon($i) ?>"> -->
+                    
+                    <select name="operator<?= $i ?>" id="input_operator<?= $i ?>" class="ui-widget ui-state-default ui-corner-all machine-input-text">
+                        <?php
+                            foreach ($users as $user) {
+                        ?>
+                            <option value="<?= $user->username ?>" <?= $lastPerson == $user->username ? 'selected' : '' ?>><?= $user->username ?></option>";
+                        <?php 
+                         }
+                        ?>
+                    </select>
+                </li>
+				<li>
+                    <input type="text" class="ui-widget ui-state-default ui-corner-all machine-input-text" name="kwalitet<?= $i ?>" id="input_kwaliteit<?= $i ?>" value="<?= $mm->getLastKwaliteit($i) ?>">
+                </li>
+                <input type="button" class="ui-button ui-corner-all ui-widget machinebutton"  id="machine<?= $i ?>" name="machine<?= $i ?>" value="Machine<?= $i ?>">
 			</ul>
 		<?php } ?>
 		<input type="hidden" name="task" id="input_task" value="add" />

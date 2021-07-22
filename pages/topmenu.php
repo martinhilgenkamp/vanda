@@ -42,6 +42,7 @@
             <a href="index.php?page=tasksummary"><li>Taak Overzicht</li></a>
             <?php if($user->level){
                 echo "<a href=\"index.php?page=options\"><li>Opties</li></a>";
+                echo "<a href=\"index.php?page=user/users\"><li>Medewerkers</li></a>";
             }?>
             <a href="index.php?page=changePassword"><li>Wachtwoord veranderen</li></a>
             <a href="index.php?page=logout"><li>Uitloggen</li></a>
