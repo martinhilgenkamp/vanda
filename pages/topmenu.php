@@ -7,7 +7,8 @@
     </li></a>
     <a href="index.php?page=productie"><li>Productie
         <ul class="submenu">
-          <a href="index.php?page=stansen"><li>Stansen</li></a>
+		  <a href="index.php?page=productie"><li>Registreer Product</li>
+          <a href="index.php?page=stansen"><li>Registreer Stans</li></a>
           <a href="index.php?page=machines"><li>Registreren Machines</li></a>
           <a href="index.php?page=machinetable"><li>Overzicht Machines</li></a>
         </ul>

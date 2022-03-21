@@ -243,17 +243,27 @@ switch($task){
 			"kwaliteit" => $_POST['kwaliteit'],
 			"gewicht" => $_POST['gewicht'],
 			"datum" => date('Y-m-d H:i:s'),
-			"barcode" => $_POST['barcode'],
-			"ordernr" => $_POST['ordernr']
+			"ordernr" => $_POST['ordernr'],
+			"colli" => $_POST['colli']
 		];
-
-		$productionId = $prm->addProduction($data);
-
-		if($productionId > 0){
-			echo "success";
-		} else {
-			echo "Er is een fout opgetreden bij het opslaan! Probeer het opnieuw";	
+		
+		if(!isset($data['colli'])){
+			$data['colli'] =  1;
 		}
+		$article_added = 0;
+		if($data['colli'] >= 1){	
+			for($c = 0; $c < $data['colli']; $c++){
+				//echo $c;
+				$productionId = $prm->addProduction($data);
+				if($productionId > 0){
+					$article_added++;
+				} else {
+					echo "Er is een fout opgetreden bij het opslaan! Probeer het opnieuw";	
+				}
+			}
+		}
+		
+		echo $article_added . " Artikelen succesvol toegevoegd.";
 	break;
 	
 	case 'getnewbarcode':

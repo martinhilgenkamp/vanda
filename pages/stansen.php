@@ -6,16 +6,7 @@ require_once("inc/class/class.option.php");
 $prm = new ProductionManager();
 $om = new OptionManager();
 
-// Get the task
-// $task = $_POST['task'];
-
-// switch($task){
-// 	default:
-// 		ShowForm();
-// 	break;		
-// }
-
-// Waarde voor barcode genereren.
+// Waarde voor barcode genereren. deze word alleen gebruikt voor het eerste etiket in de weergave.
 $newBarcode = $prm->getNewBarcode();
 $barid = str_pad($newBarcode, 10, '0', STR_PAD_LEFT);
 $barcode = 'F00830'.$barid;	
@@ -56,6 +47,9 @@ $options = $om->getAllOptions()[0];
 			</li>
 			<li>
 				<label for="ordernr">Ordernr: </label><input type="text" id="ordernr" name="ordernr"/>
+			</li>
+			<li>
+				<label for="colli">Colli: </label><input type="text" id="colli" name="colli"/>
 			</li>
 			<li>
 			<!--<div id="barcode-display"><?php echo $barcode; ?></div>!-->

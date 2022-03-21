@@ -22,8 +22,13 @@ class ProductionManager {
 			}
 		}
 		
-		return $this->db->insertQuery("vanda_production", $data);
+	$data['barcode'] = "F00830".$this->getNewBarcode();
+	return $this->db->insertQuery("vanda_production", $data);	
+
 	}
+		
+		
+	
 
 	function editProduction($data, $id) {
 		return $this->db->updateQuery("vanda_production", $data, "id = ". $id);

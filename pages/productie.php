@@ -18,11 +18,11 @@ if ($_POST) {
 				"datum" => date('Y-m-d H:i:s'),
 				"barcode" => $_POST['barcode']
 			];
-
+			
 			$productionId = $prm->addProduction($data);
 					
 			if($productionId > 0){
-				echo "success<br /><a href='http://web01/vanda2/index.php?page=insert'>Doorgaan</a>";
+				echo "success";
 			} else {
 				echo "Er is een fout opgetreden bij het opslaan! ".mysqli_error($db);	
 			} 
