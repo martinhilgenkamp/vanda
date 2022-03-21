@@ -15,10 +15,11 @@ class DB {
 	var $transactionResult;
 
  	function __construct() {
+		
 		$this->host = "localhost";
        	$this->database = "vanda";
-       	$this->user = "root";
-       	$this->password = "";
+       	$this->user = "vanda";
+       	$this->password = "HhDDNj3z";
 
 		$this->link = new mysqli($this->host, $this->user, $this->password, $this->database);
    	}

@@ -341,7 +341,10 @@ $(document).ready(function(){
 		});
 	});
 	
-	$('#insertform #verstuur, #stansform #verstuur').click(function(){
+	
+	// Productie registreer artikelen formulier.
+	$('#insertform #verstuur').click(function(){
+		console.log("prod submit");
 		// create regexp for validation
 		var numberReg =  /^[0-9]{1,4}$/;
 		var artikelnummer = $('#artikelnummer').val();
@@ -403,6 +406,70 @@ $(document).ready(function(){
 		}); //end post value
 	}); // end click function
 	
+	
+	// Stansen registreer formulier.
+	$('#stansform #verstuur').click(function(){
+		console.log("stans submit");
+		// create regexp for validation
+		var numberReg =  /^[0-9]{1,4}$/;
+		var artikelnummer = $('#artikelnummer').val();
+		var kwaliteit = $('#kwaliteit').val() != undefined ? $('#kwaliteit').val() : "";
+		var gewicht = $('#gewicht').val();
+		var barcode = $('#barcode').val();
+		var ordernr =  $('#ordernr').val() != undefined ? $('#ordernr').val() : "";
+		var task = $('#task').val();
+				
+		if(artikelnummer === ''){
+			alert('geen artikel ingevoerd');
+			return;	
+		}
+		if(!numberReg.test(gewicht)){
+			//gewicht is niet goed
+			alert('geen gewicht/aantal ingevoerd');
+			return;	
+		} 
+		// end if nummer
+		if(task === 'add-stans' && ordernr === ''){
+			alert('geen ordernummer ingevoerd');
+			return;	
+		}		
+		// Boek het artikel in de mysql database.
+		$.post( "pages/process.php", { task: "insertartikel", artikelnummer: artikelnummer, kwaliteit: kwaliteit, gewicht: gewicht, barcode: barcode, ordernr: ordernr}).done(function( data ) {
+			debugger;
+			if(data === 'success'){
+				if(task === 'add-stans'){
+					getStansWindow(barcode,gewicht);	
+				} else { 
+					getLabelWindow(barcode);
+				}
+				
+				$('#insertform .ui-state-active').removeClass('ui-state-active ui-state-hover'); // deactivate button
+				$('#artikelnummer').val(''); // set input value.
+				$('#gewicht').attr('disabled', true);
+				$('#gewicht').val('');
+				// Get new barcode id
+				var dataString = 'task=getnewbarcode';
+				$.ajax({  
+					  type: "POST",  
+					  url: "pages/process.php",  
+					  data: dataString,  
+					  success: function(result) {  
+						  debugger;
+						$('#barcode').val(result);
+					  },
+					  error: function (xhr, ajaxOptions, thrownError) {
+						  debugger;
+						var error = (xhr.status);
+						error = error + ' ' + thrownError;
+						$('#errorbox').html(error);
+					  }  
+				});
+				
+			} else {
+				alert('Helaas is er een fout bij het opslaan van de waarde probeer het opnieuw');	
+			}
+		}); //end post value
+	}); // end click function
 	
 	
 	// Stans functies
@@ -623,7 +690,9 @@ function getLabelWindow(artikelnummer){
 	// Nieuw label genereren met het goed artikelnummer.
 	//myWindow = window.open("inc/generate_label.php?artikelnummer="+artikelnummer,'_blank',"width=1024,height=530,location=no,menubar=no,scrollbars=no,toolbar=no,fullscreen=no");
 	
-	var url = window.location.origin+"pages/generate/generate_label.php?artikelnummer="+artikelnummer;
+	var loc = window.location.href;
+	var dir = loc.substring(0, loc.lastIndexOf('/'));
+	var url = dir+"pages/generate/generate_label.php?artikelnummer="+artikelnummer;
 	
 	$('#printFrame').attr('src', url);
     $('#printFrame').load(function() {
@@ -650,8 +719,14 @@ function getStansWindow(artikelnummer,aantal){
           aantal = 1;
     } 
 	
-	var url = window.location.origin+"/pages/generate/generate_stans.php?artikelnummer="+artikelnummer+"&aantal="+aantal;
-	console.log(url);
+	var loc = window.location.href;
+	var dir = loc.substring(0, loc.lastIndexOf('/'));
+	var url = dir+"/pages/generate/generate_stans.php?artikelnummer="+artikelnummer+"&aantal="+aantal;
+	
+	
+	
+	console.log(dir);
+	
 	window.open(url);
 	
 	//$('#printFrame').attr('src', url);
