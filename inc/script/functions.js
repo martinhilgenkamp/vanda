@@ -411,6 +411,7 @@ $(document).ready(function(){
 	$('#stansform #verstuur').click(function(){
 		console.log("stans submit");
 		
+
 		// create regexp for validation
 		var numberReg =  /^[0-9]{1,4}$/;
 		var artikelnummer = $('#artikelnummer').val();
@@ -452,6 +453,22 @@ $(document).ready(function(){
 			if(data.includes("succesvol")){
 				//Show Etiket.
 				console.log(data);
+				
+				// Delay page from reloading for x * 100ms seconds depending on amount of entries to add.				
+				$( "#content" ).animate({
+					width: "100%",
+					padding: "100px",
+					height: "400px"
+				}, 1500 );
+				$('#content').html('<center><img src="images/loading.gif" border="0"/></center>')
+				
+				
+				//Produce the labels to print.
+				getStansWindow(barcode,gewicht,colli);
+				
+				// Reset the form for reuse.	
+				setTimeout(function(){window.location = 'index.php?page=stansen';} ,colli*100);
+		
 			} else {
 				alert('Helaas is er een fout bij het opslaaaaan van de waarde probeer het opnieuw');
 				console.log(data);
@@ -459,11 +476,6 @@ $(document).ready(function(){
 			}
 		}); //end post value
 			
-		//Produce the labels to print.
-		getStansWindow(barcode,gewicht,colli);
-		
-		// Reset the form for reuse.	
-		window.location = 'index.php?page=stansen';	
 		
 	}); // end click function
 	
@@ -479,7 +491,7 @@ $(document).ready(function(){
 		
 		$('#kwaliteit').val($(this).attr('value')); // set input value.
 		$('#gewicht').attr('disabled', false);
-		$('#gewicht').select();
+		$('#gewicht').select()
 
 	});
 	
