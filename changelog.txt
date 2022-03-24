@@ -27,7 +27,7 @@ Toevoegingen
 
 V1.03
 Bugfixes
-- Enter zal het formulier nier meer versturen.
+- Enter zal het formulier nier meer versturen.sa
 - Query word weergegeven bij het invoeren van aangepast art.
 - Logo weer terug geplaatst in de header.
 - Klok wijkt 2 uur af. gerepareerda vanaf 6-4-2013 11:15:00
