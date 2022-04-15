@@ -4,6 +4,8 @@ require_once('../../tcpdf.php');
 require_once("../../inc/class/class.production.php");
 require_once("../../inc/class/class.option.php");
 
+
+
 $pm = new ProductionManager();
 $om = new OptionManager();
 
@@ -34,7 +36,7 @@ $pdf->SetFooterMargin(0);
 $pdf->SetAutoPageBreak(FALSE);
 
 
-if(!$colli > 1){
+if(!$colli > 1 || !isset($colli)){
  $colli = 1;
 }
 
