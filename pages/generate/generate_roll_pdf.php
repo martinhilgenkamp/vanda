@@ -89,6 +89,7 @@ class TablePDF extends TCPDF{
 		$rijen = count($data);
 		$noline = 0;
 		$m2tot = 0;
+		$ltot = 0;
 				
 		foreach($data as $row) {
 			if($t == 0){
@@ -148,7 +149,7 @@ class TablePDF extends TCPDF{
 			$this->Cell($w[7], 4, number_format($row[6],2).' M2', 'LR', 0, 'C', $fill);
 			$this->Ln();
 			
-			
+			$ltot = $ltot + $row[4];
 			$m2tot = $m2tot + $row[6];
             $fill=!$fill;
 			$t++;   // Check if pagebreak is needed.
@@ -166,7 +167,7 @@ class TablePDF extends TCPDF{
 				$this->SetFont('dejavusans', 'B', 11, '', true);
 				$this->Cell(array_sum($w), 0, '', 'T');
 				$this->Ln();
-				$this->Cell(array_sum($w), 0, 'Totaal m2 '.$m2tot, 0, 0, 'R','');
+				$this->Cell(array_sum($w), 0, 'Totaal Lengte: '.$ltot.'m | Vierkante meters: '.$m2tot.' M2', 0, 0, 'R','');
 				$this->Ln();
 				
 			}
