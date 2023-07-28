@@ -1,0 +1,1 @@
+UPDATE `vanda_suppliers` SET `supplier_desc` = 'Condor Grass', `transportmail` = '1' WHERE `vanda_suppliers`.`id` = 8;
