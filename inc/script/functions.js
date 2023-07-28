@@ -12,7 +12,7 @@ $(document).ready(function(){
 	 $(document).on('click','.submit',SubmitInput);
 	 $(document).on('click','.reset',function(){
 		var parent = $(this).parent();
-		processArticles(parent.prev('h3'))
+		processArticles(parent.prev('h3').attr('id'))
 	 });
 	 
 	 $(document).on('click','#go',function(){

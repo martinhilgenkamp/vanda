@@ -38,6 +38,7 @@
 date_default_timezone_set("Europe/Amsterdam");
 
 require_once("../inc/class/class.supplier.php");
+require_once('../inc/class/class.option.php');
 require_once("../inc/class/class.product.php");
 require_once("../inc/class/class.registration.php");
 require_once("../inc/class/class.production.php");
@@ -50,6 +51,8 @@ $rm = new RegistrationManager();
 $prm = new ProductionManager();
 $stm = new ShipmentManager();
 $tm = new TransportMailer();
+$om = new OptionManager();
+$options = $om->getAllOptions()[0];
 
 $resSuppliers = $sm->loadSuppliers();
 $resProducts = $pm->loadProducts();
@@ -62,7 +65,6 @@ if ($_POST) {
 	if(!$task){
 		$task = $_GET['task'];
 	}
-
 	$supplier_no = isset($_POST['supplier']) ?  intval($_POST['supplier']) : null;
 	$article_no = isset($_POST['article']) ? intval($_POST['article']) : null;
 	$remark = isset($_POST['remark']) ? intval($_POST['remark']) : null;
@@ -294,19 +296,21 @@ switch($task){
 		
 	case 'gettransport':
 		$supplier_no = $_POST['supplier'];
+		$supplier = $sm->getBySupplierNumber($supplier_no);
+
 		
 		// Generate mail object and create ritnr in the database
 		$ritnummer = $tm->save();
 		
 		// Prepare subject and messagebody
 		$subject = 'Transportverzoek Ritnr: '.$ritnummer;
-		$body = $tm->BuildGetBody($ritnummer,$resSuppliers[$supplier_no]->supplier_desc,$resSuppliers[$supplier_no]->transporttype);
+		$body = $tm->BuildGetBody($ritnummer,$supplier->supplier_desc,$supplier->transporttype);
 		
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
-		
+		$tm->addAddress($options->TransportEmailAddress, $options->TransportName);
+
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually
 		$tm->AltBody = strip_tags($body);
@@ -318,23 +322,24 @@ switch($task){
 			$tm->UpdateStatus($ritnummer,$subject,$body, '0');
 		} else {
 			$tm->UpdateStatus($ritnummer,$subject,$body, '1');	
-			echo 'transport onderweg van '.$resSuppliers[$supplier_no]->supplier_desc." naar Vanda met ritnummer ".$ritnummer;
+			echo 'transport onderweg van '.$supplier->supplier_desc." naar Vanda met ritnummer ".$ritnummer;
 		}
 	break;
 		
 	case 'returntransport':
-		$supplier_no = $_POST['supplier'];		
+		$supplier_no = $_POST['supplier'];	
+		$supplier = $sm->getBySupplierNumber($supplier_no);	
 		
 		$ritnummer = $tm->save();
 		
 		// Prepare subject and messagebody
 		$subject = 'Transportverzoek Ritnr: '.$ritnummer;
-		$body = $tm->BuildReturnBody($ritnummer,$resSuppliers[$supplier_no]->supplier_desc,$resSuppliers[$supplier_no]->transporttype);
+		$body = $tm->BuildReturnBody($ritnummer,$supplier->supplier_desc,$supplier->transporttype);
 		
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
+		$tm->addAddress($options->TransportEmailAddress, $options->TransportName);
 
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually
@@ -347,7 +352,7 @@ switch($task){
 			$tm->UpdateStatus($ritnummer,$subject,$body, '0');
 		} else {
 			$tm->UpdateStatus($ritnummer,$subject,$body, '1');	
-			echo 'transport onderweg van Vanda naar '.$resSuppliers[$supplier_no]->supplier_desc."Met ritnummer ".$ritnummer ;
+			echo 'transport onderweg van Vanda naar '.$supplier->supplier_desc."Met ritnummer ".$ritnummer ;
 		}
 	break;
 	default:

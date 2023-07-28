@@ -1,6 +1,7 @@
 <?php
 require_once('PHPMailer/PHPMailerAutoload.php');
 require_once("class.db.php");
+require_once("class.option.php");
 
 class TransportMailer extends PHPMailer
 {	
@@ -9,6 +10,9 @@ class TransportMailer extends PHPMailer
 	{
 		parent::__construct();
 		
+		$om = new OptionManager();
+		$options = $om->getAllOptions()[0];
+
 		$this->isSMTP();
 		//Set SMTP options
 		$this->SMTPOptions = array(
@@ -26,7 +30,7 @@ class TransportMailer extends PHPMailer
 		//Ask for HTML-friendly debug output
 		$this->Debugoutput = 'html';
 		//Set the hostname of the mail server\
-		$this->Host = "mail1.pruim.eu";
+		$this->Host = "mx1.pruim.nl";
 		//Set the SMTP port number - likely to be 25, 465 or 587
 		$this->Port = 587;
 		//Whether to use SMTP authentication
@@ -36,8 +40,12 @@ class TransportMailer extends PHPMailer
 		//Password to use for SMTP authentication
 		$this->Password = "Appelsap";
 		//Set who the message is to be sent from
-		$this->setFrom('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
-		$this->addReplyTo('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
+		//DEBUG
+		$this->setFrom($options->TransportFromEmailAddress, $options->TransportFromName); //change for prod
+		$this->addReplyTo($options->TransportFromEmailAddress, $options->TransportFromName); //change for prod
+		//PRODUCTION
+		//$this->setFrom('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
+		//$this->addReplyTo('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
 	
 		$this->db = new DB();
 	}
@@ -45,8 +53,14 @@ class TransportMailer extends PHPMailer
 	function BuildGetBody($ritnummer,$supplier,$type){
 		$nl = "\r\n";
 		
+
+		//Change supplier name if needed.
 		if($supplier == "Vebe Floorcoverings BV"){
 			$supplier = "Vebe PVC Afdeling";
+		} elseif ($supplier == "Condor Grass"){
+			$supplier = "Condor Carpets afdeling grass";
+		} elseif ($supplier == "Condor Carpets BV"){
+			$supplier = "Condor Carpets afdeling tuft";
 		}
 		
 		$output = "<!doctype html>".$nl;
@@ -70,6 +84,10 @@ class TransportMailer extends PHPMailer
 		
 		if($supplier == "Vebe Floorcoverings BV"){
 			$supplier = "Vebe PVC Afdeling";
+		} elseif ($supplier == "Condor Grass"){
+			$supplier = "Condor Carpets afdeling grass";
+		} elseif ($supplier == "Condor Carpets BV"){
+			$supplier = "Condor Carpets afdeling tuft";
 		}
 		
 		$output = "<!doctype html>".$nl;

@@ -15,7 +15,11 @@ if(isset($_POST['opslaan'])){
 		"maat2x" => $_POST['maat2x'],
 		"maat2y" => $_POST['maat2y'],
 		"maat3x" => $_POST['maat3x'],
-		"maat3y" => $_POST['maat3y']
+		"maat3y" => $_POST['maat3y'],
+		"TransportName" => $_POST['TransportName'],
+		"TransportEmailAddress" => $_POST['TransportEmailAddress'],
+		"TransportFromName" => $_POST['TransportFromName'],
+		"TransportFromEmailAddress" => $_POST['TransportFromEmailAddress']
 	];
 	
 	if (!$optionManager->updateOptionRow($data)) {
@@ -37,27 +41,43 @@ $maat2x = $result->maat2x;
 $maat2y = $result->maat2y;
 
 $maat3x = $result->maat3x;
-$maat3y = $result->maat3y;	
+$maat3y = $result->maat3y;
 
+$TransportName = $result->TransportName;	
+$TransportEmailAddress = $result->TransportEmailAddress;	
+$TransportFromName = $result->TransportFromName;	
+$TransportFromEmailAddress = $result->TransportFromEmailAddress;	
 
 ?>
 <h1>Opties</h1>
+<h2>Stansen</h2>
 <form id="optieform" name="optieform" method="post">
+
  	<ul>
-    	<li><label for="bedrijfskenmerk">Bedrijfs Kenmerk:</label><input type="text" name="bedrijfskenmerk" id="bedrijfskenmerk" value="<?php echo ($bedrijfskenmerk ? $bedrijfskenmerk : '') ?>"</li>
-    	<li><label for="ponummer">PO Nummer:</label><input type="text" name="ponummer" id="ponummer" value="<?php echo ($ponummer ? $ponummer : '') ?>"</li>
-        <li><label for="ponummer">PO Nummer:</label><input type="text" name="ponummer" id="ponummer" value="<?php echo ($ponummer ? $ponummer : '') ?>"</li>
+    	<li><label for="bedrijfskenmerk">Bedrijfs Kenmerk:</label><input type="text" name="bedrijfskenmerk" id="bedrijfskenmerk" value="<?php echo ($bedrijfskenmerk ? $bedrijfskenmerk : '') ?>"></li>
+    	<li><label for="ponummer">PO Nummer:</label><input type="text" name="ponummer" id="ponummer" value="<?php echo ($ponummer ? $ponummer : '') ?>"></li>
+        <li><label for="ponummer">PO Nummer:</label><input type="text" name="ponummer" id="ponummer" value="<?php echo ($ponummer ? $ponummer : '') ?>"></li>
        
-        <li><label for="ponummer">Maat1 X:</label><input type="text" name="maat1x" id="maat1x" value="<?php echo ($maat1x ? $maat1x : '') ?>"</li>
-        <li><label for="ponummer">Maat1 Y:</label><input type="text" name="maat1y" id="maat1y" value="<?php echo ($maat1y ? $maat1y : '') ?>"</li>
+        <li><label for="ponummer">Maat1 X:</label><input type="text" name="maat1x" id="maat1x" value="<?php echo ($maat1x ? $maat1x : '') ?>"></li>
+        <li><label for="ponummer">Maat1 Y:</label><input type="text" name="maat1y" id="maat1y" value="<?php echo ($maat1y ? $maat1y : '') ?>"></li>
         
-        <li><label for="ponummer">Maat2 X:</label><input type="text" name="maat2x" id="maat2x" value="<?php echo ($maat2x ? $maat2x : '') ?>"</li>
-        <li><label for="ponummer">Maat2 Y:</label><input type="text" name="maat2y" id="maat2y" value="<?php echo ($maat2y ? $maat2y : '') ?>"</li>
+        <li><label for="ponummer">Maat2 X:</label><input type="text" name="maat2x" id="maat2x" value="<?php echo ($maat2x ? $maat2x : '') ?>"></li>
+        <li><label for="ponummer">Maat2 Y:</label><input type="text" name="maat2y" id="maat2y" value="<?php echo ($maat2y ? $maat2y : '') ?>"></li>
         
-        <li><label for="ponummer">Maat3 X:</label><input type="text" name="maat3x" id="maat3x" value="<?php echo ($maat3x ? $maat3x : '') ?>"</li>
-        <li><label for="ponummer">Maat3 Y:</label><input type="text" name="maat3y" id="maat3y" value="<?php echo ($maat3y ? $maat3y : '') ?>"</li>
-       
-        <li><label for="opslaan">Opslaan:</label><input type="submit" name="opslaan" value="Opslaan"></li>
-		<span><?php if ($formWasSaved) { echo('Opgeslagen'); } ?></span>
+        <li><label for="ponummer">Maat3 X:</label><input type="text" name="maat3x" id="maat3x" value="<?php echo ($maat3x ? $maat3x : '') ?>"></li>
+        <li><label for="ponummer">Maat3 Y:</label><input type="text" name="maat3y" id="maat3y" value="<?php echo ($maat3y ? $maat3y : '') ?>"></li>
     </ul>
+	<h2>Logistiek</h2>
+	<ul>
+		<li><B>Transport E-Mail Afzender:</B></li>
+		<li><label for="TransportFromName">Van:</label><input type="text" name="TransportFromName" value="<?php echo ($TransportFromName ? $TransportFromName : '') ?>"></li>
+		<li><label for="TransportFromEmailAddress">E-Mail</label><input type="text" name="TransportFromEmailAddress" value="<?php echo ($TransportFromEmailAddress ? $TransportFromEmailAddress : '') ?>"></li>
+		<li><B>Transport E-Mail versturen naar:</B></li>
+		<li><label for="TransportName">Naar:</label><input type="text" name="TransportName" value="<?php echo ($TransportName ? $TransportName : '') ?>"></li>
+		<li><label for="TransportEmailAddress">E-Mail</label><input type="text" name="TransportEmailAddress" value="<?php echo ($TransportEmailAddress ? $TransportEmailAddress : '') ?>"></li>
+		<li>&nbsp;</li>
+		<li><label for="opslaan">Opslaan:</label><input type="submit" name="opslaan" value="Opslaan"></li>
+		<span><?php if ($formWasSaved) { echo('Opgeslagen'); } ?></span>
+	</ul>
+	
 </form>
