@@ -124,7 +124,7 @@
 	</div>
 	<div id="version">
 		<a href="changelog.txt">
-		Vanda Management v 2.0 - generated on: <?php echo date('H:i:s'); ?>
+		Vanda Management v 2.0 Master - generated on: <?php echo date('H:i:s'); ?>
 		</a>
 	</div>
 </body>
