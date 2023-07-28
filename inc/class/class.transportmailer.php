@@ -1,6 +1,7 @@
 <?php
 require_once('PHPMailer/PHPMailerAutoload.php');
 require_once("class.db.php");
+require_once("class.option.php");
 
 class TransportMailer extends PHPMailer
 {	
@@ -9,6 +10,9 @@ class TransportMailer extends PHPMailer
 	{
 		parent::__construct();
 		
+		$om = new OptionManager();
+		$options = $om->getAllOptions()[0];
+
 		$this->isSMTP();
 		//Set SMTP options
 		$this->SMTPOptions = array(
@@ -36,8 +40,12 @@ class TransportMailer extends PHPMailer
 		//Password to use for SMTP authentication
 		$this->Password = "Appelsap";
 		//Set who the message is to be sent from
-		$this->setFrom('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
-		$this->addReplyTo('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
+		//DEBUG
+		$this->setFrom($options->TransportFromEmailAddress, $options->TransportFromName); //change for prod
+		$this->addReplyTo($options->TransportFromEmailAddress, $options->TransportFromName); //change for prod
+		//PRODUCTION
+		//$this->setFrom('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
+		//$this->addReplyTo('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
 	
 		$this->db = new DB();
 	}

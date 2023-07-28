@@ -16,7 +16,10 @@ if(isset($_POST['opslaan'])){
 		"maat2y" => $_POST['maat2y'],
 		"maat3x" => $_POST['maat3x'],
 		"maat3y" => $_POST['maat3y'],
-		"TransportEmailAddress" => $_POST['TransportEmailAddress']
+		"TransportName" => $_POST['TransportName'],
+		"TransportEmailAddress" => $_POST['TransportEmailAddress'],
+		"TransportFromName" => $_POST['TransportFromName'],
+		"TransportFromEmailAddress" => $_POST['TransportFromEmailAddress']
 	];
 	
 	if (!$optionManager->updateOptionRow($data)) {
@@ -38,8 +41,12 @@ $maat2x = $result->maat2x;
 $maat2y = $result->maat2y;
 
 $maat3x = $result->maat3x;
-$maat3y = $result->maat3y;	
+$maat3y = $result->maat3y;
+
+$TransportName = $result->TransportName;	
 $TransportEmailAddress = $result->TransportEmailAddress;	
+$TransportFromName = $result->TransportFromName;	
+$TransportFromEmailAddress = $result->TransportFromEmailAddress;	
 
 ?>
 <h1>Opties</h1>
@@ -62,8 +69,14 @@ $TransportEmailAddress = $result->TransportEmailAddress;
     </ul>
 	<h2>Logistiek</h2>
 	<ul>
- 		<li><label for="TransportEmailAddress">Tranport Email Adderss</label><input type="text" name="TransportEmailAddress" value="<?php echo ($TransportEmailAddress ? $TransportEmailAddress : '') ?>"></li>
-		 <li><label for="opslaan">Opslaan:</label><input type="submit" name="opslaan" value="Opslaan"></li>
+		<li><B>Transport E-Mail Afzender:</B></li>
+		<li><label for="TransportFromName">Van:</label><input type="text" name="TransportFromName" value="<?php echo ($TransportFromName ? $TransportFromName : '') ?>"></li>
+		<li><label for="TransportFromEmailAddress">E-Mail</label><input type="text" name="TransportFromEmailAddress" value="<?php echo ($TransportFromEmailAddress ? $TransportFromEmailAddress : '') ?>"></li>
+		<li><B>Transport E-Mail versturen naar:</B></li>
+		<li><label for="TransportName">Naar:</label><input type="text" name="TransportName" value="<?php echo ($TransportName ? $TransportName : '') ?>"></li>
+		<li><label for="TransportEmailAddress">E-Mail</label><input type="text" name="TransportEmailAddress" value="<?php echo ($TransportEmailAddress ? $TransportEmailAddress : '') ?>"></li>
+		<li>&nbsp;</li>
+		<li><label for="opslaan">Opslaan:</label><input type="submit" name="opslaan" value="Opslaan"></li>
 		<span><?php if ($formWasSaved) { echo('Opgeslagen'); } ?></span>
 	</ul>
 	
