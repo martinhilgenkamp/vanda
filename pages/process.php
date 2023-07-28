@@ -309,12 +309,7 @@ switch($task){
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		//DEBUG
-		$receipient = $options->TransportEmailAddress;
-		$tm->addAddress($receipient, 'Martin Hilgenkamp'); //change for debug
-		//PROD
-		//$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
-		
+		$tm->addAddress($options->TransportEmailAddress, $options->TransportName);
 
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually
@@ -344,10 +339,7 @@ switch($task){
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		//DEBUG
-		$tm->addAddress('mhilgenkmap@pruim.nl', 'Martin Hilgenkamp'); //change for debug
-		//PROD
-		//$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
+		$tm->addAddress($options->TransportEmailAddress, $options->TransportName);
 
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually
