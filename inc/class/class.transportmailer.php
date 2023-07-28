@@ -26,7 +26,7 @@ class TransportMailer extends PHPMailer
 		//Ask for HTML-friendly debug output
 		$this->Debugoutput = 'html';
 		//Set the hostname of the mail server\
-		$this->Host = "mail1.pruim.eu";
+		$this->Host = "mx1.pruim.nl";
 		//Set the SMTP port number - likely to be 25, 465 or 587
 		$this->Port = 587;
 		//Whether to use SMTP authentication
