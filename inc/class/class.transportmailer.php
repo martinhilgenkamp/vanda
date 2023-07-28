@@ -45,6 +45,8 @@ class TransportMailer extends PHPMailer
 	function BuildGetBody($ritnummer,$supplier,$type){
 		$nl = "\r\n";
 		
+
+		//Change supplier name if needed.
 		if($supplier == "Vebe Floorcoverings BV"){
 			$supplier = "Vebe PVC Afdeling";
 		}
@@ -70,6 +72,10 @@ class TransportMailer extends PHPMailer
 		
 		if($supplier == "Vebe Floorcoverings BV"){
 			$supplier = "Vebe PVC Afdeling";
+		} elseif ($supplier == "Condor Grass"){
+			$supplier = "Condor Carpets afdeling grass";
+		} elseif ($supplier == "Condor Carpets BV"){
+			$supplier = "Condor Carpets afdeling tuft";
 		}
 		
 		$output = "<!doctype html>".$nl;

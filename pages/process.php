@@ -50,6 +50,11 @@ $rm = new RegistrationManager();
 $prm = new ProductionManager();
 $stm = new ShipmentManager();
 $tm = new TransportMailer();
+$om = new OptionManager();
+
+$options = $om->getAllOptions()[0];
+
+print_r($options);
 
 $resSuppliers = $sm->loadSuppliers();
 $resProducts = $pm->loadProducts();
@@ -305,8 +310,12 @@ switch($task){
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
+		//DEBUG
+		$tm->addAddress('mhilgenkmap@pruim.nl', 'Martin Hilgenkamp'); //change for debug
+		//PROD
+		//$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
 		
+
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually
 		$tm->AltBody = strip_tags($body);
@@ -334,7 +343,10 @@ switch($task){
 		$tm->Subject = $subject;
 		
 		//Set who the message is to be sent to
-		$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
+		//DEBUG
+		$tm->addAddress('mhilgenkmap@pruim.nl', 'Martin Hilgenkamp'); //change for debug
+		//PROD
+		//$tm->addAddress('expeditie@verhoek-europe.com', 'Verhoek Expeditie'); //change for debug
 
 		$tm->msgHTML($body);
 		//Replace the plain text body with one created manually

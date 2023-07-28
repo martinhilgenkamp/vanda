@@ -1,1 +1,2 @@
-UPDATE `vanda_suppliers` SET `supplier_desc` = 'Condor Grass', `transportmail` = '1' WHERE `vanda_suppliers`.`id` = 8;
+UPDATE `vanda_suppliers` SET `supplier_desc` = 'Condor Grass', `transportmail` = '1', `transporttype` = 'oplegger' WHERE `vanda_suppliers`.`id` = 8;
+ALTER TABLE `vanda_options` ADD `TransportEmailAddress` VARCHAR(250) NOT NULL AFTER `maat3y`;
