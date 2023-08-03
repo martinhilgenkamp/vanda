@@ -49,19 +49,30 @@ class MachineManager {
 		
 		$res = $this->db->selectQuery($qry);
 
-		$persoon = isset($_SESSION['persoon'.$machine]) ?  $_SESSION['persoon'.$machine] : $res[0]->persoon;
-		
-		return $persoon;
+		if(isset($res[0]->persoon) || isset($_SESSION['persoon'.$machine])){
+			$persoon = isset($_SESSION['persoon'.$machine]) ?  $_SESSION['persoon'.$machine] : $res[0]->persoon;
+			return $persoon;
+		} else {
+			return;
+		}
 	}
 	
 	function getLastKwaliteit ($machine){
 		// Determine user based on session and db.
 		$qry = "SELECT kwaliteit FROM `vanda_machines` WHERE machine = '".$machine."' ORDER BY datum DESC LIMIT 1";
-		
 		$res = $this->db->selectQuery($qry);
-		$kwaliteit = isset($_SESSION['kwaliteit'.$machine]) ?  $_SESSION['kwaliteit'.$machine] : $res[0]->kwaliteit;
+
 		
-		return $kwaliteit;
+
+		if(isset($_SESSION['kwaliteit'.$machine])){
+			$kwaliteit = $_SESSION['kwaliteit'.$machine];
+			return $kwaliteit;
+		} elseif(isset($res[0]->kwaliteit)){
+			$kwaliteit = $res[0]->kwaliteit;
+			return $kwaliteit;
+		}else {
+			return;
+		}
 	}
 	
 	function getEditForm($aantal){
@@ -121,12 +132,12 @@ class MachineManager {
 		$output = "";
 		$output .= "<div id='filter_form_div'>";
 		$output .= "<form id='filter_form' action='index.php?page=machinetable' method='post'>";
-		$output .= "<label for='free_search' class='left'>Zoek:</label><input type='text' name='free_search' id='input_free_search' value='".$free_search."' class='left'/><input type='submit' name='submit_search' id='submit_free_search' value='Zoek' class='left' />";
-		$output .= "<input type=\"button\" name=\"Herstel\" id=\"herstel\" value=\"Herstel\" class=\"ui-rouded-corners\" onclick=\"window.location = 'index.php?page=machinetable'\"/>";
-		$output .= "<input class=\"datepicker\" id=\"startdate\" name=\"startdate\" value=\"".($startdate ? $startdate :  $final)."\" onchange=\"$('#filter_form').submit()\"/>";
-        $output .= "<input class=\"datepicker\" id=\"stopdate\" name=\"stopdate\" value=\"".($stopdate ? $stopdate : date('Y-m-d',$time))."\" onchange=\"$('#filter_form').submit()\"/>";	
+		$output .= "<input type='text' name='free_search' id='input_free_search' value='".$free_search."' class='left ui-widget ui-text ui-corner-all'/><input type='submit' name='submit_search' id='submit_free_search' value='Zoek' class='leftui-widget ui-button ui-corner-all' />";
+		//$output .= "<input type=\"button\" name=\"Herstel\" id=\"herstel\" value=\"Herstel\" class=\"ui-widget ui-button ui-corner-all\" onclick=\"window.location = 'index.php?page=machinetable'\"/>";
+		$output .= "<input class=\"datepicker ui-corner-all\" id=\"startdate\" name=\"startdate\" value=\"".($startdate ? $startdate :  $final)."\" onchange=\"$('#filter_form').submit()\"/>";
+        $output .= "<input class=\"datepicker ui-corner-all\" id=\"stopdate\" name=\"stopdate\" value=\"".($stopdate ? $stopdate : date('Y-m-d',$time))."\" onchange=\"$('#filter_form').submit()\"/>";	
 		
-		$output .= "<select class=\"filter_select\" name=\"machine_filter\" id=\"machine_filter\" onchange=\"$('#filter_form').submit()\">";
+		$output .= "<select class=\"filter_select ui-corner-all\" name=\"machine_filter\" id=\"machine_filter\" onchange=\"$('#filter_form').submit()s\">";
         $output .= "<option value=\"\"".(!$machine_filter ? "selected='selected'" : '' ).">Machine</option>";
    
 		foreach($machines as $machine){
@@ -343,13 +354,13 @@ class MachineManager {
 		// Generate table header
 		$output .= "<table class=\"data-table\">";
 		$output .= "	<tr>";
+		$output .= "		<th class='ui-corner-tl'><input type='checkbox' id='machine-select-all' name='machine-select-all'></th>";
 		$output .= "		<th>Rij</th>";
-		$output .= "		<th><input type='checkbox' id='machine-select-all' name='machine-select-all'></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=id&order=".$order."&pg=".$pg."'>ID</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=persoon&order=".$order."&pg=".$pg."'>Operator</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=kwaliteit&order=".$order."&pg=".$pg."'>Kwaliteit</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=machine&order=".$order."&pg=".$pg."'>Machine</a></th>";
-		$output .= "		<th><a href='?".$link_array['page']."&sort=datum&order=".$order."&pg=".$pg."'>Datum</a></th>";
+		$output .= "		<th class='ui-corner-tr'><a href='?".$link_array['page']."&sort=datum&order=".$order."&pg=".$pg."'>Datum</a></th>";
 		$output .= "	</tr>";
 		
 		$records = 0;
@@ -357,8 +368,8 @@ class MachineManager {
 			// Generate table rows
 			$records++;
 			$output .= "	<tr id='row_".$row->id."' class='data-table-row'>";
-			$output .= "		<td>".$records."</td>";
 			$output .= "		<td><input class='machine-checkbox' type='checkbox' name='machineid[]' value='".$row->id."' /></td>";
+			$output .= "		<td>".$records."</td>";
 			$output .= "		<td>".$row->id."</td>";
 			$output .= "		<td>".$row->persoon."</td>";
 			$output .= "		<td>".$row->kwaliteit."</td>";
@@ -374,7 +385,7 @@ class MachineManager {
 		}
 		else {
 			$output .=  "<tr>";	
-			$output .=  	"<th colspan='7'>Totaal ".$records." registraties.</th>";
+			$output .=  	"<th class='ui-corner-bl ui-corner-br' colspan='7'>Totaal ".$records." registraties.</th>";
 			$output .=  "</tr>";
 		}
 		

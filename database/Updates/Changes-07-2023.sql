@@ -10,3 +10,6 @@ ALTER TABLE `vanda_options` ADD `TransportFromName` VARCHAR(250) NOT NULL AFTER 
 -- Standaard waarde voor de nieuwe opties toevoegen.
 UPDATE `vanda_options` SET `TransportEmailAddress` = 'expeditie@verhoek-europe.com', `TransportName` = 'Verhoek Expeditie' WHERE `vanda_options`.`id` = 1;
 UPDATE `vanda_options` SET `TransportFromEmailAddress` = 'magazijn@vandacarpets.nl', `TransportFromName` = 'Vanda Carpets' WHERE `vanda_options`.`id` = 1;
+
+-- Machine optie toevoegen\
+ALTER TABLE `vanda_options` ADD `MachineCount` INT(2) NOT NULL AFTER `TransportFromName`;

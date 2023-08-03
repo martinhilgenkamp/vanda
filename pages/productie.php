@@ -58,7 +58,7 @@ $products = $pm->getProductsByExport(2);
 				?>
          </li>
 		 <hr>
-		 <li><label for="gewicht">Gewicht: </label><input type="number" id="gewicht" class="ui-corner-all" name="gewicht" max="9999" disabled="disabled" maxlength=4 /></li>
+		 <li><label for="gewicht">Gewicht: </label><input type="number" id="gewicht" class="ui-corner-all textfield" name="gewicht" max="9999" disabled="disabled" maxlength=4 /></li>
 		 <li>
 			<!--<div id="barcode-display"><?php echo $barcode; ?></div>!-->
 		 </li>

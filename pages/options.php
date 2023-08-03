@@ -19,7 +19,8 @@ if(isset($_POST['opslaan'])){
 		"TransportName" => $_POST['TransportName'],
 		"TransportEmailAddress" => $_POST['TransportEmailAddress'],
 		"TransportFromName" => $_POST['TransportFromName'],
-		"TransportFromEmailAddress" => $_POST['TransportFromEmailAddress']
+		"TransportFromEmailAddress" => $_POST['TransportFromEmailAddress'],
+		"MachineCount" => $_POST['MachineCount']
 	];
 	
 	if (!$optionManager->updateOptionRow($data)) {
@@ -46,13 +47,14 @@ $maat3y = $result->maat3y;
 $TransportName = $result->TransportName;	
 $TransportEmailAddress = $result->TransportEmailAddress;	
 $TransportFromName = $result->TransportFromName;	
-$TransportFromEmailAddress = $result->TransportFromEmailAddress;	
+$TransportFromEmailAddress = $result->TransportFromEmailAddress;
+$MachineCount = $result->MachineCount;	
 
 ?>
 <h1>Opties</h1>
 <h2>Stansen</h2>
 <form id="optieform" name="optieform" method="post">
-
+<center><div id="notice"><span><?php if ($formWasSaved) { echo('Opgeslagen'); } ?></span></div></center>
  	<ul>
     	<li><label for="bedrijfskenmerk">Bedrijfs Kenmerk:</label><input type="text" name="bedrijfskenmerk" id="bedrijfskenmerk" value="<?php echo ($bedrijfskenmerk ? $bedrijfskenmerk : '') ?>"></li>
     	<li><label for="ponummer">PO Nummer:</label><input type="text" name="ponummer" id="ponummer" value="<?php echo ($ponummer ? $ponummer : '') ?>"></li>
@@ -75,9 +77,13 @@ $TransportFromEmailAddress = $result->TransportFromEmailAddress;
 		<li><B>Transport E-Mail versturen naar:</B></li>
 		<li><label for="TransportName">Naar:</label><input type="text" name="TransportName" value="<?php echo ($TransportName ? $TransportName : '') ?>"></li>
 		<li><label for="TransportEmailAddress">E-Mail</label><input type="text" name="TransportEmailAddress" value="<?php echo ($TransportEmailAddress ? $TransportEmailAddress : '') ?>"></li>
+	</ul>
+	<h2>Machines</h2>
+	<ul>
+		<li><B>Machine Pagina:</B></li>
+		<li><label for="MachineCount">Aantal Machines:</label><input type="text" name="MachineCount" value="<?php echo ($MachineCount ? $MachineCount : '') ?>"></li>
 		<li>&nbsp;</li>
 		<li><label for="opslaan">Opslaan:</label><input type="submit" name="opslaan" value="Opslaan"></li>
-		<span><?php if ($formWasSaved) { echo('Opgeslagen'); } ?></span>
 	</ul>
 	
 </form>

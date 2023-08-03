@@ -1,13 +1,15 @@
 <?php
 require_once("inc/class/class.machines.php");
 require_once("inc/class/class.user.php");
+require_once("inc/class/class.option.php");
 
 $mm = new MachineManager;
 $um = new UserManager;
+$om = new OptionManager();
 
 $users = $um->listUsers();
-
-$machines = 9;		
+$result = $om->getAllOptions()[0];
+$machines = $result->MachineCount;	
 ?>
 
 <div class="navigation-header"><a href="index.php?page=productie" class="ui-button ui-corner-all ui-widget pageswitch" style="position: absolute"><< Productie</a></div>
@@ -24,10 +26,7 @@ $machines = 9;
 		<?php
 		for ($i = 1; $i <= $machines; $i++) {
             $lastPerson = $mm->getLastPersoon($i);
-			$latsKwaliteit = $mm->getLastKwaliteit($i);
-
-			echo $latsKwaliteit;
-
+			$lastKwaliteit = $mm->getLastKwaliteit($i);		
 		?>			
 			<ul>
 				<li>
@@ -44,7 +43,7 @@ $machines = 9;
                     </select>
                 </li>
 				<li>
-                    <input type="text" class="ui-widget ui-state-default ui-corner-all machine-input-text" name="kwalitet<?= $i ?>" id="input_kwaliteit<?= $i ?>" value="<?= ($latsKwaliteit != '') ? $mm->getLastKwaliteit($i) : '' ?>">
+                    <input type="text" class="ui-widget ui-state-default ui-corner-all machine-input-text" name="kwalitet<?= $i ?>" id="input_kwaliteit<?= $i ?>" value="<?= $lastKwaliteit;?>">
                 </li>
                 <input type="button" class="ui-button ui-corner-all ui-widget machinebutton"  id="machine<?= $i ?>" name="machine<?= $i ?>" value="Machine<?= $i ?>">
 			</ul>
@@ -52,3 +51,5 @@ $machines = 9;
 		<input type="hidden" name="task" id="input_task" value="add" />
 	</form>
 </div>
+<?php
+?>
