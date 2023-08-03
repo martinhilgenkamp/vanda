@@ -12,10 +12,10 @@ $leverid = isset($_POST['leverid']) ? $_POST['leverid'] : '';
 $barcode = isset($_POST['barcode']) ? $_POST['barcode'] : '';
 
 // Debugging set manual values
-// $task = 'register';
-// $barcode = "F008300000000031";
-// $leverid = '1350';
-// $klant = 'md entree';
+ // $task = 'register';
+ // $barcode = "F008300000000813";
+ // $leverid = '2559';
+ // $klant = 'test';
 
 switch ($task){
 	case 'load':
@@ -58,18 +58,36 @@ switch ($task){
 		$shipId = $sm->addShipment($dataShipment);
 
 		if($shipId == 0 && $leverid != '') {
-			$data = [
-				"datum" => date('Y-m-d H:i:s')
-			];
+			
+			$Shipment = $sm->GetShipment($leverid);
+				if($Shipment->verzonden == 1){
+					$arr = array(
+						'error' => '1',
+						'message' => 'Kan artikel niet toevoegen, de zending is al verzonden.',
+					);
+					echo json_encode($arr);	
+					exit;
+				} else if($Shipment->datum == date('Y-m-d H:i:s')){
+					$arr = array(
+						'error' => '1',
+						'message' => 'Fout aanmaken dubbele zending, probeer het opnieuw.',
+					);
+					echo json_encode($arr);	
+					exit;
+				}else {
+					$data = [
+						"datum" => date('Y-m-d H:i:s')
+					];
 
-			if (!$sm->editShipment($data, $leverid)) {
-				$arr = array(
-					'error' => '1',
-					'message' => 'Er is een Mysql error opgetreden tijden het aanmaken van de shipment',
-				);
-				echo json_encode($arr);	
-				exit;
-			}
+					if (!$sm->editShipment($data, $leverid)) {
+						$arr = array(
+							'error' => '1',
+							'message' => 'Er is een Mysql error opgetreden tijden het aanmaken van de shipment',
+						);
+						echo json_encode($arr);	
+						exit;
+					}
+				}
 		}
 		
 		// Als er geen leverid word mee gegeven pak de laaste ship id (nieuwe zending)

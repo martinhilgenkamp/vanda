@@ -16,9 +16,10 @@ switch($task){
 		$ship_id = '';	
 		
 		if(isset($_GET['leverid'])){
-			$ship_id = $_GET['leverid'];
-		} else {
 			$ship_id = $_POST['leverid'];
+		} else {
+			$ship_id = $_GET['leverid'];
+			
 		}
 		
 		$klant = $_POST['klant'];
@@ -45,10 +46,10 @@ switch($task){
 			if($ShipID == 0 && $ship_id != '') {
 				
 				$Shipment = $sm->GetShipment($ship_id);
-				echo "VERZONDEN: ". $Shipment->verzonden;
-				
 				if($Shipment->verzonden == 1){
-					echo "Kan artikel niet toevoegen de zending is al verzonden";
+					echo "Kan artikel niet toevoegen de zending is al verzonden.";
+				} else if($Shipment->datum == date('Y-m-d H:i:s')){
+					echo "Fout aanmaken dubbele zending, probeer het opnieuw.";
 				} else {
 				
 					$data = [

@@ -61,7 +61,6 @@ class ShipmentManager {
 
 	function GetShipment($id){
 		$qry = "SELECT * FROM vanda_shipment WHERE ship_id = '".$id."'";
-		echo $qry;
 		return $this->db->selectObject($qry);
 	}
 }

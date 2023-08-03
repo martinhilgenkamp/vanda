@@ -76,7 +76,7 @@
          <ul class="mobilelist" id="shiplist">
             <li><label for="klant">Klant: </label><input type="text" id="klant" name="klant" value="" /></li>
             <li><label for="barcode">Barcode: </label><input type="text" id="barcode" name="barcode" value="" autofocus /></li>
-            <li><label for="leverid">LeverId: </label><input type="text" id="leverid" name="leverid" value="" readonly="true" />
+            <li><label for="leverid">Zending: </label><input type="text" id="leverid" name="leverid" value="" readonly="true" />
             <li><center><input type="submit" onClick="SubmitShipment();" value="Verstuur"></center></li>
          </ul>
         </form>
