@@ -59,14 +59,13 @@ class MachineManager {
 		$qry = "SELECT kwaliteit FROM `vanda_machines` WHERE machine = '".$machine."' ORDER BY datum DESC LIMIT 1";
 		
 		$res = $this->db->selectQuery($qry);
-
 		$kwaliteit = isset($_SESSION['kwaliteit'.$machine]) ?  $_SESSION['kwaliteit'.$machine] : $res[0]->kwaliteit;
 		
 		return $kwaliteit;
 	}
 	
 	function getEditForm($aantal){
-		
+		$output = '';
 		// start generating output
 		$output .= "<div id=\"machineform-wrapper\">";
 		$output .= "<form id=\"machineform\" name=\"machineform\"  method=\"post\" target=\"_blank\">";
