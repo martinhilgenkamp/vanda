@@ -14,6 +14,7 @@ switch($task){
 	case "ship":	
 		// Variabele uit de post halen
 		$ship_id = '';	
+		
 		if(isset($_GET['leverid'])){
 			$ship_id = $_GET['leverid'];
 		} else {
@@ -37,22 +38,32 @@ switch($task){
 				"datum" => date('Y-m-d H:i:s')
 			];
 
-			$shipId = $sm->addShipment($data);
+			$ShipID = $sm->addShipment($data);
 
-			// Registreer een shipment + verander de datum naar de laastst toegevoegde waarde.			
-			if($shipId == 0 && $ship_id != '') {
-				$data = [
+			// Registreer een shipment + verander de datum naar de laastst toegevoegde waarde.
+			// Check of er het een nieuwe of een bestaande shipment is.		
+			if($ShipID == 0 && $ship_id != '') {
+				
+				$Shipment = $sm->GetShipment($ship_id);
+				echo "VERZONDEN: ". $Shipment->verzonden;
+				
+				if($Shipment->verzonden == 1){
+					echo "Kan artikel niet toevoegen de zending is al verzonden";
+				} else {
+				
+					$data = [
 					"datum" => date('Y-m-d H:i:s')
-				];
-
-				if (!$sm->editShipment($data, $ship_id)) {
-					echo "Er is een fout opgetreden bij het verwerken van de zending!";
+					];
+				
+					if (!$sm->editShipment($data, $ship_id)) {
+						echo "Er is een fout opgetreden bij het verwerken van de zending!";
+					}
 				}
 			}
 			
 			// Als er geen shipid word mee gegeven pak de laaste ship id (nieuwe zending)
 			if($ship_id == ''){
-				$ship_id = $shipId;
+				$ship_id = $ShipID;
 			}
 			
 			// is successvol opgeslagen, nu het artikel afboeken in de voorraad lijst en de juiste ship id er aan hangen.
@@ -99,8 +110,9 @@ switch($task){
 			showform($klant, $leverid);
 
 			echo showSipments($zendingen);
-		break;		
-		// Standaard gewoon alleen het formulier laten zien
+		break;
+
+		// Standaard gewoon alleen het formulier laten zien met openstaande shipments.
 		default:
 			showform();
 			echo showSipments($zendingen);

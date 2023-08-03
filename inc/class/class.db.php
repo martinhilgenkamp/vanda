@@ -37,6 +37,13 @@ class DB {
 		return $resArray;
 	}
 
+	function selectObject($query) {
+		$selectResult = $this->link->query($query) or die("Ongeldige query: " . $query);
+		$resObj = $selectResult->fetch_object();
+		
+		return $resObj;
+	}
+
 	function updateQuery($table, $data, $where) {
 		$strInsert = '';
 		$strValues = '';

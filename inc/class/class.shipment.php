@@ -36,7 +36,7 @@ class ShipmentManager {
 	}
 
 	function getAllShipments() {
-		$qry = "SELECT * FROM  vanda_shipment GROUP BY datum DESC";
+		$qry = "SELECT * FROM  vanda_shipment ORDER BY datum DESC";
 		
 		return $this->db->selectQuery($qry);
 	}
@@ -57,6 +57,12 @@ class ShipmentManager {
 		$qry = "SELECT * FROM vanda_production WHERE shipping_id = '".$id."' AND removed = '0'";
 
 		return $this->db->selectQuery($qry); 
+	}
+
+	function GetShipment($id){
+		$qry = "SELECT * FROM vanda_shipment WHERE ship_id = '".$id."'";
+		echo $qry;
+		return $this->db->selectObject($qry);
 	}
 }
 
