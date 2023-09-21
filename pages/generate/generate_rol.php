@@ -1,7 +1,7 @@
 <?php 
 // Noodzakelijke dingen bij elkaar rapen.
 require_once('../../inc/class/class.rollen.php');
-require_once('../../tcpdf.php');
+require_once('../../inc/tcpdf/tcpdf.php');
 date_default_timezone_set("Europe/Amsterdam");
 $rollManager = new RollsManager();
 
