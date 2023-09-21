@@ -43,14 +43,14 @@ require_once("../inc/class/class.product.php");
 require_once("../inc/class/class.registration.php");
 require_once("../inc/class/class.production.php");
 require_once("../inc/class/class.shipment.php");
-require_once("../inc/class/class.transportmailer.php");
+//require_once("../inc/class/class.transportmailer.php");
 
 $sm = new SupplierManager();
 $pm = new ProductManager();
 $rm = new RegistrationManager();
 $prm = new ProductionManager();
 $stm = new ShipmentManager();
-$tm = new TransportMailer();
+//$tm = new TransportMailer();
 $om = new OptionManager();
 $options = $om->getAllOptions()[0];
 
@@ -164,14 +164,12 @@ switch($task){
 	
 	case 'register':
 		$data = [
-			"id" => null,
 			"article_id" => $article->id,
 			"supplier_id" => $supplier->id,
 			"amount" => $_POST['amount'],
 			"remark" => ($remark) ? $remark : null,
 			"date" => date('Y-m-d H:i:s'),
 		];
-
 		$registrationId = $rm->addRegistration($data);
 
 		if($registrationId > 0) {
