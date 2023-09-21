@@ -5,32 +5,28 @@ ini_set("display_errors", 1);
 
 require_once("inc/class/class.task.php");
 
-$task = new TaskManager;
+$tm = new TaskManager;
 
 // Process posted data
-if(isset($_POST)){	
-	$id = $_POST['id'];
-	$name = $_POST['taak'];
-	$description = $_POST['description'];
-	$date = $_POST['date'];
-	$action = $_POST['action'];
-	
-	switch ($action) {
+if($_POST){		
+	switch ($_POST['action']) {
 		case 'new':
 			$newTaskdata = [
-				"name" => $name,
-				"description" => $description,
-				"date" => $date
+				"name" => $_POST['taak'],
+				"description" => $_POST['description'],
+				"date" => $_POST['date'],
+				"filename" => $_POST['filename'],
+				"status" => 0,
 			];
-			$task->addTask($newTaskdata);
+			$tm->addTask($newTaskdata);
 			unset($_POST);
 		break;
 		case 'behandeling':
-			$task->processTask($id);
+			$tm->processTask($id);
 			exit();
 		break;
 		case 'gereed':
-			$task->completeTask($id);
+			$tm->completeTask($id);
 			exit();
 		break;
 	} 
@@ -38,6 +34,6 @@ if(isset($_POST)){
 }
 
 echo "<h1>Alle Geregistreerde taken</h1>";
-$task->buildTable($task->getAll());	
+$tm->buildTable($tm->getAll());	
 echo "<br /><br />";
 ?>	

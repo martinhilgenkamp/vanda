@@ -73,7 +73,7 @@ class TaskManager {
 		}
 		
 		$output = '';
-		$output .= '<div id="taskformcontainer">';
+		$output .= '<div id="taskformcontainer" class=\'ui-corner-all\'>';
 		$output .= '<form name="taskform" id="taskform" method="post" action="index.php?page=task'.($currentview ? '&view='.$currentview : '').'">';
 		$output .= '<label for="name">Taak</label><input type="text" name="taak" id="name">';
 		$output .= '<label for="description">Opmerking</label><input type="text" name="description" id="description">';
@@ -109,7 +109,7 @@ class TaskManager {
 		
 		$output = "";
 		$output .= "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
-		$output .= "<tr><th>File</th><th>Taak</th><th>Opmerking</th><th>Datum</th><th>Adres</th><th>Gereed</th></tr>";
+		$output .= "<tr><th class='ui-corner-tl'>File</th><th>Taak</th><th>Opmerking</th><th>Datum</th><th>Adres</th><th class='ui-corner-tr'>Gereed</th></tr>";
 
 		if(count($tasklist) > 0){			
 			foreach($tasklist as $row){
@@ -160,10 +160,11 @@ class TaskManager {
 		} 
 		else {
 			// Geef een melding dat er niets is weer te geven.
-			$output .= "<tr><td colspan='5'> Er zijn nog geen taken</td></tr>";	
+			$output .= "<tr><td colspan='6' class='ui-corner-bottom'> Er zijn nog geen taken</td></tr>";	
 		}
+		$output .= "<tr><th class='ui-corner-bottom' colspan='6'>Er zijn ". count($tasklist) . " taken weergegeven</th></tr>";
 		$output .= "</table>";
-		$output .=  "<center>Er zijn ". count($tasklist) . " taken weergegeven<br>";
+
 
 		echo $output;	
 	}
