@@ -17,8 +17,13 @@ class MachineManager {
 		}
 
 		$time = $this->getLastTime($data);
+		
+		echo "<hr>";
+		print_r($data);
+		echo "<hr>";
 
 		if(strtotime("-1 minutes") >= strtotime($time) || $time == '') {
+			
 			$machineId = $this->db->insertQuery("vanda_machines", $data);
 
 			if($machineId > 0) {
@@ -37,9 +42,7 @@ class MachineManager {
 
 	function getLastTime($data) {
 		$qry = "SELECT datum FROM `vanda_machines` WHERE persoon = '".$data['persoon']."' AND machine = '".$data['machine']."' ORDER BY datum DESC LIMIT 1";
-		
 		$res = $this->db->selectQuery($qry);
-
 		return $res[0]->datum;
 	}
 		
@@ -98,9 +101,20 @@ class MachineManager {
 	}
 
 	function getAllMachines() {
-		$qry = "SELECT machine FROM `vanda_machines` GROUP BY machine ASC";
-
+		$qry = "SELECT vm.id, vm.persoon, vm.kwaliteit, vm.machine, vm.datum, vm.verwijderd FROM vanda_machines vm INNER JOIN ( SELECT machine, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ) latest ON vm.machine = latest.machine AND vm.datum = latest.max_datum ORDER BY vm.datum DESC;";
 		return $this->db->selectQuery($qry);
+	}
+
+	function fillUnusedMachines($machines, $machinecount, $object) {
+		$currentCount = count($machines);
+		if ($currentCount >= $machinecount) {
+			return $machines; // Array already has x or more elements
+		}
+		$keysToAdd = $machinecount - $currentCount;
+		for ($i = 0; $i < $keysToAdd; $i++) {
+			$machines["key_" . ($currentCount + $i)] = $object;
+		}
+		return $machines;
 	}
 	
 	function loadFilterForm($options){		
