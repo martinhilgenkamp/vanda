@@ -101,8 +101,8 @@ class MachineManager {
 	}
 
 	function getAllMachines() {
-		//$qry = "SELECT vm.id, vm.persoon, vm.kwaliteit, vm.machine, vm.datum, vm.verwijderd FROM vanda_machines vm INNER JOIN ( SELECT machine, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ) latest ON vm.machine = latest.machine AND vm.datum = latest.max_datum ORDER BY vm.datum DESC;";
-		$qry = "SELECT machine, persoon, kwaliteit, datum, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ORDER BY max_datum DESC;";
+		$qry = "SELECT vm.id, vm.persoon, vm.kwaliteit, vm.machine, vm.datum, vm.verwijderd FROM vanda_machines vm INNER JOIN ( SELECT machine, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ) latest ON vm.machine = latest.machine AND vm.datum = latest.max_datum ORDER BY vm.datum DESC;";
+		//$qry = "SELECT machine, persoon, kwaliteit, datum, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ORDER BY max_datum DESC;";
 		return $this->db->selectQuery($qry);
 	}
 
