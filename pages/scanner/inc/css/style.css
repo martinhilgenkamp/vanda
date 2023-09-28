@@ -1,0 +1,57 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family:  Arial;
+  }
+  
+  body, table {
+    width: 240px; 
+    font-size: 0.9em;
+    font-family:  Arial, Helvetica, sans-serif;
+  }
+  
+  h1 {
+      text-align: center;
+  }
+  
+  label{
+        display: inline-block;
+        width: 100px;
+        font-size: 0.8em;	
+    }
+  
+  #notice{
+      width: 210px;
+      margin: 5px auto;
+      
+  }
+  
+  .notice {
+          border: 1px solid #6879FF;
+          background: #C8CEFF;
+  }
+  
+  .error {
+         border: 1px solid #FF8D82;
+          background: #FFD4A4;
+  }
+
+    input[type=text] {
+        display: inline-block;
+        margin: 5px 0px;;
+        width: 130px;	
+    }
+  
+  input[type=submit] {
+      margin: 5px auto;
+  }
+  
+  table tr:hover{
+      cursor:  pointer;
+      background: #ccc;
+      text-align:  center;
+  }
+  
+  table tr td{
+   text-align:  center;
+  }

@@ -1,70 +1,25 @@
 <!doctype html>
 <html>
 <head>
+  <!-- Define viewport for handheld scanners !-->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=240, initial-scale=1, maximum-scale=1, user-scalable=0">
   <meta name="viewport" content="width=240, initial-scale=1, maximum-scale=1, user-scalable=0">
   <title>Vanda Carpets - Process Management</title>
+
+  <!-- Iinclude Stylesheet !-->
+  <link rel="stylesheet" href="inc/css/style.css">
+
   <!-- Iinclude nessecary javascripts !-->
   <script language="javascript" type="text/javascript" src="../../inc/script/jquery.js"></script>
   <script language="javascript" type="text/javascript" src="../../inc/script/scan.js"></script>
+  
+  <script>
+	// Set the required parameters for the page to run.
+	const inactivityTimeout = 1 * 60 * 1000; // 10 minutes
+  </script>
+  <style
   <style>
-	  * {
-		margin: 0px;
-		padding: 0px;
-		font-family:  Arial;
-	  }
-	  
-	  body, table {
-		width: 240px; 
-	    font-size: 0.9em;
-	  }
-	  
-	  h1 {
-		  text-align: center;
-	  }
-	  
-	  label{
-			display: inline-block;
-			width: 100px;
-			font-size: 0.8em;	
-		}
-	  
-	  #notice{
-		  width: 210px;
-		  margin: 5px auto;
-		  
-	  }
-	  
-	  .notice {
-		  	border: 1px solid #6879FF;
-		  	background: #C8CEFF;
-	  }
-	  
-	  .error {
-		 	border: 1px solid #FF8D82;
-		  	background: #FFD4A4;
-	  }
-
-		input[type=text] {
-			display: inline-block;
-			margin: 5px 0px;;
-			width: 130px;	
-		}
-	  
-	  input[type=submit] {
-		  margin: 5px auto;
-	  }
-	  
-	  table tr:hover{
-		  cursor:  pointer;
-		  background: #ccc;
-		  text-align:  center;
-	  }
-	  
-	  table tr td{
-	   text-align:  center;
-	  }
 	
   </style> 
   </head>
@@ -81,7 +36,8 @@
          </ul>
         </form>
     </div>
-    <table id="excelDataTable" border="0">    
+    <table id="excelDataTable" border="0"> 	   
     </table>
+	<script src="inc/script/inactivity-timer.js"></script>
   </body>
 </html>
