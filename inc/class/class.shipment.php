@@ -37,7 +37,11 @@ class ShipmentManager {
 
 	function getAllShipments() {
 		$qry = "SELECT * FROM  vanda_shipment ORDER BY datum DESC";
-		
+		return $this->db->selectQuery($qry);
+	}
+
+	function getLastShipment() {
+		$qry = "SELECT * FROM  vanda_shipment ORDER BY datum DESC";
 		return $this->db->selectQuery($qry);
 	}
 
@@ -48,7 +52,7 @@ class ShipmentManager {
 	}
 
 	function getAllUnShippedShipments() {
-		$qry = "SELECT ship_id as id, klant, DATE_FORMAT(datum,'%d-%m-%Y') as datum FROM  vanda_shipment WHERE verzonden != 1 GROUP BY ship_id ASC";
+		$qry = "SELECT ship_id as id, klant, DATE_FORMAT(datum,'%d-%m-%Y') as datum FROM  vanda_shipment WHERE verzonden != 1 GROUP BY datum DESC";
 
 		return $this->db->selectQuery($qry);
 	}

@@ -11,6 +11,7 @@ class DB {
 	var $updateResult;
 	var $deleteResult;
 	var $insertResult;
+	var $inser_id;
 
 	var $transactionResult;
 
@@ -113,9 +114,12 @@ class DB {
 
 			$qry = "INSERT INTO ".$table." (".$strInsert.") VALUES (".$strValues.")";
 
+
 			$this->insertResult = $this->link->query($qry);
 
 			if (!$this->insertResult){
+				$errorMessage = mysqli_error($this->link);
+				return $errorMessage; // Return the error message
 				$this->transactionResult = false;
 			}
 			return $this->link->insert_id;

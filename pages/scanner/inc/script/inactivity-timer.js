@@ -4,13 +4,22 @@ let inactivityTimer;
 // Function to reset the timer
 function resetTimer() {
     clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(reloadPage, inactivityTimeout);
+    inactivityTimer = setTimeout(resetPage, inactivityTimeout);
 }
 
 // Function to reload the page when the timer expires
-function reloadPage() {
+function resetPage() {
     // You can customize this part with your desired reload action
-    location.reload();
+    loadShipments($('#openshipments'));
+    selectBarcode();
+    
+    // Check for and retrieve stored values on page load
+    //sessionStorage.removeItem('selectedKlant');
+    //sessionStorage.removeItem('selectedZending');
+    //$('#klant').val('');
+    //$('#zending').val('');
+    
+
 }
 
 // Add event listeners to reset the timer when user interacts with the page

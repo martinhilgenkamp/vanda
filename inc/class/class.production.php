@@ -124,11 +124,9 @@ class ProductionManager {
 	}
 
 	function getProductByBarcode($barcode) {
-		$qry = "SELECT * FROM vanda_production WHERE barcode = '".$barcode."' LIMIT 1";
-		
+		$qry = "SELECT * FROM vanda_production WHERE barcode = '".$barcode."' AND removed = 0 LIMIT 1";
 		$res = $this->db->selectQuery($qry);
-
-		return $res ? $res[0] : null;
+		return $res[0];
 	}
 
 	function editProductionByBarcode($data, $barcode) {

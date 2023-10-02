@@ -19,7 +19,6 @@ switch($task){
 			$ship_id = $_POST['leverid'];
 		} else {
 			$ship_id = $_GET['leverid'];
-			
 		}
 		
 		$klant = $_POST['klant'];
@@ -32,6 +31,8 @@ switch($task){
 		
 		// controleer of de barcode bestaat.
 		$barcodeExists = $pm->getProductByBarcode($barcode);
+
+	
 		if ($barcodeExists) {
 			$data = [
 				"ship_id" => $ship_id,
@@ -48,7 +49,7 @@ switch($task){
 				$Shipment = $sm->GetShipment($ship_id);
 				if($Shipment->verzonden == 1){
 					echo "Kan artikel niet toevoegen de zending is al verzonden.";
-				} else if($Shipment->datum == date('Y-m-d H:i:s')){
+				} elseif($Shipment->datum == date('Y-m-d H:i:s')){
 					echo "Fout aanmaken dubbele zending, probeer het opnieuw.";
 				} else {
 				
@@ -146,8 +147,9 @@ function showSipments($zendingen) {
 }
 
 function showform($klant = null, $leverid = null, $teller = null) { 
-	$leverid = isset($leverid) ? $leverid : isset($_GET['leverid']) ? $_GET['leverid'] : '';
-	$klant = isset($klant) ? $klant : isset($_GET['klant']) ? $_GET['klant'] : '';
+	
+	$leverid = $leverid ?? $_GET['leverid'] ?? '';
+	$klant = $klant ?? $_GET['klant'] ?? '';
 
 	?>
 	<script>
