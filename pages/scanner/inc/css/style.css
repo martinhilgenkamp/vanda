@@ -29,11 +29,13 @@
   .notice {
           border: 1px solid #6879FF;
           background: #C8CEFF;
+          margin: 5px;
   }
   
   .error {
          border: 1px solid #FF8D82;
           background: #FFD4A4;
+          margin: 5px;
   }
 
     input[type=text] {

@@ -13,3 +13,4 @@ UPDATE `vanda_options` SET `TransportFromEmailAddress` = 'magazijn@vandacarpets.
 
 -- Machine optie toevoegen\
 ALTER TABLE `vanda_options` ADD `MachineCount` INT(2) NOT NULL AFTER `TransportFromName`;
+

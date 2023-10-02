@@ -1,4 +1,14 @@
-<!doctype html>
+<?php
+require_once("../../inc/class/class.option.php");
+$om = new OptionManager();
+
+$options = $om->getAllOptions()[0];
+
+// TODO de timer variabel maken middels optie pagina
+
+?>
+
+<!DOCTYPE html>
 <html>
 <head>
   <!-- Define viewport for handheld scanners !-->
@@ -10,34 +20,38 @@
   <!-- Iinclude Stylesheet !-->
   <link rel="stylesheet" href="inc/css/style.css">
 
-  <!-- Iinclude nessecary javascripts !-->
-  <script language="javascript" type="text/javascript" src="../../inc/script/jquery.js"></script>
-  <script language="javascript" type="text/javascript" src="../../inc/script/scan.js"></script>
-  
+  <!-- Adding required scripts !-->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="inc/script/inactivity-timer.js"></script>
+  <script src="inc/script/table-handler.js"></script>
+  <script src="inc/script/scanner.js"></script>
   <script>
 	// Set the required parameters for the page to run.
-	const inactivityTimeout = 1 * 60 * 1000; // 10 minutes
+ //const inactivityTimeout = 10 * 10 * 1000; // 10 minutes
+ inactivityTimeout = 5 * 10 * 1000; // 5 minutes
+ // TODO bovenstaande timer naar variable
   </script>
-  <style
-  <style>
-	
-  </style> 
-  </head>
-  <body>
-    <h1 id="header">Levering</h1>
-    <div id="notice"></div>
+</head>
+<body>
+    <h1>Uitleveren</h1>
+    <!-- div for user feedback !-->
+    <div id="result"></div>
+    
+    <!-- the actual form !-->
     <div id="shipform-container">
     	<form id="shipform" name="shipform" method="post">	
          <ul class="mobilelist" id="shiplist">
-            <li><label for="klant">Klant: </label><input type="text" id="klant" name="klant" value="" /></li>
-            <li><label for="barcode">Barcode: </label><input type="text" id="barcode" name="barcode" value="" autofocus /></li>
-            <li><label for="leverid">Zending: </label><input type="text" id="leverid" name="leverid" value="" readonly="true" />
-            <li><center><input type="submit" onClick="SubmitShipment();" value="Verstuur"></center></li>
+            <li><label for="klant">Klant: </label><input type="text" id="klant" name="klant" placeholder="Klant"/></li>
+            <li><label for="barcode">Barcode: </label><input type="text" id="barcode" name="barcode" placeholder="Barcode"/></li>
+            <li><label for="ship_id">Zending: </label><input type="text" id="ship_id" name="ship_id"  placeholder="Zending" readonly="true" />
+            <li><button type="submit">Submit</button><button type="reset">Herstel</button></li>
          </ul>
         </form>
     </div>
-    <table id="excelDataTable" border="0"> 	   
-    </table>
-	<script src="inc/script/inactivity-timer.js"></script>
-  </body>
+    
+    <!-- div for open shipments !-->
+    <div id="openshipments">
+        Open zendingen verzamelen...
+    </div>    
+</body>
 </html>

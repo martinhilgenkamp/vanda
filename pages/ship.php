@@ -15,10 +15,10 @@ switch($task){
 		// Variabele uit de post halen
 		$ship_id = '';	
 		
-		if(isset($_GET['leverid'])){
-			$ship_id = $_POST['leverid'];
+		if(isset($_GET['ship_id'])){
+			$ship_id = $_POST['ship_id'];
 		} else {
-			$ship_id = $_GET['leverid'];
+			$ship_id = $_GET['ship_id'];
 		}
 		
 		$klant = $_POST['klant'];
@@ -96,12 +96,12 @@ switch($task){
 		break;
 		
 		case "select":
-			$leverid = isset($_GET['leverid']) ? $_GET['leverid'] : '';
+			$ship_id = isset($_GET['ship_id']) ? $_GET['ship_id'] : '';
 			$klant = isset($_GET['klant']) ? $_GET['klant'] : '';
 			
 			// ship
-			if($leverid != '') {
-				$_SESSION['ship_id'] = $leverid;	
+			if($ship_id != '') {
+				$_SESSION['ship_id'] = $ship_id;	
 			}
 			
 			// klant
@@ -109,7 +109,7 @@ switch($task){
 				$_SESSION['klant'] = $klant;	
 			}
 			
-			showform($klant, $leverid);
+			showform($klant, $ship_id);
 
 			echo showSipments($zendingen);
 		break;
@@ -131,13 +131,13 @@ function showSipments($zendingen) {
 		foreach($zendingen as $zending){
 			$output .= "<tr>
 				<td class='clickable' id=".$zending->ship_id.">
-					<a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".$zending->ship_id."</a>
+					<a href='?page=ship&task=select&klant=".$zending->klant."&ship_id=".$zending->ship_id."' >".$zending->ship_id."</a>
 				</td>
 				<td>
-					<a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".$zending->klant."</a>
+					<a href='?page=ship&task=select&klant=".$zending->klant."&ship_id=".$zending->ship_id."' >".$zending->klant."</a>
 				</td>
 				<td>
-					<a href='?page=ship&task=select&klant=".$zending->klant."&leverid=".$zending->ship_id."' >".date('d-m-Y',strtotime($zending->datum))."</a>
+					<a href='?page=ship&task=select&klant=".$zending->klant."&ship_id=".$zending->ship_id."' >".date('d-m-Y',strtotime($zending->datum))."</a>
 				</td>
 				</tr>";
 		}
@@ -146,9 +146,9 @@ function showSipments($zendingen) {
 	return $output;
 }
 
-function showform($klant = null, $leverid = null, $teller = null) { 
+function showform($klant = null, $ship_id = null, $teller = null) { 
 	
-	$leverid = $leverid ?? $_GET['leverid'] ?? '';
+	$ship_id = $ship_id ?? $_GET['ship_id'] ?? '';
 	$klant = $klant ?? $_GET['klant'] ?? '';
 
 	?>
@@ -156,11 +156,11 @@ function showform($klant = null, $leverid = null, $teller = null) {
 	function doReset(){
 		
 		var klant = document.getElementById('klant');
-		var leverid = document.getElementById('leverid');
+		var ship_id = document.getElementById('ship_id');
 		var barcode = document.getElementById('barcode');	
 		
 		barcode.value = "";	
-		leverid.value = "";	
+		ship_id.value = "";	
 		klant.value = ""; 
 	}
 	</script>
@@ -190,7 +190,7 @@ function showform($klant = null, $leverid = null, $teller = null) {
 	         </li>
 	        </ul>
 	        <input type="hidden" name="task" value="ship">
-	        <input type="hidden" id="leverid" name="leverid" onChange="checkActive();" value="<?php echo $leverid ?>" />
+	        <input type="hidden" id="ship_id" name="ship_id" onChange="checkActive();" value="<?php echo $ship_id ?>" />
 	   </form>
 	</div>
 

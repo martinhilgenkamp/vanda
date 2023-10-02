@@ -1,4 +1,7 @@
 <?php
+// TODO  check if shipment is shipped before adding colli.
+// TODO  this page needs to be merged with ship.php in a neat matter.
+
 
 // Handle includes
 require_once("../../inc/class/class.production.php");

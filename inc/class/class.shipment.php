@@ -40,11 +40,6 @@ class ShipmentManager {
 		return $this->db->selectQuery($qry);
 	}
 
-	function getLastShipment() {
-		$qry = "SELECT * FROM  vanda_shipment ORDER BY datum DESC";
-		return $this->db->selectQuery($qry);
-	}
-
 	function getAllShippedShipments() {
 		$qry = "SELECT * FROM  vanda_shipment WHERE verzonden != 1 GROUP BY ship_id ASC";
 		

@@ -11,7 +11,6 @@ class DB {
 	var $updateResult;
 	var $deleteResult;
 	var $insertResult;
-	var $inser_id;
 
 	var $transactionResult;
 
