@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $barcode = $_POST['barcode'];
 
     // Fixed values for debugging
-
     //$klant = 'Pruim';
     //$task = 'ship';
     //$ship_id = '';
@@ -44,12 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $barcodeExists = $pm->getProductByBarcode($barcode);  //TODO weet niet of deze check al werkt.
 
             if ($barcodeExists) {
-                //$data = [
-                //    "ship_id" => $ship_id,
-                //    "klant" => $klant,
-                //    "datum" => date('Y-m-d H:i:s')
-                //];  
-                    
+
                 // Check for current or new shipment.
                 if($ship_id) {
                     $Shipment = $sm->GetShipment($ship_id);
@@ -83,6 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if($ShipID){
                         // Set id to ship_id var for further processing.
                         $ship_id = $ShipID;
+                    } else {
+                        $message = "Fout met maken van zending.";
+                        $success = false;
                     }
                 }
                 
