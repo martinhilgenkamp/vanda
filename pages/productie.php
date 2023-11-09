@@ -1,34 +1,9 @@
 <?php 
-
 require_once("inc/class/class.production.php");
 require_once("inc/class/class.product.php");
 
 $prm = new ProductionManager();
 $pm = new ProductManager();
-
-// Get the task
-if ($_POST) {
-	switch($_POST['task']){
-		case 'add':
-			$data = [
-				"id" => null,
-				"artikelnummer" => strtoupper($_POST['artikelnummer']),
-				"kwaliteit" => $_POST['kwaliteit'],
-				"gewicht" => $_POST['gewicht'],
-				"datum" => date('Y-m-d H:i:s'),
-				"barcode" => $_POST['barcode']
-			];
-			
-			$productionId = $prm->addProduction($data);
-
-			if($productionId > 0){
-				echo "success";
-			} else {
-				echo "Er is een fout opgetreden bij het opslaan! ".mysqli_error($db);	
-			} 
-		break;		
-	}
-}
 
 // Waarde voor barcode genereren.
 $newBarcode = $prm->getNewBarcode();
@@ -37,9 +12,7 @@ $barcode = 'F00830'.$barid;
 
 // Load products from the database.
 $products = $pm->getProductsByExport(2);
-
 ?>
-
 <div class="navigation-header"><a href="index.php?page=machines" class="ui-button ui-corner-all ui-widget pageswitch" >Machine Pagina >></a></div>
 <h1>Boek product in</h1>
 <div class="clr"></div>
@@ -69,9 +42,8 @@ $products = $pm->getProductsByExport(2);
 		 <input type="reset" class="button ui-corner-all ui-button ui-widget ui-state-default  ui-button-text-only" name="reset" value="Reset" id="reset" /></li>
 		</ul>
 
-        <input type="text" id="artikelnummer" name="artikelnummer" value=""/>
-        <input type="text" id="barcode" name="barcode" value="<?php echo $barcode; ?>"/>
-        <input type="text" name="task" value="add">
+        <input type="hidden" id="artikelnummer" name="artikelnummer" value=""/>
+        <input type="hidden" id="barcode" name="barcode" value="<?php echo $barcode; ?>"/>
+        <input type="hidden" name="task" value="add">
 	</form>
 </div>
-<iframe id="printFrame" width="0" height="0"/>

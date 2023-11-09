@@ -222,17 +222,17 @@ switch($task){
 		$article_added = 0;
 		if($data['colli'] >= 1){	
 			for($c = 0; $c < $data['colli']; $c++){
-				echo $c;
-				$productionId = $prm->addProduction($data);
-				print_r($productionId);
-				if($productionId > 0){
+				$productionId = $prm->addProduction($data);				
+				if($productionId > 0 && is_int($productionId)){
 					$article_added++;
 				} else {
+					// Print output to user and break script
 					echo "Er is een fout opgetreden bij het opslaan! Probeer het opnieuw";	
+					return;
 				}
 			}
 		}
-		
+		// Print output to user
 		echo $article_added . " Artikelen succesvol toegevoegd.";
 	break;
 	
