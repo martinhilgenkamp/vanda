@@ -213,14 +213,18 @@ switch($task){
 			"colli" => $_POST['colli']
 		];
 		
+		
+		//Check if colli is set, default to 1
 		if(!isset($data['colli'])){
 			$data['colli'] =  1;
 		}
+
 		$article_added = 0;
 		if($data['colli'] >= 1){	
 			for($c = 0; $c < $data['colli']; $c++){
-				//echo $c;
+				echo $c;
 				$productionId = $prm->addProduction($data);
+				print_r($productionId);
 				if($productionId > 0){
 					$article_added++;
 				} else {
@@ -265,7 +269,6 @@ switch($task){
         // Generate mail object and create ritnr in the database
 		$ritnummer = $tm->save();
 		
-		print_r($ritnummer);		
 		// Prepare subject and messagebody
 		$subject = 'Transportverzoek Ritnr: '.$ritnummer;
 

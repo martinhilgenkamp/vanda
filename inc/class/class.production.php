@@ -13,6 +13,7 @@ class ProductionManager {
 			'removed' => 0,
 			'kwaliteit' => "",
 			'ordernr' => "",
+			'geleverd' => "00-00-0000",
 			'shipping_id' => ""
 		];
 
@@ -27,9 +28,6 @@ class ProductionManager {
 	return $this->db->insertQuery("vanda_production", $data);	
 
 	}
-		
-		
-	
 
 	function editProduction($data, $id) {
 		return $this->db->updateQuery("vanda_production", $data, "id = ". $id);

@@ -39,6 +39,7 @@ $barcode = 'F00830'.$barid;
 $products = $pm->getProductsByExport(2);
 
 ?>
+
 <div class="navigation-header"><a href="index.php?page=machines" class="ui-button ui-corner-all ui-widget pageswitch" >Machine Pagina >></a></div>
 <h1>Boek product in</h1>
 <div class="clr"></div>
@@ -63,11 +64,14 @@ $products = $pm->getProductsByExport(2);
 			<!--<div id="barcode-display"><?php echo $barcode; ?></div>!-->
 		 </li>
 		 <hr>
-		 <li><input type="button" class="button ui-button ui-widget ui-corner-all ui-state-default  ui-button-text-only" id="verstuur" name="verstuur" value="Verstuur" /><input type="reset" class="button ui-corner-all ui-button ui-widget ui-state-default  ui-button-text-only" name="reset" value="Reset" id="reset" /></li>
+		 <li><input type="button" class="button ui-button ui-widget ui-corner-all ui-state-default  ui-button-text-only" id="verstuur" name="verstuur" value="Verstuur" />
+		 
+		 <input type="reset" class="button ui-corner-all ui-button ui-widget ui-state-default  ui-button-text-only" name="reset" value="Reset" id="reset" /></li>
 		</ul>
-        <input type="hidden" id="artikelnummer" name="artikelnummer" value=""/>
-        <input type="hidden" id="barcode" name="barcode" value="<?php echo $barcode; ?>"/>
-        <input type="hidden" name="task" value="add">
+
+        <input type="text" id="artikelnummer" name="artikelnummer" value=""/>
+        <input type="text" id="barcode" name="barcode" value="<?php echo $barcode; ?>"/>
+        <input type="text" name="task" value="add">
 	</form>
 </div>
 <iframe id="printFrame" width="0" height="0"/>
