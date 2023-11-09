@@ -6,6 +6,8 @@
 	session_start();
 	date_default_timezone_set("Europe/Amsterdam");
 
+	//Load Composer's autoloader
+	require __DIR__.'/vendor/autoload.php';
 	require_once('inc/class/class.user.php');
 
 	$um = new UserManager();

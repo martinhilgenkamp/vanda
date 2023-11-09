@@ -1,6 +1,10 @@
-<?php 
+<?php
+//Import PHPMailer classes into the global namespace
+//These must be at the top of your script, not inside a function
+//Load Composer's autoloader
+require '../../vendor/autoload.php';
 
-require_once('../../inc/tcpdf/tcpdf.php');
+
 require_once("../../inc/class/class.production.php");
 require_once("../../inc/class/class.option.php");
 

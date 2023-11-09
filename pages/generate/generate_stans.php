@@ -1,6 +1,5 @@
 <?php 
-
-require_once('../../inc/tcpdf/tcpdf.php');
+require '../../vendor/autoload.php';
 require_once("../../inc/class/class.production.php");
 require_once("../../inc/class/class.option.php");
 

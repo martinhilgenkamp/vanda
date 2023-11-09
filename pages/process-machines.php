@@ -24,7 +24,8 @@ switch($post->task){
 			"persoon" => $post->persoon,
 			"kwaliteit" => $post->kwaliteit,
 			"machine" => $post->machine,
-			"datum" => date("Y-m-d H:i:s")
+			"datum" => date("Y-m-d H:i:s"),
+			"verwijderd" => "0"
 		);
 
 		$mm->addMachine($data);

@@ -3,6 +3,7 @@ date_default_timezone_set("Europe/Amsterdam");
 
 //Load Composer's autoloader
 require '../vendor/autoload.php';
+
 require_once("../inc/class/class.supplier.php");
 require_once('../inc/class/class.option.php');
 require_once("../inc/class/class.product.php");

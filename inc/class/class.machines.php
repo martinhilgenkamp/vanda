@@ -15,21 +15,16 @@ class MachineManager {
 			echo "Niet alle waardes zijn ingevuld.";
 			return;
 		}
-
 		$time = $this->getLastTime($data);
-		
-		echo "<hr>";
-		print_r($data);
-		echo "<hr>";
 
 		if(strtotime("-1 minutes") >= strtotime($time) || $time == '') {
 			
 			$machineId = $this->db->insertQuery("vanda_machines", $data);
-
-			if($machineId > 0) {
-				echo 'Opgeslagen';
+			if($machineId > 0 && is_int($machineId)) {
+				echo 'Transactie van '.$data['persoon'].' op machine '. $data['machine'].' opgeslagen';
 			} else {
-				echo 'Opslaan mislukt';	
+				echo 'Opslaan mislukt ';	
+				print_r($machineId);
 			}
 		}
 		else {

@@ -1,6 +1,6 @@
 // Set timer variable for message box.
-var timer = 1000;
-
+var timer = 5000;
+var messagetimer;
 $(document).ready(function(){
 	$('#errorbox').hide();
 	// Save Machine input on Click
@@ -39,36 +39,29 @@ $(document).ready(function(){
 				  	$('#errorbox').slideDown('fast');
 					$('#errorbox').html(result);
 				  	
-				  	if(result === "Opgeslagen"){
+				  	if(result.includes("opgeslagen")){
 						$("#errorbox").removeClass("ui-state-error");
+						$("#errorbox").addClass("machine-success");	
 						$("#errorbox").addClass("ui-corner-all machine-success");
 					} else {
 						$("#errorbox").addClass("ui-corner-all ui-state-error");
 						$("#errorbox").removeClass("machine-success");	
 					}
 				  
-				  setTimeout(function() {
-						$('#errorbox').slideUp('fast');
-					}, timer);
-			  },
-			
+			  },			
 			  error: function (xhr, ajaxOptions, thrownError) {
 				var error = (xhr.status);
 				error = error + ' ' + thrownError;
 				$('#errorbox').slideDown('fast');
 				$('#errorbox').html(error);
 				$("#errorbox").addClass("ui-corner-all ui-state-error");  
-				  setTimeout(function() {
-						$('#errorbox').slideUp('fast');
-					}, timer);
 			  }  
-		}); // end ajaxs	
-					
-		// Debug
-		//console.log('machine '+id+' met operator '+persoon+' heeft kwaliteit '+kwaliteit+' geregistreerd');
-		
-		// EINDE OPSLAAN
-		
+		}); // end ajaxs
+
+		clearTimeout(messagetimer);
+		messagetimer = setTimeout(function() {
+			$('#errorbox').slideUp('fast');
+		}, timer);
 	});
 	
 });
