@@ -27,9 +27,9 @@ $options = $om->getAllOptions()[0];
   <script src="inc/script/scanner.js"></script>
   <script>
 	// Set the required parameters for the page to run.
- //const inactivityTimeout = 10 * 10 * 1000; // 10 minutes
- inactivityTimeout = 5 * 10 * 1000; // 5 minutes
- // TODO bovenstaande timer naar variable
+  //const inactivityTimeout = 10 * 10 * 1000; // 10 minutes
+  //inactivityTimeout = 10 * 1000; // 5 minutes
+  // TODO bovenstaande timer naar variable
   </script>
 </head>
 <body>

@@ -42,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         break;
 
         case 'ship':
-            // controleer of de barcode bestaat returns barcode object
-            $barcodeExists = $pm->getProductByBarcode($barcode);  //TODO weet niet of deze check al werkt.
+            // controleer of de barcode bestaat en niet verzonden is returns barcode object
+            $barcodeExists = $pm->getProductShipmentByBarcode($barcode);
 
             if ($barcodeExists) {
 

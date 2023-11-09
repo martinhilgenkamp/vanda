@@ -17,6 +17,7 @@ $(document).ready(function(){
             notifyUser(false,'Een klant mag alleen letters spaties en nummers bevatten');
             return;
         }
+
         // Verify barcode
         if (/^[A-Z0-9]{15}$/.test(barcode)) {
             notifyUser(false,'Barcode is onjuist');
@@ -67,20 +68,29 @@ $(document).ready(function(){
     $("#barcode").on("focus", function() {
         $(this).val("");
     }); 
+
+    // Clear shipmentnumber on select.
+      $("#klant").on("change", function() {
+        $('#ship_id').val("");
+    }); 
+
     // Initialize the page and set the timer and focus
     // Build the table with active shipments
     loadShipments($('#openshipments'));
     resetTimer(); 
     selectBarcode();
-});
+}); // End document ready
 
 function notifyUser(success,message){
     // Set style for the message
     if(success){
         $('#result').removeClass('error').addClass('notice');
-    } else {
+    } else if (message) {
         $('#result').removeClass('notice').addClass('error');
+    } else {
+        $('#result').removeClass('notice').removeClass('error');
     }
+
     // Return the message
     $('#result').text(message);
 }

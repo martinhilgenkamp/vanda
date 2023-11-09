@@ -23,6 +23,7 @@ class ProductionManager {
 		}
 		
 	$data['barcode'] = "F00830".$this->getNewBarcode();
+	
 	return $this->db->insertQuery("vanda_production", $data);	
 
 	}
@@ -125,6 +126,12 @@ class ProductionManager {
 
 	function getProductByBarcode($barcode) {
 		$qry = "SELECT * FROM vanda_production WHERE barcode = '".$barcode."' AND removed = 0 LIMIT 1";
+		$res = $this->db->selectQuery($qry);
+		return $res ? $res[0] : null;
+	}
+
+	function getProductShipmentByBarcode($barcode) {
+		$qry = "SELECT * FROM vanda_production WHERE barcode = '".$barcode."' AND removed = 0 AND 'shipping_id' = '' OR 'shipping_id' = '0' LIMIT 1";
 		$res = $this->db->selectQuery($qry);
 		return $res ? $res[0] : null;
 	}

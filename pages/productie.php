@@ -20,7 +20,7 @@ if ($_POST) {
 			];
 			
 			$productionId = $prm->addProduction($data);
-					
+
 			if($productionId > 0){
 				echo "success";
 			} else {

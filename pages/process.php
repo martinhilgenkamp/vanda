@@ -1,57 +1,24 @@
 <?php
-
-// // Load suppliers from the database.
-// $query = "SELECT * FROM vanda_suppliers WHERE verwijderd = 0 ORDER BY volgorde DESC, supplier_desc ASC;";
-// if($result =$db->query($query)){
-// 	while($row = $result->fetch_object()){
-// 		$resSuppliers[$row->id] = $row;
-// 	}	
-// }
-
-// // Load products from the database.
-// $query = "SELECT * FROM vanda_products ORDER BY article_desc ASC;";
-// if($result =$db->query($query)){
-// 	while($row = $result->fetch_object()){
-// 		$articles[$row->id] = $row;
-// 	}	
-// }
-
-// // Load products from the database.
-// $query = "SELECT * FROM vanda_products ORDER BY article_desc ASC;";
-// if($result =$db->query($query)){
-// 	while($row = $result->fetch_object()){
-// 		$products[] = $row;
-// 	}	
-// }
-
-// $task = $_POST['task'];
-// if(!$task){
-// 	$task = $_GET['task'];
-// }
-
-// $supplier_no = mysqli_real_escape_string($db,$_POST['supplier']);
-// $article_no = mysqli_real_escape_string($db,$_POST['article']);
-// $remark = mysqli_real_escape_string($db,$_POST['remark']);
-
-// if($article_no){$article = $articles[$article_no];}
-// if($article_no){$supplier = $resSuppliers[$supplier_no];}
 date_default_timezone_set("Europe/Amsterdam");
 
+//Load Composer's autoloader
+require '../vendor/autoload.php';
 require_once("../inc/class/class.supplier.php");
 require_once('../inc/class/class.option.php');
 require_once("../inc/class/class.product.php");
 require_once("../inc/class/class.registration.php");
 require_once("../inc/class/class.production.php");
 require_once("../inc/class/class.shipment.php");
-//require_once("../inc/class/class.transportmailer.php");
+require_once("../inc/class/class.transportmailer.php");
 
 $sm = new SupplierManager();
+$om = new OptionManager();
 $pm = new ProductManager();
 $rm = new RegistrationManager();
 $prm = new ProductionManager();
 $stm = new ShipmentManager();
-//$tm = new TransportMailer();
-$om = new OptionManager();
+$tm = new TransportMailer();
+
 $options = $om->getAllOptions()[0];
 
 $resSuppliers = $sm->loadSuppliers();
@@ -79,7 +46,6 @@ if ($_POST) {
 }
 
 $nl = "\r";
-
 switch($task){
 	case 'buildproduct':
 		foreach($resProducts as $product){
@@ -295,17 +261,18 @@ switch($task){
 	case 'gettransport':
 		$supplier_no = $_POST['supplier'];
 		$supplier = $sm->getBySupplierNumber($supplier_no);
-
 		
-		// Generate mail object and create ritnr in the database
+        // Generate mail object and create ritnr in the database
 		$ritnummer = $tm->save();
 		
+		print_r($ritnummer);		
 		// Prepare subject and messagebody
 		$subject = 'Transportverzoek Ritnr: '.$ritnummer;
+
 		$body = $tm->BuildGetBody($ritnummer,$supplier->supplier_desc,$supplier->transporttype);
 		
-		$tm->Subject = $subject;
-		
+		$tm->Subject =  $subject;
+
 		//Set who the message is to be sent to
 		$tm->addAddress($options->TransportEmailAddress, $options->TransportName);
 

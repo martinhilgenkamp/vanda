@@ -5,7 +5,6 @@
 
 	session_start();
 	date_default_timezone_set("Europe/Amsterdam");
-	
 
 	require_once('inc/class/class.user.php');
 

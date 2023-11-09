@@ -1,5 +1,11 @@
 <?php
-require_once('PHPMailer/PHPMailerAutoload.php');
+//Import PHPMailer classes into the global namespace
+//These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer as PHPMailer ;
+use PHPMailer\PHPMailer\SMTP as SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Require statements.
 require_once("class.db.php");
 require_once("class.option.php");
 
@@ -27,6 +33,8 @@ class TransportMailer extends PHPMailer
 		// 1 = client messages
 		// 2 = client and server messages
 		$this->SMTPDebug = 0;
+		$this->Subject = 'Transportverzoek';
+
 		//Ask for HTML-friendly debug output
 		$this->Debugoutput = 'html';
 		//Set the hostname of the mail server\
@@ -40,13 +48,9 @@ class TransportMailer extends PHPMailer
 		//Password to use for SMTP authentication
 		$this->Password = "Appelsap";
 		//Set who the message is to be sent from
-		//DEBUG
-		$this->setFrom($options->TransportFromEmailAddress, $options->TransportFromName); //change for prod
-		$this->addReplyTo($options->TransportFromEmailAddress, $options->TransportFromName); //change for prod
-		//PRODUCTION
-		//$this->setFrom('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
-		//$this->addReplyTo('magazijn@vandacarpets.nl', 'Vanda Carpets'); //change for debug
-	
+		$this->setFrom($options->TransportFromEmailAddress, $options->TransportFromName); 
+		$this->addReplyTo($options->TransportFromEmailAddress, $options->TransportFromName);
+		
 		$this->db = new DB();
 	}
 	
@@ -107,11 +111,11 @@ class TransportMailer extends PHPMailer
 	}
 	
 	function Save(){
-		
-		$query = "INSERT INTO `vanda_transportmail` (`id`, `date`, `to`,`subject`, `body`, `verstuurd`) VALUES (NULL, '".date('Y-m-d H:i:s')."', 'martin@pruim.nl', '', '', '0');"; 
 		$data = [
 			"date" => date('Y-m-d H:i:s'),
 			"to" => "martin@pruim.nl", //change for debug
+			"body" => '',
+			"subject" => '',
 			"verstuurd" => 0
 		];
 
@@ -124,7 +128,6 @@ class TransportMailer extends PHPMailer
 	}
 	
 	function UpdateStatus($id, $subject, $body, $status){
-		
 		$data = [
 			"verstuurd" => $status,
 			"body" => $body,
