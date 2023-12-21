@@ -31,8 +31,13 @@ class ShipmentManager {
 		foreach ($res as $shipment) {
 			$shipmentIds[] = $shipment->ship_id;
 		}
-
 		return $shipmentIds;
+	}
+
+	function countShipment($shipid){
+		$qry = "SELECT COUNT(*) FROM `vanda_production` WHERE shipping_id = " . $shipid;
+		$res = $this->db->selectQuery($qry);
+		return $res;
 	}
 
 	function getAllShipments() {

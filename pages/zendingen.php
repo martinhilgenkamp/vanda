@@ -40,6 +40,7 @@ if(count($zendingen)){
 			<td>
 				<a href='index.php?page=details&shipid=".$zending->ship_id."' >".date('d-m-Y',strtotime($zending->datum))."</a>
 			</td>
+			<td>".$sm->countShipment($zending->ship_id)."</td>
 			<td>".$zending->verzonden."</td>";
 
 		if($user->level && !$zending->verzonden){

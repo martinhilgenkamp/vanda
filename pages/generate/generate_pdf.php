@@ -4,10 +4,6 @@ require '../../vendor/autoload.php';
 require_once('../../inc/class/class.db.php');
 date_default_timezone_set("Europe/Amsterdam");
 
-// prevent notifications
-error_reporting(E_ALL ^ E_NOTICE);
-ini_set("display_errors", 0);
-
 $ship_id = $_GET['ship_id'];
 
 class TablePDF extends TCPDF{
