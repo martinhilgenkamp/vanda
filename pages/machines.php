@@ -8,9 +8,9 @@ $um = new UserManager;
 $om = new OptionManager();
 
 $users = $um->listUsers();
-$result = $om->getAllOptions()[0];
+$options = $om->getAllOptions()[0];
 
-$machinecount = $result->MachineCount;
+$machinecount = $options->MachineCount;
 $machines = $mm->getAllMachines();
 $object = null;
 $machines = $mm->fillUnusedMachines($machines, $machinecount-1, $object);

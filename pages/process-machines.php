@@ -28,7 +28,8 @@ switch($post->task){
 			"verwijderd" => "0"
 		);
 
-		$mm->addMachine($data);
+		$machineresult = $mm->addMachine($data);
+		echo $machineresult;
 	break;
 	case 'remove':
 		if(!$post->id){

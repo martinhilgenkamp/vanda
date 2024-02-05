@@ -4,6 +4,10 @@ require_once("class.db.php");
 
 class MachineManager {
 	var $db;
+	var $machine;
+	var $persoon;
+	var $tijd;
+	var $kwaliteit;
 
 	function __construct() {
 		$this->db = new DB();
@@ -12,7 +16,7 @@ class MachineManager {
 	function addMachine($data) {
 		if($data['persoon'] == '' || $data['kwaliteit'] == '' || $data['machine'] ==''){
 			//incomplete entry throw error
-			echo "Niet alle waardes zijn ingevuld.";
+			$result = "Niet alle waardes zijn ingevuld.";
 			return;
 		}
 		$time = $this->getLastTime($data);
@@ -21,18 +25,27 @@ class MachineManager {
 			
 			$machineId = $this->db->insertQuery("vanda_machines", $data);
 			if($machineId > 0 && is_int($machineId)) {
-				echo 'Transactie van '.$data['persoon'].' op machine '. $data['machine'].' opgeslagen';
+				$result = 'Transactie van '.$data['persoon'].' op machine '. $data['machine'].' opgeslagen';
 			} else {
-				echo 'Opslaan mislukt ';	
+				$result = 'Opslaan mislukt ';	
 				print_r($machineId);
 			}
 		}
 		else {
-			echo 'Dubbele registratie probeer het later opnieuw.';
+			$result = 'Dubbele registratie probeer het later opnieuw.';
 		}
 
 		$_SESSION['persoon'.$data['machine']] = $data['persoon'];
 		$_SESSION['kwaliteit'.$data['machine']] = $data['kwaliteit'];
+
+		return $result;
+	}
+
+	function getLastTimeAPI($machine){
+		#functie is written to not mess with original getLastTIme function to nog break anything.
+		$qry = "SELECT datum, persoon, kwaliteit, machine as id FROM `vanda_machines` WHERE machine = '".$machine."' ORDER BY datum DESC LIMIT 1";
+		$res = $this->db->selectQuery($qry);
+		return $res[0]->datum;
 	}
 
 	function getLastTime($data) {
@@ -59,8 +72,6 @@ class MachineManager {
 		// Determine user based on session and db.
 		$qry = "SELECT kwaliteit FROM `vanda_machines` WHERE machine = '".$machine."' ORDER BY datum DESC LIMIT 1";
 		$res = $this->db->selectQuery($qry);
-
-		
 
 		if(isset($_SESSION['kwaliteit'.$machine])){
 			$kwaliteit = $_SESSION['kwaliteit'.$machine];
@@ -441,9 +452,7 @@ class MachineManager {
 		$_SESSION['username'] = $name;
 	}
 
-	function executeQuery($qry) {
-		return $this->db->selectQuery($qry);
-	}
+	
 }
 
 ?>
