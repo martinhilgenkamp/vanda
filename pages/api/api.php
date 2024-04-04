@@ -36,19 +36,18 @@ if($req == 'GET'){
     }
 
 } elseif($req == 'POST'){
-   
-    // Get the machine number from the query string
-    $machineno = isset($_POST['machine']) ? $_POST['machine'] : '';
-    $action = isset($_POST['action']) ? $_POST['action'] : '';
-    
-    echo $action;
+    // Takes raw data from the request
+    $json = file_get_contents('php://input');
+
+    // Converts it into a PHP object
+    $postdata = json_decode($json, false);
 
     // Check if $machineno contains only numbers
-    if (preg_match('/^[0-9]+$/', $machineno) && $action == 'register') {
+    if (preg_match('/^[0-9]+$/', $postdata->machine) && $postdata->action == 'register') {
         $mm = new MachineManager();
-        $data['persoon'] = $mm->getLastPersoon($machineno);
-        $data['kwaliteit'] = $mm->getLastKwaliteit($machineno);
-        $data['machine'] = $machineno;
+        $data['persoon'] = $mm->getLastPersoon($postdata->machine);
+        $data['kwaliteit'] = $mm->getLastKwaliteit($postdata->machine);
+        $data['machine'] = $postdata->machine;
         $data['verwijderd'] = '0';
 
         // Get the current timestamp using the time function
