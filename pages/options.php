@@ -20,8 +20,9 @@ if(isset($_POST['opslaan'])){
 		"TransportEmailAddress" => $_POST['TransportEmailAddress'],
 		"TransportFromName" => $_POST['TransportFromName'],
 		"TransportFromEmailAddress" => $_POST['TransportFromEmailAddress'],
-		"MachineCount" => $_POST['MachineCount']
-	];
+		"MachineCount" => $_POST['MachineCount'],
+		"machinepicking" => ($_POST['machinepicking'] == 1 ? 1 : '0')
+		];
 	
 	if (!$optionManager->updateOptionRow($data)) {
 		die ('Er is een fout opgetreden met opslaan: ');
@@ -29,6 +30,8 @@ if(isset($_POST['opslaan'])){
 	$formWasSaved = true;
  } 
  
+ print_r($_POST);
+
 // Load values from database
 $result = $optionManager->getAllOptions()[0];
 
@@ -49,6 +52,7 @@ $TransportEmailAddress = $result->TransportEmailAddress;
 $TransportFromName = $result->TransportFromName;	
 $TransportFromEmailAddress = $result->TransportFromEmailAddress;
 $MachineCount = $result->MachineCount;	
+$machinepicking = $result->machinepicking;	
 
 ?>
 <h1>Opties</h1>
@@ -82,6 +86,7 @@ $MachineCount = $result->MachineCount;
 	<ul>
 		<li><B>Machine Pagina:</B></li>
 		<li><label for="MachineCount">Aantal Machines:</label><input type="text" name="MachineCount" value="<?php echo ($MachineCount ? $MachineCount : '') ?>"></li>
+		<li><label for="Machinepicking">Machine Afhaal Actief:</label><input type="checkbox" name="machinepicking" value="1"  <?php if ($machinepicking == 1) echo "checked"; ?>></li>
 		<li>&nbsp;</li>
 		<li><label for="opslaan">Opslaan:</label><input type="submit" name="opslaan" value="Opslaan"></li>
 	</ul>

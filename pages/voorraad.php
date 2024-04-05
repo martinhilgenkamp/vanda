@@ -43,27 +43,26 @@ $products = $pm->getStockProducts($startdate, $stopdate, $voorraadfilter, $produ
 $query = $pm->getStockProductsQuery($startdate, $stopdate, $voorraadfilter, $productfilter, $order, $sort);
 
 // Hieronder word output gegenereerd.
-$output = "<table id='product-table' class=\"ui-widget results\" cellpadding=\"0\" cellspacing=\"0\">";
-$output .= "<thead class=\"table-header\">";
+$output = "<table id='product-table' class=\"data-table results\" cellpadding=\"0\" cellspacing=\"0\">";
+#$output .= "<thead class=\"table-header\">";
 $output .= " <tr>
-			  <td class='ui-corner-tl'>Label</td>
-  			  <td><a href='?page=voorraad&sort=artikelnummer&order=".$order."'>Artikelnummer</a></td>
-			  <td><a href='?page=voorraad&sort=barcode&order=".$order."'>Barcode</a></td>
-			  <td><a href='?page=voorraad&sort=ordernr&order=".$order."'>Order Nr.</a></td>
-			  <td><a href='?page=voorraad&sort=gewicht&order=".$order."'>KG/STK</a></td>
-			  <td><a href='?page=voorraad&sort=kwaliteit&order=".$order."'>Kwaliteit</a></td>
-			  <td><a href='?page=voorraad&sort=geleverd&order=".$order."'>Verzonden</a></td>";			  
+			  <th class='ui-corner-tl'>Label</td>
+  			  <th><a href='?page=voorraad&sort=artikelnummer&order=".$order."'>Artikelnummer</a></th>
+			  <th><a href='?page=voorraad&sort=barcode&order=".$order."'>Barcode</a></th>
+			  <th><a href='?page=voorraad&sort=ordernr&order=".$order."'>Order Nr.</a></th>
+			  <th><a href='?page=voorraad&sort=gewicht&order=".$order."'>KG/STK</a></th>
+			  <th><a href='?page=voorraad&sort=kwaliteit&order=".$order."'>Kwaliteit</a></th>
+			  <th><a href='?page=voorraad&sort=geleverd&order=".$order."'>Verzonden</a></th>";			  
 if($user->level){
-	$output .= "<td><a href='?page=voorraad&sort=datum&order=".$order."'>Datum</a></td>";
-	$output .= "<td class='ui-corner-tr'>&nbsp;</td>";	
+	$output .= "<th><a href='?page=voorraad&sort=datum&order=".$order."'>Datum</a></th>";
+	$output .= "<th class='ui-corner-tr'>&nbsp;</th>";	
 } else {
-	$output .= "<td class='ui-corner-tr'><a href='?page=voorraad&sort=datum&order=".$order."'>Datum</a></td>";
+	$output .= "<th class='ui-corner-tr'><a href='?page=voorraad&sort=datum&order=".$order."'>Datum</a></th>";
 }
-$output .= "</thead>";
+#$output .= "</thead>";
 
 if(count($products) > 0) {
 	$c = 0;
-	$i = 0;
 	foreach($products as $product){
 		if($c == 1) { 
 			$output .= "<tr class=\"grey\">"; 
@@ -96,12 +95,11 @@ if(count($products) > 0) {
 		}	
 
 		$output .= "</tr>";
-		$i++;
 	}
 	if($user->level){
-		$output .= "<tfoot><tr><td class=\"ui-corner-bottom\" colspan='9'>".$i." resultaten weergegeven</td></tr></tfoot>";	
+		$output .= "<tfoot><tr><td class=\"ui-corner-bottom\" colspan='9'>".count($products)." resultaten weergegeven</td></tr></tfoot>";	
 	} else {
-		$output .= "<tfoot><tr><td class=\"ui-corner-bottom\" colspan='8'>".$i." resultaten weergegeven</td></tr></tfoot>";	
+		$output .= "<tfoot><tr><td class=\"ui-corner-bottom\" colspan='8'>".count($products)." resultaten weergegeven</td></tr></tfoot>";	
 	}
 	
 	

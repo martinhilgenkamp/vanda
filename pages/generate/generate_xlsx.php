@@ -27,7 +27,7 @@
 
 /** Error reporting */
 error_reporting(E_ALL);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 ini_set('display_startup_errors', TRUE);
 date_default_timezone_set('Europe/Amsterdam');
 
@@ -41,6 +41,7 @@ require_once dirname(__FILE__) . '/../../inc/class/class.db.php';
 
 // Get the ship id to read data.
 $ship_id = $_GET['ship_id'];
+
 
 class PHPExcelData extends PHPExcel {
 	// Var totaal voor totaal leverings gewicht.

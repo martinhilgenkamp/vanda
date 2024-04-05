@@ -65,32 +65,31 @@ $rows = $rm->getRegistrationOverviewByPeriod($period, $periode, $today, $selectd
     <?php echo $qry; ?>
     </textarea>
     
-    <div id="csv" class="csv"><img src="images/excel_icon.gif"  /></div>
+    <div id="csv" class="csv"><img src="images/excel.png"  /></div>
 </form>
 
 <form method="post" name="filterform" id="filterform" class="filterform" >
 <h1><?php echo $title; ?></h1>
 <?php echo $beheer; ?>
 <div id="filterdiv">
-	
 <?php 
 	switch($period){
 		case 'custom':
 		case '':
 			$time = strtotime(date("Y-m-d"));
 			$final = date("Y-m-d", strtotime("-1 month", $time));?>
-			<input class="datepicker" id="startdate" name="startdate" value="<?php echo ($startdate ? $startdate :  $final); ?>" onchange="$('#filterform').submit()"/>
-			<input class="datepicker" id="stopdate" name="stopdate" value="<?php echo ($stopdate ? $stopdate : date('Y-m-d',$time)); ?>" onchange="$('#filterform').submit()"/>
+			<input class="datepicker ui-corner-all" id="startdate" name="startdate" value="<?php echo ($startdate ? $startdate :  $final); ?>" onchange="$('#filterform').submit()"/>
+			<input class="datepicker ui-corner-all" id="stopdate" name="stopdate" value="<?php echo ($stopdate ? $stopdate : date('Y-m-d',$time)); ?>" onchange="$('#filterform').submit()"/>
 <?php
 			break;
 		default:
 			$time = date("Y-m-d");?>
-			<input <?php echo ($period == 'month' ? 'id="monthselect" ' : 'id="selectdate" '); ?> class="datepicker" name="selectdate" value="<?php echo ($selectdate ? 				$selectdate : $time); ?>" onchange="$('#filterform').submit()"/>
+			<input <?php echo ($period == 'month' ? 'id="monthselect" ' : 'id="selectdate" '); ?> class="datepicker ui-corner-all" name="selectdate" value="<?php echo ($selectdate ? 				$selectdate : $time); ?>" onchange="$('#filterform').submit()"/>
 <?php 
 			break;
 }?>
     
-    <select class="filter_select" name="supplier_filter" id="supplier_filter" onchange="$('#filterform').submit()">
+    <select class="filter_select ui-corner-all" name="supplier_filter" id="supplier_filter" onchange="$('#filterform').submit()">
         <option value="" <?php if(!$supplier_filter){ echo "selected='selected'"; } ?>>Selecteer Leverancier</option>
         <?php foreach($suppliers as $supplier){
             if($supplier_filter == $supplier->id){
@@ -100,7 +99,7 @@ $rows = $rm->getRegistrationOverviewByPeriod($period, $periode, $today, $selectd
             }
         }?>
     </select>
-    <select class="filter_select" name="product_filter" id="product_filter" onchange="$('#filterform').submit()">
+    <select class="filter_select ui-corner-all" name="product_filter" id="product_filter" onchange="$('#filterform').submit()">
         <option value="" <?php if(!$product_filter){ echo "selected='selected'"; } ?>>Selecteer Artikel</option>
         <?php foreach($products as $product){
             if($product_filter == $product->id){
@@ -117,16 +116,17 @@ $rows = $rm->getRegistrationOverviewByPeriod($period, $periode, $today, $selectd
 <?php if ($user->level) {?>
 <form id="deleteform" name="deleteform" action="index.php?page=summary&beheer=1" method="post">
 <?php } ?>
+
 <table class="data-table" cellpadding="0" cellspacing="0">
+	<tbody>
 	<tr>
-        <th>Aantal</th>
+        <th class="ui-corner-tl">Aantal</th>
         <th>Leverancier</th>
         <th>Artikel Nummer</th>
         <th>Omschrijving</th>
-        <th>Datum</th>
-        <?php echo ($user->level == 1 && $period == '' ? '<th style="width: 40px;">Verwijder</th>' : ''); ?>
+        
+        <?php echo ($user->level == 1 && $period == '' ? '<th>Datum</th><th class="ui-corner-tr" style="width: 40px;">Verwijder</th>' : '<th class="ui-corner-tr">Datum</th>'); ?>
     </tr>
-	<tbody>
 	<?php
 	if(count($rows)){
 		$c = 0;
@@ -142,16 +142,19 @@ $rows = $rm->getRegistrationOverviewByPeriod($period, $periode, $today, $selectd
 					  </tr>";
 			}
 		}
+		echo "<tr><th class='ui-corner-bottom' colspan='5'>Er zijn ". count($rows) . " resultaten weergegeven.</th></tr>";
 	} else {
-		echo "<tr class=\"noresult\"><td colspan='5'><strong>Er zijn geen resultaten om weer te geven.</strong></td><tr>";
+		echo "<tr><th class='ui-corner-bottom' colspan='5'>Er zijn geen resultaten om weer te geven.</th></tr>";
 	}
 	?>
     </tbody>
 </table>
 <?php 
-	echo "<center>Er zijn ". count($rows) . " resultaten weergegeven <br>";
 	if ($user->level) {
-		echo "<input type='text' id='rowid' name='rowid' value='' />";
+		#echo "<input type='text' id='rowid' name='rowid' value='' />";
+		#
+		#  DO SOMETHING WITH PRIVILEGED USERS.
+		#
 	} 
 ?>
 </form>

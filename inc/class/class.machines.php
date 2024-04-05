@@ -367,7 +367,7 @@ class MachineManager {
 		$output .= "<textarea name=\"query\" id=\"query\">";
 		$output .= $query;
 		$output .= "</textarea>";
-		$output .= "<div id=\"csv\" class=\"csv\"><img src=\"images/excel_icon.gif\" style=\"margin-top: -0px;\" /></div>";
+		$output .= "<div id=\"csv\" class=\"csv\"><img src=\"images/excel.png\" style=\"margin-top: -0px;\" /></div>";
 		$output .= "</form>";
 		
 		// Load the filter form
