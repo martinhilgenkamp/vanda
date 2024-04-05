@@ -1,33 +1,56 @@
 <?php
+#DEBUG PURPOSE
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-require_once("../inc/class/class.machines.php");
+#Load required classes
+require_once("../inc/class/class.db.php");
+$db = new DB();
 
-$mm = new MachineManager;
-
-$fileName = 'export.csv'; 
-header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-header('Content-Description: File Transfer');
-header("Content-type: text/csv");
-header("Content-Disposition: attachment; filename={$fileName}");
-header("Expires: 0");
-header("Pragma: public");
-$fh = @fopen('php://output', 'w');
 
 // Load data from database
 $query = stripslashes($_POST['query']);
-$results = $mm->executeQuery($query);
+#$query = "SELECT * FROM  vanda_production  WHERE vanda_production.datum BETWEEN '2023-04-05' AND '2024-04-05 23:59:59'  AND vanda_production.shipping_id = 0  AND vanda_production.removed = '0'  ORDER BY `datum` DESC";
+if($query){
+    echo $query;
+    $result = $db->selectQuery($query);
 
-// Build header
-fputcsv($fh, array_keys((array)$results[0]), ';');
+    if($result){
+        $currentDateTime = date('Y-m-d_H-i-s');
+        $fileName = 'export'.$currentDateTime. '.csv'; 
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header('Content-Description: File Transfer');
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename={$fileName}");
+        header("Expires: 0");
+        header("Pragma: public");
+        
+        // Open the output stream
+        $fh = @fopen('php://output', 'w');
+
+        // Build header with column names
+        fputcsv($fh, array_keys((array)$result[0]), ';');
  
-// Populate table
-foreach ($results as $data) {
-    fputcsv($fh, get_object_vars($data), ';');
+        // Populate table
+        foreach ($result as $data) {
+            fputcsv($fh, get_object_vars($data), ';');
+        }
+
+
+        // Close the file
+        fclose($fh);
+
+        exit;
+    } else {
+        // If query execution fails, handle the error (display an error message, log it, etc.)
+        echo "Error executing query: " . mysqli_error($db);
+    }
+} else {
+     // If query execution fails, handle the error (display an error message, log it, etc.)
+     echo "Error executing query: EMPTY";
 }
-
-// Close the file
-fclose($fh);
-
 // Make sure nothing else is sent, our file is done
 exit;
 ?>
+
+
