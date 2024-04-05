@@ -40,27 +40,30 @@ $where_array = array();
 // Load products from the database.
 $product_list = $pm->getArticleNumbers();
 $products = $pm->getStockProducts($startdate, $stopdate, $voorraadfilter, $productfilter, $order, $sort);
-
 $query = $pm->getStockProductsQuery($startdate, $stopdate, $voorraadfilter, $productfilter, $order, $sort);
 
 // Hieronder word output gegenereerd.
 $output = "<table id='product-table' class=\"ui-widget results\" cellpadding=\"0\" cellspacing=\"0\">";
 $output .= "<thead class=\"table-header\">";
-$output .= "<td>Label</td>
-  			 <td><a href='?page=voorraad&sort=artikelnummer&order=".$order."'>Artikelnummer</a></td>
-			 <td><a href='?page=voorraad&sort=barcode&order=".$order."'>Barcode</a></td>
-			 <td><a href='?page=voorraad&sort=ordernr&order=".$order."'>Order Nr.</a></td>
-			 <td><a href='?page=voorraad&sort=gewicht&order=".$order."'>KG/STK</a></td>
-			 <td><a href='?page=voorraad&sort=kwaliteit&order=".$order."'>Kwaliteit</a></td>
-			 <td><a href='?page=voorraad&sort=geleverd&order=".$order."'>Verzonden</a></td>
-			 <td><a href='?page=voorraad&sort=datum&order=".$order."'>Datum</a></td>";
+$output .= " <tr>
+			  <td class='ui-corner-tl'>Label</td>
+  			  <td><a href='?page=voorraad&sort=artikelnummer&order=".$order."'>Artikelnummer</a></td>
+			  <td><a href='?page=voorraad&sort=barcode&order=".$order."'>Barcode</a></td>
+			  <td><a href='?page=voorraad&sort=ordernr&order=".$order."'>Order Nr.</a></td>
+			  <td><a href='?page=voorraad&sort=gewicht&order=".$order."'>KG/STK</a></td>
+			  <td><a href='?page=voorraad&sort=kwaliteit&order=".$order."'>Kwaliteit</a></td>
+			  <td><a href='?page=voorraad&sort=geleverd&order=".$order."'>Verzonden</a></td>";			  
 if($user->level){
-	$output .= "<td>&nbsp;</td>";	
+	$output .= "<td><a href='?page=voorraad&sort=datum&order=".$order."'>Datum</a></td>";
+	$output .= "<td class='ui-corner-tr'>&nbsp;</td>";	
+} else {
+	$output .= "<td class='ui-corner-tr'><a href='?page=voorraad&sort=datum&order=".$order."'>Datum</a></td>";
 }
 $output .= "</thead>";
 
 if(count($products) > 0) {
 	$c = 0;
+	$i = 0;
 	foreach($products as $product){
 		if($c == 1) { 
 			$output .= "<tr class=\"grey\">"; 
@@ -93,10 +96,23 @@ if(count($products) > 0) {
 		}	
 
 		$output .= "</tr>";
+		$i++;
 	}
+	if($user->level){
+		$output .= "<tfoot><tr><td class=\"ui-corner-bottom\" colspan='9'>".$i." resultaten weergegeven</td></tr></tfoot>";	
+	} else {
+		$output .= "<tfoot><tr><td class=\"ui-corner-bottom\" colspan='8'>".$i." resultaten weergegeven</td></tr></tfoot>";	
+	}
+	
+	
 }
 else {
-	$output .= "<tr><td colspan='7'>Geen resultaten</td></tr>";
+	if($user->level){
+		$output .= "<tr><td class=\"ui-corner-bottom\" colspan='9'>Geen resultaten</td></tr>";
+	} else {
+		$output .= "<tr><td class=\"ui-corner-bottom\" colspan='8'>Geen resultaten</td></tr>";
+	}
+	
 }
 
 $output .= "</table>";
@@ -104,7 +120,7 @@ $output .= "</table>";
 
 <form method="post" name="csvform" id="csvform" action="pages/csv.php" enctype="multipart/form-data" />
 	<input type="hidden" class="query" id="query" name="query" value="<?php echo $query; ?>"  />
-    <div id="csv" class="csv"><img src="images/excel_icon.gif"  /></div>
+    <div id="csv" class="csv"><img src="images/excel.png"  /></div>
 </form>
 
 <form method="post" name="filterform" id="filterform" class="filterform" method="post">
@@ -116,7 +132,7 @@ $output .= "</table>";
 	    ?>
 	    
 	    <label for="productfilter">Artikelnummer:</label>
-	    <select name="productfilter" id="productfilter" onChange="this.form.submit()">
+	    <select class="ui-corner-all" name="productfilter" id="productfilter" onChange="this.form.submit()">
 	    	<option value="">Alles</option>
 	    	<?php 
 	    		foreach($product_list as $product) {
@@ -125,11 +141,11 @@ $output .= "</table>";
 			?>
 	    </select>
 	   
-	    <label for="startdate">Van:</label><input class="datepicker" id="startdate" name="startdate" value="<?php echo ($startdate ? $startdate :  $final); ?>" onchange="$('#filterform').submit()"/>
-	    <label for="startdate">Tot:</label><input class="datepicker" id="stopdate" name="stopdate" value="<?php echo ($stopdate ? $stopdate : date('Y-m-d',$time)); ?>" onchange="$('#filterform').submit()"/>
+	    <label for="startdate">Van:</label><input class="datepicker ui-corner-all" id="startdate" name="startdate" value="<?php echo ($startdate ? $startdate :  $final); ?>" onchange="$('#filterform').submit()"/>
+	    <label for="startdate">Tot:</label><input class="datepicker ui-corner-all" id="stopdate" name="stopdate" value="<?php echo ($stopdate ? $stopdate : date('Y-m-d',$time)); ?>" onchange="$('#filterform').submit()"/>
 	    
 	    <label for="voorraadfilter">Voorraad: </label>
-        <select id="voorraadfilter" name="voorraadfilter" onChange="this.form.submit()">
+        <select class="ui-corner-all" id="voorraadfilter" name="voorraadfilter" onChange="this.form.submit()">
             <option id="voorradig" value="alles" <?php echo ($voorraadfilter == 'alles' ? "selected='true'" : ""); ?>>Incl Geschiedenis</option>
             <option id="voorradig" value="voorraad" <?php echo ($voorraadfilter == 'voorraad' || !$voorraadfilter ? "selected='true'" : ""); ?>>Voorradig</option>
         </select>

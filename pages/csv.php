@@ -12,7 +12,7 @@ $db = new DB();
 $query = stripslashes($_POST['query']);
 #$query = "SELECT * FROM  vanda_production  WHERE vanda_production.datum BETWEEN '2023-04-05' AND '2024-04-05 23:59:59'  AND vanda_production.shipping_id = 0  AND vanda_production.removed = '0'  ORDER BY `datum` DESC";
 if($query){
-    echo $query;
+    #echo $query; // DEBUG
     $result = $db->selectQuery($query);
 
     if($result){
