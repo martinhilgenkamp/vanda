@@ -5,6 +5,16 @@ require_once("class.db.php");
 
 class RollsShipment {
 
+	// Define $where
+	public $where = "";
+
+	// Define $nl and $output
+	public $nl = "\n";
+	public $output = "";
+	public $userManager;	
+	public $db;
+
+
 	function __construct() {
 		$this->userManager = new UserManager();
 		$this->db = new DB();
@@ -47,6 +57,10 @@ class RollsShipment {
 	
 	
 	function loadFilterForm($options){
+		$nl = $this->nl;
+		$output = $this->output;
+
+
 		$this->restoreSession();
 		if (isset($_GET["free_search_rollship"])) { 	$free_search_rollship  = $_GET["free_search_rollship"];	} elseif (isset($_POST['free_search_rollship'])){	$free_search_rollship = $_POST['free_search_rollship'];	} else { $free_search_rollship='';	};		
 		$user = $this->userManager->getUserByName($_SESSION['username']);
@@ -63,10 +77,18 @@ class RollsShipment {
 		}
 		$output .= "</form>".$nl;
 		$output .= "</div>".$nl;
+		
 		echo $output;
+
+		$output = "";
 	}
 	
 	function showShipmentTable(){
+		$link = "";
+		$where = "";
+		$sort = "";
+		$order = "";
+
 		$user = $this->userManager->getUserByName($_SESSION['username']);
 		$cols = array('id','klant','datum');
 		
@@ -141,8 +163,8 @@ class RollsShipment {
 		$result = $this->db->selectQuery($query);
 		$total_records = count($result);
 		$total_pages = ceil($total_records / $range[1]);
-		$nl = "\n";
-		
+		$nl = $this->nl;
+		$output = $this->output;
 		
 		
 		// generate output
@@ -164,7 +186,7 @@ class RollsShipment {
 									
 			// Generate table rows
 			$output .= "	<tr id='row_".$row->id."' class='data-table-row'>".$nl;
-			$output .= "		<td><a href='pages/generate/generate_roll_pdf.php?ship_id=".$row->id."' target='_blanc'><img src='images/printer.png' height='17'></a> <a href='pages/generate/generate_roll_xlsx.php?ship_id=".$row->id."' target='_blanc'><img src='images/excel.png' height='17'></a></td>".$nl;
+			$output .= "		<td><a href='pages/generate/generate_roll_pdf.php?ship_id=".$row->id."' target='_blanc'><img src='images/printer.png' height='17'></a> <a href='pages/generate/generate_excel.php?ship_id=".$row->id."' target='_blanc'><img src='images/excel.png' height='17'></a></td>".$nl;
 			$output .= "		<td>".$row->id."</td>".$nl;
 			$output .= "		<td>".$row->klant."</td>".$nl;
 			$output .= "		<td>".$row->datum."</td>".$nl;
