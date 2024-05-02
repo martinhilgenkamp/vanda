@@ -31,7 +31,7 @@ if(isset($_POST['opslaan'])){
 	$formWasSaved = true;
  } 
  
- print_r($_POST);
+ //print_r($_POST);
 
 // Load values from database
 $result = $optionManager->getAllOptions()[0];
@@ -88,7 +88,7 @@ $shiphistory = $result->shiphistory;
 	<ul>
 		<li><B>Machine Pagina:</B></li>
 		<li><label for="MachineCount">Aantal Machines:</label><input type="text" name="MachineCount" value="<?php echo ($MachineCount ? $MachineCount : '') ?>"></li>
-		<li><label for="Machinepicking">Machine Afhaal Actief:</label><input type="checkbox" name="machinepicking" value="1"  <?php if ($machinepicking == 1) echo "checked"; ?>></li>
+		<li><label for="machinepicking">Machine Afhaal Actief:</label><input type="checkbox" name="machinepicking" value="1"  <?php if ($machinepicking == 1) echo "checked"; ?>></li>
 	</ul>
 	<h2>Zendingen</h2>
  	<uL>

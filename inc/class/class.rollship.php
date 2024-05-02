@@ -160,8 +160,6 @@ class RollsShipment {
 		//Query om te tellen hoeveel waarden er in de tabel zitten.
 		$query = "SELECT * FROM vanda_roll_ship ".$where.$orderby;
 		
-		echo $query;
-						
 		// Put query in the session
 		$_SESSION['query'] = $query;
 		
