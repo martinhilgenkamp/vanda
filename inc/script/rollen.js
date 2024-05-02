@@ -5,7 +5,7 @@ $(document).ready(function(){
 	
 	$("#childrollform").hide();
 	$('#rollform #input_verstuur').on('click', function(){
-
+	
 	$.ajax({ 
 		  type: "POST",  
 		  url: "pages/process-rollen.php",  
@@ -132,10 +132,15 @@ $(document).ready(function(){
 		if($(this).prop("checked") == true){
 			$('#input_snijbreedte').val('');
 		}
+		console.log("Klikkerdeklik");
 	});
 	
 	// Check if custom width is active, and if so make new colum
 	$('#snijbreedtes').on('change', '.snijbreedte', function(){
+		if($('#input_custom').prop("checked") == false){
+			$('#input_custom').prop('checked', true);
+		}
+		
 		if($('#input_custom').prop("checked") == true){
 			console.log('hij vult m custom waardes in.');
 			if(calculateRB() <= 0 ){

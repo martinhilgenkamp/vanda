@@ -383,21 +383,49 @@ margin: 10px;
 }
 
 .roll-form-div { 
-	margin: auto;
-	width: 25%;
+	margin-left: 20px;
 }
 
 .roll-form-div tr td:first-child {
 	width:50%;
 }
 
-#rollformlist,#childrollformlist {
+#rollformlist, #childrollformlist {
 	list-style: none;
+}
+
+#rollformlist input[type=submit], #rollformlist input[type=reset], #rollformlist input[type=button] {
+	margin: 0px;
+}
+
+#rollformlist input[type=checkbox] {
+	width: 20px; /* Adjust width as needed */
+    height: 20px; /* Adjust height as needed */
+}
+
+#rollformlist label {
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 5px;
+	width: 300px;
+}
+
+
+#rollformlist li {
+    margin-bottom: 10px;
 }
 
 #rollformlist label span{
 	display:  inline-block;
-	width: 300px;
+	
+}
+
+#rollformlist input[type="text"],
+#rollformlist input[type="checkbox"] {
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
 }
 
 #chilldrolllist {
