@@ -21,7 +21,8 @@ if(isset($_POST['opslaan'])){
 		"TransportFromName" => $_POST['TransportFromName'],
 		"TransportFromEmailAddress" => $_POST['TransportFromEmailAddress'],
 		"MachineCount" => $_POST['MachineCount'],
-		"machinepicking" => ($_POST['machinepicking'] == 1 ? 1 : '0')
+		"machinepicking" => ($_POST['machinepicking'] == 1 ? 1 : '0'),
+		"shiphistory" => $_POST['shiphistory']		
 		];
 	
 	if (!$optionManager->updateOptionRow($data)) {
@@ -53,6 +54,7 @@ $TransportFromName = $result->TransportFromName;
 $TransportFromEmailAddress = $result->TransportFromEmailAddress;
 $MachineCount = $result->MachineCount;	
 $machinepicking = $result->machinepicking;	
+$shiphistory = $result->shiphistory;
 
 ?>
 <h1>Opties</h1>
@@ -87,8 +89,12 @@ $machinepicking = $result->machinepicking;
 		<li><B>Machine Pagina:</B></li>
 		<li><label for="MachineCount">Aantal Machines:</label><input type="text" name="MachineCount" value="<?php echo ($MachineCount ? $MachineCount : '') ?>"></li>
 		<li><label for="Machinepicking">Machine Afhaal Actief:</label><input type="checkbox" name="machinepicking" value="1"  <?php if ($machinepicking == 1) echo "checked"; ?>></li>
+	</ul>
+	<h2>Zendingen</h2>
+ 	<uL>
+	 	<li><B>Zending Pagina:</B></li>
+		<li><label for="shiphistory">Hoeveel dagen terug:</label><input type="text" name="shiphistory" value="<?php echo ($shiphistory ? $shiphistory : '') ?>"></li>
 		<li>&nbsp;</li>
 		<li><label for="opslaan">Opslaan:</label><input type="submit" name="opslaan" value="Opslaan"></li>
 	</ul>
-	
 </form>

@@ -1,15 +1,22 @@
 <?php 
 
 require_once("inc/class/class.shipment.php");
+require_once("inc/class/class.option.php");
 
 $sm = new ShipmentManager();
+$om = new OptionManager();
+$options = $om->getAllOptions()[0];
+
+if($options->shiphistory > 1){
+	$history = $options->shiphistory;
+}
 
 // Load products from the database.
-$zendingen = $sm->getAllShipments();
+$zendingen = $sm->getAllShipments($history);
 
 $output = "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
 $output .= "<tr>";
-$output .= "<th>Lijst</th><th>Shipment_id</th><th>Klant</th><th>Datum</th><th>Verzonden</th>";
+$output .= "<th>Lijst</th><th>Shipment_id</th><th>Klant</th><th>Datum</th><th>Aantal Colli</th><th>Verzonden</th>";
 
 if($user->level && isset($zending) && !$zending->verzonden){
 	$output .= "<th class='ship'>&nbsp;</th>";	
@@ -40,7 +47,7 @@ if(count($zendingen)){
 			<td>
 				<a href='index.php?page=details&shipid=".$zending->ship_id."' >".date('d-m-Y',strtotime($zending->datum))."</a>
 			</td>
-			<td>".$sm->countShipment($zending->ship_id)."</td>
+			<td>".$zending->shipment_count."</td>
 			<td>".$zending->verzonden."</td>";
 
 		if($user->level && !$zending->verzonden){

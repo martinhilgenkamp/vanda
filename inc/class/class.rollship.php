@@ -83,7 +83,7 @@ class RollsShipment {
 		$output = "";
 	}
 	
-	function showShipmentTable(){
+	function showShipmentTable($history = ''){
 		$link = "";
 		$where = "";
 		$sort = "";
@@ -143,6 +143,12 @@ class RollsShipment {
 		if($free_search_rollship && $free_search_rollship != ''){
 			($free_search_rollship ? $where_array[] = '(`id` LIKE "%' . $free_search_rollship . '%" OR `klant` LIKE "%' . $free_search_rollship . '%" OR `datum` LIKE "%' . $free_search_rollship . '%") ': '');		
 		}
+
+		if($history){
+			$dateDaysAgo = date('Y-m-d', strtotime('-'.$history.' days'));
+			$where_array[] = "vanda_roll_ship.datum >= '".$dateDaysAgo."'";
+		}
+		
 		
 		//Build the where clause
 		foreach($where_array as $part){
@@ -154,7 +160,7 @@ class RollsShipment {
 		//Query om te tellen hoeveel waarden er in de tabel zitten.
 		$query = "SELECT * FROM vanda_roll_ship ".$where.$orderby;
 		
-		
+		echo $query;
 						
 		// Put query in the session
 		$_SESSION['query'] = $query;

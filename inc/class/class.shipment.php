@@ -40,8 +40,26 @@ class ShipmentManager {
 		return $res;
 	}
 
-	function getAllShipments() {
-		$qry = "SELECT * FROM  vanda_shipment ORDER BY datum DESC";
+	function getAllShipments($days = '') {
+		$dateDaysAgo = date('Y-m-d', strtotime('-'.$days.' days'));
+		if($days) {
+			// Old query in case of emergency
+
+			//$qry = "SELECT * FROM  vanda_shipment WHERE datum >= '" . $dateDaysAgo . "' ORDER BY datum DESC";
+			$qry = "SELECT vanda_shipment.*, 
+				(SELECT COUNT(*) FROM `vanda_production` 
+				WHERE vanda_production.shipping_id = vanda_shipment.ship_id) as shipment_count
+			FROM vanda_shipment 
+			WHERE vanda_shipment.datum >= '".$dateDaysAgo."' 
+			ORDER BY vanda_shipment.datum DESC;";
+
+		} else {
+			$qry = "SELECT vanda_shipment.*, 
+				(SELECT COUNT(*) FROM `vanda_production` 
+				WHERE vanda_production.shipping_id = vanda_shipment.ship_id) as shipment_count
+			FROM vanda_shipment  
+			ORDER BY vanda_shipment.datum DESC;";
+		}
 		return $this->db->selectQuery($qry);
 	}
 
