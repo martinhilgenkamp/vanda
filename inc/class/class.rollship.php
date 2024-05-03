@@ -37,7 +37,7 @@ class RollsShipment {
 	
 	function deleteShipment($id){
  		$query = "DELETE FROM vanda_roll_ship WHERE id ='".$id."';";
-		if($this->db->insertQuery($query)){
+		if($this->db->insertQuery('vanda_roll_ship', $query)){
 			return true;
 		} else {
 			echo "Fout met het bijwerken van de rol zending";

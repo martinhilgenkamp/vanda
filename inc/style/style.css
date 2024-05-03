@@ -437,6 +437,13 @@ margin: 10px;
     border-radius: 3px;
 }
 
+.childrolllist-input {
+	font-weight: bold;
+	width: 50% !important;
+	margin: auto;
+}
+
+
 #chilldrolllist {
 	width: 100%;
 }

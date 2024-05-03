@@ -352,8 +352,8 @@ class RollsManager {
 		$rows = $volledelen + $snijdelen;		
 		$length = $post->snijlengte;
 		$lengthsum = 0;
-
-		$output = '<table id="chilldrolllist">';
+		$output = '<table id="chilldrolllist" class="childrolllist-input data-table">';
+		$output .= '<tr><th class="ui-corner-top" colspan="4">De rol word op de volgende manier gesneden.</th></tr>';
 		$output .= '<tr>
 						<td>Snijbreedte</td>
 						<td>'.floatval($post->snijbreedte[0]).'</td>
@@ -387,7 +387,9 @@ class RollsManager {
 		// echo "Colommen: ".$colums."<br />";
 		// echo "Volle Delen: ".$volledelen."<br />";
 		// echo "Snijdelen: ".$snijdelen."<br />";
-			
+		$output .= '<tr><th class="ui-corner-bottom" colspan="4">&nbsp;</th></tr>';
+		$output .= '</table><br /><table id="chilldrolllist" class="data-table">';
+		$output .= "<tr><th class='ui-corner-tl'>Rolnummer</th><th>Lengte</th><th>Breedte</th><th class='ui-corner-tr'>Mtr Verwerkt.</th>";
 		$colum = 0;
 		// Loop through aantal volle
 		for($i = 1; $i <= $volledelen; $i++){
@@ -448,6 +450,7 @@ class RollsManager {
 				}
 			}
 		}
+		$output .= "<tr><th colspan='4' class='ui-corner-bottom'>&nbsp;</ht>";
 		$output .= '</table>';
 
 		$output .= '<li class="100-wide"><input type="button" name="vorige" id="childroll-vorige" value="Vorige" /><input type="submit" name="save" id="input_save" value="Opslaan" disabled="true"/></li>';
