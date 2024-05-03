@@ -191,8 +191,7 @@ $(document).ready(function(){
 	
 	
 	// TAKEN WEERGAVE DENK IK 
-	
-	
+
 	 $(document).on('click','.open',function(){
 		$.post( "index.php?page=task", { id: $(this).attr('id'), action: "behandeling" }) 
 		.done(function(data){

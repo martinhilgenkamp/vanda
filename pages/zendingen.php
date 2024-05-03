@@ -16,36 +16,38 @@ $zendingen = $sm->getAllShipments($history);
 
 $output = "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
 $output .= "<tr>";
-$output .= "<th>Lijst</th><th>Shipment_id</th><th>Klant</th><th>Datum</th><th>Aantal Colli</th><th>Verzonden</th>";
+$output .= "<th class='ui-corner-tl'>Lijst</th><th>Shipment_id</th><th>Klant</th><th>Datum</th><th>Aantal Colli</th><th class='ui-corner-tr' colspan='2'>Verzonden</th>";
 
-if($user->level && isset($zending) && !$zending->verzonden){
-	$output .= "<th class='ship'>&nbsp;</th>";	
-} else { 
-	$output .= "<th>&nbsp;</th>";
-}
+
+// This can be removed.
+//if($user->level && isset($zending) && !$zending->verzonden){
+//	$output .= "<th class='ship'>&nbsp;</th>";	
+//} else { 
+//	$output .= "<th>&nbsp;</th>";
+//}
 $output .= "</tr>";
 
 $c = 0;
 if(count($zendingen)){
 	foreach($zendingen as $zending){
 		$output .= "
-			<tr>
+			<tr class=\"clickable-row\" data-href=\"index.php?page=details&ship_id=".$zending->ship_id."\">
 			<td>
 				<a href='pages/generate/generate_pdf.php?ship_id=".$zending->ship_id."' target='_blanc'>
-					<img src='images/printer.png' height='17' />
+					<img src='images/printer.png' height='20' />
 				</a> 
 				<a href='pages/generate/generate_xlsx.php?ship_id=".$zending->ship_id."' target='_blanc'>
-					<img src='images/excel.png' height='17' />
+					<img src='images/excel.png' height='20' />
 				</a>
 			</td>
 			<td>
-				<a href='index.php?page=details&shipid=".$zending->ship_id."' >".$zending->ship_id."</a>
+				<a href='index.php?page=details&ship_id=".$zending->ship_id."' >".$zending->ship_id."</a>
 			</td>
 			<td>
-				<a href='index.php?page=details&shipid=".$zending->ship_id."' >".$zending->klant."</a>
+				<a href='index.php?page=details&ship_id=".$zending->ship_id."' >".$zending->klant."</a>
 			</td>
 			<td>
-				<a href='index.php?page=details&shipid=".$zending->ship_id."' >".date('d-m-Y',strtotime($zending->datum))."</a>
+				<a href='index.php?page=details&ship_id=".$zending->ship_id."' >".date('d-m-Y',strtotime($zending->datum))."</a>
 			</td>
 			<td>".$zending->shipment_count."</td>
 			<td>".$zending->verzonden."</td>";
@@ -53,15 +55,18 @@ if(count($zendingen)){
 		if($user->level && !$zending->verzonden){
 			$output .= "<td class='ship' id='".$zending->ship_id."'><img src='images/truck.png' height='20' /></td>";	
 		} 
-		else { 
+		else if($user->level && $zending->verzonden){ 
 			$output .= "<td class='unship' id='".$zending->ship_id."'><img src='images/cross-16px.png' /></td>";
+		} else if (!$zending->verzonden){
+			$output .= "<td><img src='images/cross-16px.png' /></td>";
+		} else {
+			$output .= "<td>yes</td>";
 		}
 		$output .= "</tr>";
 	}
 }
+$output .= "<tr><th colspan='7' class='ui-corner-bottom'>Er zijn ". count($zendingen) . " resultaten weergegeven </th></tr>"; 
 $output .= "</table>";
-$output .=  "<center>Er zijn ". count($zendingen) . " resultaten weergegeven <br>";
-
 ?>
 
 <h1>Zendingen</h1>

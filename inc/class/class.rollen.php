@@ -124,10 +124,11 @@ class RollsManager {
 			];
 			$where = "`vanda_rolls`.`rollid` = ".$roll;
 
-			if($this->db->query("vanda_rolls", $data, $where)){
-				//$query = "SELECT * FROM `vanda_rolls` WHERE `verzonden` = '".$shipid."'";
-				
 
+			/*	DIT STUK WERKT NIET MEER  TODO UNSHIP WERKEND MAKEN */
+
+			if($this->db->updateQuery("vanda_rolls", $data, $where)){
+				//$query = "SELECT * FROM `vanda_rolls` WHERE `verzonden` = '".$shipid."'";
 				$result = $this->getRollsForShipment($shipid);
 				if(count($result) == 0){
 					$shipment->deleteShipment($shipid);
@@ -136,7 +137,7 @@ class RollsManager {
 				echo "<br> PANIEK <BR>";
 				return 'error';   
 		    }
-			
+
 		}
 	}
 	
@@ -262,7 +263,8 @@ class RollsManager {
 	}
 	
 	function getRollEditForm (){
-				// Generate output
+		// Generate output
+		$output ="";
 		$output .= '<div class="roll-editform-div">';
 		$output .= '<form class="editrollform" action="" id="editrollform" enctype="multipart/form-data" method="post">';
 		$output .= '<div id="rollform-edit">';
@@ -455,8 +457,11 @@ class RollsManager {
 	}
 	
 	function loadFilterForm($options){
-		if (isset($_GET["free_search"])) { 	$free_search  = $_GET["free_search"];	} elseif (isset($_POST['free_search'])){	$free_search = $_POST['free_search'];	} else { $free_search='';	};		
 		
+		if (isset($_GET["free_search"])) { 	$free_search  = $_GET["free_search"];	} elseif (isset($_POST['free_search'])){	$free_search = $_POST['free_search'];	} else { $free_search='';	};		
+		$sessionviewtype =  isset($_SESSION['viewtype']) ? $_SESSION['viewtype'] : '';
+		
+		$output  = "";
 		$output .= "<div id='filter_form_div'>";
 		$output .= "<form id='filter_form' action='index.php?page=rolltable' method='post'>";
 		$output .= "<label for='free_search' class='left'>Zoek:</label><input type='text' name='free_search' id='input_free_search' value='".$free_search."' class='left'/><input type='submit' name='submit_search' id='submit_free_search' value='Zoek' class='left' /><input type='button' id='reset_free_form' value='Herstel' class='left'/>";
@@ -464,9 +469,9 @@ class RollsManager {
 		//Show Locatie dropdown.
 		//$output .= $this->BuildLocationDropdown();
 		$output .= '<Label for="viewtype"><span>Weergave:</label><select class="viewtype" name="viewtype">';
-		$output .= '<option value="0" '.($_SESSION['viewtype'] == '0' ? 'selected="selected"' : '').'>Voorraad</option>';
-		$output .= '<option value="1" '.($_SESSION['viewtype'] == '1' ? 'selected="selected"' : '').'>Verzonden</option>';
-		$output .= '<option value="2" '.($_SESSION['viewtype'] == '2' ? 'selected="selected"' : '').'>Alles</option>';
+		$output .= '<option value="0" '.($sessionviewtype == '0' ? 'selected="selected"' : '').'>Voorraad</option>';
+		$output .= '<option value="1" '.($sessionviewtype == '1' ? 'selected="selected"' : '').'>Verzonden</option>';
+		$output .= '<option value="2" '.($sessionviewtype == '2' ? 'selected="selected"' : '').'>Alles</option>';
 		$output .= '</select>';
 			
 		// Set $options in hidden fields to keep the values
@@ -482,9 +487,8 @@ class RollsManager {
 	
 	// Get table of atricles
 	function getTable($where = '', $range = array(0,20)){
-
 		//$user = getUser($_SESSION['username']);
-		$viewtype = isset($_SESSION['viewtype']) ? $_SESSION['viewtype'] : null;
+		//$viewtype = isset($_SESSION['viewtype']) ? $_SESSION['viewtype'] : null;
 			
 		$selected_roll = isset($_SESSION['selected_roll']) ? $_SESSION['selected_roll'] : null;
 		unset($_SESSION['selected_roll']);
@@ -505,8 +509,8 @@ class RollsManager {
 		if(isset($sort)) { $_SESSION['sort'] = $sort; } else { $sort = $_SESSION['sort']; } 	 
 		if(isset($pg)) { $_SESSION['pg'] = $pg; } else { $pg = $_SESSION['pg']; }
 		if(isset($order)) { $_SESSION['order'] = $order; } else { $order = $_SESSION['order']; } 
-		if(isset($viewtype)) { $_SESSION['viewtype'] = $viewtype; } else { $viewtype = $_SESSION['viewtype']; }
-		if(isset($free_search)) { $_SESSION['free_search'] = $free_search; } else { $free_search = $_SESSION['free_search']; }
+		if(isset($viewtype)) { $_SESSION['viewtype'] = $viewtype; } else { $viewtype =  isset($_SESSION['viewtype']) ? $_SESSION['viewtype']  : '' ; }
+		if(isset($free_search)) { $_SESSION['free_search'] = $free_search; } else { $free_search = isset($_SESSION['free_search']) ? $_SESSION['free_search']  : ''; }
 		
 		// Set aantal resultaten per pagina
 		$range[1] = 1000;	
@@ -524,6 +528,7 @@ class RollsManager {
 		$orderby= " ORDER BY ".($sort ? '`'.$sort.'` ' : '`ingevoerd` ').$order;
 		
 		//Link opbouwen voor paginatie en sortering klikken
+		$link = '';
 		$link_array['page'] = ($page ? "page=".$page : '');
 		$link_array['sort'] = "sort=".$sort;
 		$link_array['order'] = "order=".$order;
@@ -543,7 +548,7 @@ class RollsManager {
 		//($filter_locatie ? $where_array[] = '`locatie` LIKE "%' . $filter_locatie . '%" ': '');
 		
 		if($free_search && $free_search != ''){
-			($free_search ? $where_array[] = '(`rolnummer` LIKE "%' . $free_search . '%" OR `ingevoerd` LIKE "%' . $free_search . '%" OR `omschrijving` LIKE "%' . '%" OR `ean` LIKE "%' . $free_search . '%" OR `kleur` LIKE "%' . $free_search . '%" OR `backing` LIKE "%' . $free_search . '%") ': '');		
+			($free_search ? $where_array[] = '(`rolnummer` LIKE "%' . $free_search . '%" OR `ingevoerd` LIKE "%' . $free_search . '%" OR `omschrijving` LIKE "%'. $free_search . '%" OR `ean` LIKE "%' . $free_search . '%" OR `kleur` LIKE "%' . $free_search . '%" OR `backing` LIKE "%' . $free_search . '%") ': '');		
 		}
 		
 		
@@ -573,21 +578,22 @@ class RollsManager {
 						
 		// Put query in the session
 		$_SESSION['query'] = $query;
-		
-		// Tel het aantal waardes en bepaal hoeveel paginas er moeten komen
 		$result = $this->db->selectQuery($query);
-		$total_records = $result->num_rows;
-		$total_pages = ceil($total_records / $range[1]);	
+
+		// WORD VOLGENS MIJ NIET MEER GEBRUIKT KOMT UIT PAGINATIE
+		//$total_records = $result->num_rows;
+		//$total_pages = ceil($total_records / $range[1]);	
 		
 		// generate output
 		// Load the filter form
 		echo $this->loadFilterForm($options);
 		
 		// Generate table header
+		$output = "";
 		$output .= "<form name='shipform' id='roll-shipform' action='pages/process-rollen.php' method='post'>";
 		$output .= "<table class=\"data-table\">";
 		$output .= "	<tr>";
-		$output .= "		<th><input type='checkbox' id='roll-select-all' name='roll-select-all'></th>";
+		$output .= "		<th class='ui-corner-tl'><input type='checkbox' id='roll-select-all' name='roll-select-all'></th>";
 		$output .= "		<th>Label</th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=rolnummer&order=".$order."&pg=".$pg."'>Rolnummer</a></th>";
 		$output .= "		<th id='ordernummer_col'><a href='?".$link_array['page']."&sort=deelnummer&order=".$order."&pg=".$pg."'>Deelnummer</a></th>";
@@ -600,7 +606,7 @@ class RollsManager {
 		$output .= "		<th><a href='?".$link_array['page']."&sort=referentie&order=".$order."&pg=".$pg."'>Referentie</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=ingevoerd&order=".$order."&pg=".$pg."'>Ingevoerd</a></th>";
 		$output .= "		<th><a href='?".$link_array['page']."&sort=gewijzigd&order=".$order."&pg=".$pg."'>Gewijzigd</a></th>";
-		$output .= "		<th><a href='?".$link_array['page']."&sort=verzonden&order=".$order."&pg=".$pg."'>verzonden</a></th>";
+		$output .= "		<th class='ui-corner-tr'><a href='?".$link_array['page']."&sort=verzonden&order=".$order."&pg=".$pg."'>verzonden</a></th>";
 		$output .= "	</tr>";
 		
 		$records = 0;
@@ -629,17 +635,18 @@ class RollsManager {
 			$records++;
 		}
 		
-		if($records == 0){
+		//if($records == 0){
 			$output .=  '<tr class=\'data-table-row\'>';	
-			$output .=  '<td colspan="17"><strong>Er zijn geen resultaten om weer te geven</strong></td>';
+			$output .=  '<th class="ui-corner-bottom" colspan="14"><strong>Er zijn '.$records.' resultaten om weer te geven</strong></td>';
 			$output .=  '</tr>';
-		}
+		//}
 		
 		// Close Table
 		$output .= "</table>";
 		$output .= "<input type='button' name='verwijder' id='input_verwijder' value='Verwijder' />";
 		$output .= "<input type='hidden' name='task' id='task' value='verzend' />";
-		$output .= "<label for='klant'>Klant: </label><input type='text' name='klant' id='roll-klant' value=''>";
+		// TODO Check wat deze regel deed, volgens mij niet veel.
+		//$output .= "<label for='klant'>Klant: </label><input type='text' name='klant' id='roll-klant' value=''>";
 		$output .= "<input type='button' name='haalterug' id='input_haalterug' value='Haal Terug' />";
 		$output .= "<input type='submit' name='verzend' value='Verzend'/>";
 		$output .= "</form>";

@@ -178,10 +178,10 @@ class RollsShipment {
 		// Generate table header
 		$output .= "<table class=\"data-table\">".$nl;
 		$output .= "	<tr>".$nl;
-		$output .= "		<th>&nbsp;</th>".$nl;
+		$output .= "		<th class='ui-corner-tl' >&nbsp;</th>".$nl;
 		$output .= "		<th><a href='?".$link_array['page']."&sort=id&order=".$order."&pg=".$pg."'>ID</a></th>".$nl;
 		$output .= "		<th><a href='?".$link_array['page']."&sort=klant&order=".$order."&pg=".$pg."'>Klant</a></th>".$nl;
-		$output .= "		<th><a href='?".$link_array['page']."&sort=datum&order=".$order."&pg=".$pg."'>Datum</a></th>".$nl;
+		$output .= "		<th class='ui-corner-tr'><a href='?".$link_array['page']."&sort=datum&order=".$order."&pg=".$pg."'>Datum</a></th>".$nl;
 		$output .= "	</tr>".$nl;
 
 		$records = 0;
@@ -190,7 +190,7 @@ class RollsShipment {
 									
 			// Generate table rows
 			$output .= "	<tr id='row_".$row->id."' class='data-table-row'>".$nl;
-			$output .= "		<td><a href='pages/generate/generate_roll_pdf.php?ship_id=".$row->id."' target='_blanc'><img src='images/printer.png' height='17'></a> <a href='pages/generate/generate_excel.php?ship_id=".$row->id."' target='_blanc'><img src='images/excel.png' height='17'></a></td>".$nl;
+			$output .= "		<td><a href='pages/generate/generate_roll_pdf.php?ship_id=".$row->id."' target='_blanc'><img src='images/printer.png' height='20'></a> <a href='pages/generate/generate_excel.php?ship_id=".$row->id."' target='_blanc'><img src='images/excel.png' height='20'></a></td>".$nl;
 			$output .= "		<td>".$row->id."</td>".$nl;
 			$output .= "		<td>".$row->klant."</td>".$nl;
 			$output .= "		<td>".$row->datum."</td>".$nl;
@@ -198,11 +198,11 @@ class RollsShipment {
 			$records++;
 		}
 		
-		if($records == 0){
+		//if($records == 0){
 			$output .=  '<tr class=\'data-table-row\'>'.$nl;	
-			$output .=  '<td colspan="16"><strong>Er zijn geen resultaten om weer te geven</strong></td>'.$nl;
+			$output .=  '<th class="ui-corner-bottom" colspan="4"><strong>Er zijn '.$records.' resultaten om weer te geven</strong></td>'.$nl;
 			$output .=  '</tr>'.$nl;
-		}
+		//}
 		
 		// Close Table
 		$output .= "</table>";

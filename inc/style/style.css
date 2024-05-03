@@ -178,6 +178,15 @@ padding: 8px;
  color: #fff !important;
 }
 
+.clickable-row:hover{
+	cursor: pointer;
+	background-color: #fdfac6;
+}
+
+.clickable-row a {
+	text-decoration: none;
+}
+
 .results{
 	width: 100%;
 	
