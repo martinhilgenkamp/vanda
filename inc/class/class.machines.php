@@ -13,23 +13,45 @@ class MachineManager {
 		$this->db = new DB();
 	}
 	
-	function addMachine($data) {
+	function gereedMachine($data){
 		if($data['persoon'] == '' || $data['kwaliteit'] == '' || $data['machine'] ==''){
 			//incomplete entry throw error
 			$result = "Niet alle waardes zijn ingevuld.";
 			return;
 		}
-		$time = $this->getLastTime($data);
+
+		$data['gereed'] = date("Y-m-d H:i:s");
+		// THis function sets value in vanda_mahcine_def for quick handling.
+		if($this->db->updateQuery("vanda_machine_def", $data, "machine = ".$data['machine'])){
+			return "opgeslagen";
+		} else {
+			return false;
+		}
+
+	}
+
+
+	function addMachine($data) {
+		if($data['persoon'] == '' || $data['kwaliteit'] == '' || $data['machine'] ==''){
+			//incomplete entry throw error
+			$result = "Niet alle waardes zijn ingevuld.";
+			return;
+		}		
+		$time = $this->getLastTimeAPI($data['machine']);
 
 		if(strtotime("-1 minutes") >= strtotime($time) || $time == '') {
-			
-			$machineId = $this->db->insertQuery("vanda_machines", $data);
-			if($machineId > 0 && is_int($machineId)) {
-				$result = 'Transactie van '.$data['persoon'].' op machine '. $data['machine'].' opgeslagen';
-			} else {
-				$result = 'Opslaan mislukt ';	
-				print_r($machineId);
+			// Do machine registration and update the vanda_machine_def table.
+			if($this->gereedMachine($data)){
+				$machineId = $this->db->insertQuery("vanda_machines", $data);
+				if($machineId > 0 && is_int($machineId)) {
+					$result = 'Transactie van '.$data['persoon'].' op machine '. $data['machine'].' opgeslagen';
+				} else {
+					$result = 'Opslaan mislukt ';	
+					print_r($machineId);
+				}
 			}
+				
+					
 		}
 		else {
 			$result = 'Dubbele registratie probeer het later opnieuw.';
@@ -41,14 +63,16 @@ class MachineManager {
 		return $result;
 	}
 
+	// Function for last gereedmelding.
 	function getLastTimeAPI($machine){
 		#functie is written to not mess with original getLastTIme function to nog break anything.
-		$qry = "SELECT datum, persoon, kwaliteit, machine as id FROM `vanda_machines` WHERE machine = '".$machine."' ORDER BY datum DESC LIMIT 1";
+		$qry = "SELECT gereed AS tijd FROM vanda_machine_def WHERE machine = '".$machine."';";
 		$res = $this->db->selectQuery($qry);
-		return $res[0]->datum;
+		return $res[0]->tijd;
 	}
 
-	function getLastTime($data) {
+	// Function for last Pick Time.
+	function getLastTimePickup($data) {
 		$qry = "SELECT datum FROM `vanda_machines` WHERE persoon = '".$data['persoon']."' AND machine = '".$data['machine']."' ORDER BY datum DESC LIMIT 1";
 		$res = $this->db->selectQuery($qry);
 		return $res[0]->datum;
@@ -57,7 +81,6 @@ class MachineManager {
 	function getLastPersoon($machine){
 		// Determine user based on session and db.
 		$qry = "SELECT persoon FROM `vanda_machines` WHERE machine = '".$machine."' ORDER BY datum DESC LIMIT 1";
-		
 		$res = $this->db->selectQuery($qry);
 
 		if(isset($res[0]->persoon) || isset($_SESSION['persoon'.$machine])){
@@ -106,12 +129,28 @@ class MachineManager {
 		return $output;
 	}
 
-	function getAllMachines() {
-		// TODO feature needs to be enabled after button addition.
-		//$qry = "SELECT vm.id, vm.persoon, vm.kwaliteit, vm.machine, vm.datum, vm.verwijderd FROM vanda_machines vm INNER JOIN ( SELECT machine, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ) latest ON vm.machine = latest.machine AND vm.datum = latest.max_datum ORDER BY vm.datum ASC;";
-		$qry = "SELECT vm.id, vm.persoon, vm.kwaliteit, vm.machine, vm.datum, vm.verwijderd FROM vanda_machines vm INNER JOIN ( SELECT machine, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ) latest ON vm.machine = latest.machine AND vm.datum = latest.max_datum ORDER BY vm.machine ASC;";
+
+	function getAllMachines($picking = 0) {
+		// datum is added for backward compatibility
+		if($picking){
+			$qry = "SELECT *, gereed AS 'datum' FROM `vanda_machine_def` ORDER BY gereed ASC";
+		} else {
+			$qry = "SELECT *, gereed AS 'datum' FROM `vanda_machine_def`ORDER BY machine ASC";
+		}
 		return $this->db->selectQuery($qry);
 	}
+
+	/* COPY OF OLD VERSION GET ALL MACHINES 
+	function getAllMachines($picking = 0) {
+		// TODO feature needs to be enabled after button addition.
+		if($picking){
+		$qry = "SELECT vm.id, vm.persoon, vm.kwaliteit, vm.machine, vm.datum, vm.verwijderd FROM vanda_machines vm INNER JOIN ( SELECT machine, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ) latest ON vm.machine = latest.machine AND vm.datum = latest.max_datum ORDER BY vm.datum ASC;";
+		} else {
+		$qry = "SELECT vm.id, vm.persoon, vm.kwaliteit, vm.machine, vm.datum, vm.verwijderd FROM vanda_machines vm INNER JOIN ( SELECT machine, MAX(datum) AS max_datum FROM vanda_machines GROUP BY machine ) latest ON vm.machine = latest.machine AND vm.datum = latest.max_datum ORDER BY vm.machine ASC;";
+		}
+		return $this->db->selectQuery($qry);
+	}
+	*/
 
 	function fillUnusedMachines($machines, $machinecount, $object) {
 		$currentCount = count($machines);

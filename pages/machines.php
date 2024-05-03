@@ -11,13 +11,13 @@ $users = $um->listUsers();
 $options = $om->getAllOptions()[0];
 
 $machinecount = $options->MachineCount;
-$machines = $mm->getAllMachines();
-$object = null;
-$machines = $mm->fillUnusedMachines($machines, $machinecount-1, $object);
+$sortonpick = $options->machinepicking;
+
+$machines = $mm->getAllMachines($sortonpick);
 
 ?>
 
-<div class="navigation-header"><a href="index.php?page=productie" class="ui-button ui-corner-all ui-widget pageswitch" style="position: absolute"><< Productie</a></div>
+<div class="navigation-header"><a href="index.php?page=productie" class="button ui-corner-all ui-widget pageswitch" style="position: absolute"><< Productie</a></div>
 <div class="clr"></div>
 <h1>Machine registratie</h1>
 
@@ -29,12 +29,13 @@ $machines = $mm->fillUnusedMachines($machines, $machinecount-1, $object);
 			<li>Kwaliteit</li>
 			<li>Machine</li>
 		</ul>
+		<div id="machinecontainer"></div>
 		<?php
 		foreach($machines as $machine){
 		?>			
-			<ul>
+			<ul id="machine<?= $machine->machine ?>" machine="<?= $machine->machine ?>"  class="machine-ul ui-corner-all" tijd="<?=date('Y-m-d H:i:s', strtotime($machine->tijd));?>"">
 				<li>
-					<input type="text" class="ui-widget ui-state-default ui-corner-all machine-input-text" disabled='true' value="<?= date(' H:i:s', strtotime($machine->datum));?>">
+					<input id="tijd<?= $machine->machine ?>" type="text" class="ui-widget ui-state-default ui-corner-all machine-input-text" disabled='true' value="<?= date(' H:i:s', strtotime($machine->datum));?>">
 				</li>
 				<li>
 					

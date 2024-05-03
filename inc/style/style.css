@@ -587,9 +587,22 @@ margin: 10px;
 	border: #dad55e;
 }
 
+.yellow-background {
+	background-color: #faf7b5;
+	border: 1px solid #b6ad00
+}
+.green-background {
+	background-color: #B6F3B9;
+	border: 1px solid #063E00;
+}
+.red-background {
+	background-color: #ff9090;
+	border: 1px solid #832424
+}
 
 #machineform ul{
 	text-align: center;
+	margin: 10px 5px;;
 }
 
 #machineform ul li {

@@ -71,7 +71,7 @@ class DB {
 			$strUpdate = substr($strUpdate, 0, -2);
 
 			$qry = "UPDATE ".$table." SET ".$strUpdate." WHERE ".$where;
-
+	
 			$this->updateResult = $this->link->query($qry);
 
 			if (!$this->updateResult){
@@ -89,7 +89,7 @@ class DB {
 
 	function deleteQuery($table, $where) {
 		$qry = "DELETE FROM ".$table." WHERE ".$where;
-
+		
 		$this->deleteResult = $this->link->query($qry);
 
 		return $this->deleteResult;

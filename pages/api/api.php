@@ -14,13 +14,23 @@ $mm = new MachineManager();
 if($req == 'GET'){
     // Get the machine number from the query string
     $machineno = isset($_GET['machine']) ? $_GET['machine'] : '';
+    $value = isset($_GET['value']) ? $_GET['value'] : '';
 
     // Check if $machineno contains only numbers
     if (preg_match('/^[0-9]+$/', $machineno)) {
        
-        $data['persoon'] = $mm->getLastPersoon($machineno);
-        $data['kwaliteit'] = $mm->getLastKwaliteit($machineno);
-        $data['last'] = $mm->getLastTimeAPI($machineno);
+        // Check if we want to know the time only or all info.
+        if ($value == 'tijd'){
+            $data['last'] = $mm->getLastTimeAPI($machineno);
+        } else if ($value == 'kwaliteit'){ 
+            $data['kwaliteit'] = $mm->getLastKwaliteit($machineno);
+        } else if ($value == 'persoon'){ 
+            $data['persoon'] = $mm->getLastPersoon($machineno);
+        } else {
+            $data['persoon'] = $mm->getLastPersoon($machineno);
+            $data['kwaliteit'] = $mm->getLastKwaliteit($machineno);
+            $data['last'] = $mm->getLastTimeAPI($machineno);
+        }
         
         echo json_encode($data); 
 
@@ -56,7 +66,7 @@ if($req == 'GET'){
         $formattedTime = date('Y-m-d H:i:s', $currentTime);
         $data['datum'] = $formattedTime;
         
-        $result = $mm->addMachine($data);
+        $result = $mm->gereedMachine($data);
         
         echo json_encode($result);
 
