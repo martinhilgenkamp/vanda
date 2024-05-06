@@ -4,8 +4,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Noodzakelijke dingen bij elkaar rapen.
-require '../../vendor/autoload.php';
-require_once('../../inc/class/class.db.php');
+require '../vendor/autoload.php';
+require_once('../inc/class/class.db.php');
 date_default_timezone_set("Europe/Amsterdam");
 
 
