@@ -2,7 +2,9 @@
 require_once("class.db.php");
 
 class ArticleManager {
+    private $db;
 
+    
     function __construct() {
         $this->db = new DB();
     }
