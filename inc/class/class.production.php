@@ -140,9 +140,7 @@ class ProductionManager {
 
 	function getProductionCountByShippingId($shipId) {
 		$qry = "SELECT count(*) AS aantal FROM  vanda_production WHERE shipping_id = '".$shipId."'";
-
 		$res = $this->db->selectQuery($qry);
-
 		return $res[0];
 	}
 

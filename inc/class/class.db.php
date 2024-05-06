@@ -46,7 +46,6 @@ class DB {
 	function selectObject($query) {
 		$selectResult = $this->link->query($query) or die("Ongeldige query: " . $query);
 		$resObj = $selectResult->fetch_object();
-		
 		return $resObj;
 	}
 

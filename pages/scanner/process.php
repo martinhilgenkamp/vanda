@@ -13,7 +13,6 @@ $sm = new ShipmentManager();
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //print_r($_POST);
     
     $klant = $_POST['klant'];
     $ship_id = $_POST['ship_id'];
@@ -47,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'ship':
             // controleer of de barcode bestaat en niet verzonden is returns barcode object
             $barcodeExists = $pm->getProductShipmentByBarcode($barcode);
-            print_r($barcodeExists);
             if ($barcodeExists) {
                 // Check for current or new shipment.
                 if($ship_id) {
