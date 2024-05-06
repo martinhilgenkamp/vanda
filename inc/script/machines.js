@@ -99,11 +99,16 @@ $(document).ready(function(){
 					//console.log("Machine" + machine +  " : " + tijdAttr + " - " + tijd + " = " + Timediff);
 
 					// Check if the time difference is less than 5 minutes (300000 milliseconds)
-					if (Timediff >= 300000) {
-						$('#machine' + machine).addClass("red-background");
+					if (Timediff >= 30000000) {
+						$('#machine' + machine).removeClass("red-background");
 						$('#machine' + machine).removeClass("yellow-background");
 						$('#machine' + machine).removeClass("green-background");
 					
+					} else if (Timediff >= 300000) {
+						$('#machine' + machine).addClass("red-background");
+						$('#machine' + machine).removeClass("yellow-background");
+						$('#machine' + machine).removeClass("green-background");
+						
 					} else if (Timediff >= 60000) {
 						$('#machine' + machine).addClass("yellow-background");
 						$('#machine' + machine).removeClass("red-background");

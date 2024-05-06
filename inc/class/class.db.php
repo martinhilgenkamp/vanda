@@ -19,7 +19,9 @@ class DB {
 		$this->host = "localhost";
        	$this->database = "vanda";
        	$this->user = "vanda";
-       	$this->password = "HhDDNj3z";
+       	
+		//$this->password = "HhDDNj3z";
+		$this->password = "Hwq^1Gbb5nOkuXwj";
 
 		$this->link = new mysqli($this->host, $this->user, $this->password, $this->database);
    	}

@@ -21,11 +21,17 @@ class MachineManager {
 		}
 
 		$data['gereed'] = date("Y-m-d H:i:s");
-		// THis function sets value in vanda_mahcine_def for quick handling.
-		if($this->db->updateQuery("vanda_machine_def", $data, "machine = ".$data['machine'])){
-			return "opgeslagen";
+		
+		$time = $this->getLastTimeAPI($data['machine']);
+		if(strtotime("-1 minutes") >= strtotime($time) || $time == '') {
+			// THis function sets value in vanda_mahcine_def for quick handling.
+			if($this->db->updateQuery("vanda_machine_def", $data, "machine = ".$data['machine'])){
+				return "opgeslagen";
+			} else {
+				return false;
+			}
 		} else {
-			return false;
+			return 'Dubbele registratie probeer het later opnieuw.';
 		}
 
 	}
