@@ -32,11 +32,11 @@ switch($post->task){
 		echo $machineresult;
 	break;
 	case 'remove':
-		if(!$post->id){
+		if(!isset($post->id)){
 			echo "FOUT! er zijn geen rollen geselecteerd";
 			exit;
 		} else {
-			$mm->deleteMachine($post->id);	
+			$mm->deleteMachine($post->id);
 		}
 	break;
 }

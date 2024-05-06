@@ -479,11 +479,13 @@ class MachineManager {
 
 	function deleteMachine($ids){
 		$deleteIds = implode(', ', $ids); 
+
+
 		$data = array("verwijderd" => "1");
 
 		var_dump("<pre>");
 		var_dump($deleteIds);
-		//$this->db->updateQuery("vanda_machines", $data, "id IN (".$deleteIds.")");
+		$this->db->updateQuery("vanda_machines", $data, "id IN (".$deleteIds.")");
 
 		$this->RestoreSession();
 	}
