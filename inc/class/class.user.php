@@ -2,6 +2,7 @@
 require_once("class.db.php");
 
 class UserManager {
+	private $db;
 
 	function __construct() {
 		$this->db = new DB();
