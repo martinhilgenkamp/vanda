@@ -26,16 +26,21 @@ class DB {
 		$this->link = new mysqli($this->host, $this->user, $this->password, $this->database);
    	}
 
-	function selectQuery($query) {
-		$selectResult = $this->link->query($query) or die("Ongeldige query: " . $query);
-
-		$resArray = Array();
-		if($selectResult){
-			while($record = $selectResult->fetch_object()){
+	   function selectQuery($query) {
+		try {
+			$selectResult = $this->link->query($query);
+			if (!$selectResult) {
+				throw new Exception("MySQL Error: " . $this->link->error);
+			}
+	
+			$resArray = array();
+			while ($record = $selectResult->fetch_object()) {
 				$resArray[] = $record;
 			}
+			return $resArray;
+		} catch (Exception $e) {
+			die("Query failed: " . $e->getMessage());
 		}
-		return $resArray;
 	}
 
 	function selectObject($query) {
