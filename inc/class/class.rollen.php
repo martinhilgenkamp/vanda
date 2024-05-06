@@ -167,7 +167,7 @@ class RollsManager {
 			echo "FOUT! ";
 			return 'error';   
 		}
-		$ean = ($_SESSION['ean'] ?  $_SESSION['ean'] : $result->ean);
+		$ean = (isset($_SESSION['ean']) ?  $_SESSION['ean'] : $result->ean);
 		return $ean;
 	}
 	
