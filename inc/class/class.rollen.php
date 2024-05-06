@@ -335,7 +335,7 @@ class RollsManager {
 		$sourcelength = (floatval($post->bronlengte));
 				
 		// Als er een variabele sbijbreedte is opgegeven hier rekening mee houden.
-		if($post->custom){
+		if(isset($post->custom)){
 			$colums = count($post->snijbreedte);
 		} else {
 			$colums = round(floatval($post->bronbreedte) / floatval($post->snijbreedte[0]));
