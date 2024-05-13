@@ -648,8 +648,7 @@ class RollsManager {
 		$output .= "</table>";
 		$output .= "<input type='button' name='verwijder' id='input_verwijder' value='Verwijder' />";
 		$output .= "<input type='hidden' name='task' id='task' value='verzend' />";
-		// TODO Check wat deze regel deed, volgens mij niet veel.
-		//$output .= "<label for='klant'>Klant: </label><input type='text' name='klant' id='roll-klant' value=''>";
+		$output .= "<label for='klant'>Klant: </label><input type='text' name='klant' id='roll-klant' value=''>";
 		$output .= "<input type='button' name='haalterug' id='input_haalterug' value='Haal Terug' />";
 		$output .= "<input type='submit' name='verzend' value='Verzend'/>";
 		$output .= "</form>";
