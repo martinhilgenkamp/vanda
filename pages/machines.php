@@ -25,6 +25,7 @@ $machines = $mm->getAllMachines($sortonpick);
 	<form id="machineform" name="machineform"  method="post" target="_blank">
 		<ul class="machine-header">
 			<li>Gereed</li>
+			<li>Pickup</li>
 		    <li>Operator</li>
 			<li>Kwaliteit</li>
 			<li>Machine</li>
@@ -36,6 +37,9 @@ $machines = $mm->getAllMachines($sortonpick);
 			<ul id="machine<?= $machine->machine ?>" machine="<?= $machine->machine ?>"  class="machine-ul ui-corner-all" tijd="<?=date('Y-m-d H:i:s', strtotime($machine->tijd));?>"">
 				<li>
 					<input id="tijd<?= $machine->machine ?>" type="text" class="ui-widget ui-state-default ui-corner-all machine-input-text" disabled='true' value="<?= date(' H:i:s', strtotime($machine->datum));?>">
+				</li>
+				<li>
+					<input id="pickup<?= $machine->machine ?>" type="text" class="ui-widget ui-state-default ui-corner-all machine-input-text" disabled='true' value="<?= date(' H:i:s', strtotime($machine->pickup));?>">
 				</li>
 				<li>
 					

@@ -66,8 +66,7 @@ if($req == 'GET'){
         $currentTime = time();
         // Format the timestamp as a human-readable time
         $formattedTime = date('Y-m-d H:i:s', $currentTime);
-        $data['datum'] = $formattedTime;
-        
+        $data['datum'] = $formattedTime;        
         $result = $mm->gereedMachine($data);
         
         echo json_encode($result);

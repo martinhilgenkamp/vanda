@@ -85,29 +85,40 @@ $(document).ready(function(){
 						$('#input_kwaliteit'+machine).val(data.kwaliteit);
 					}
 					
-					var parts = data.tijd.split(" ");
-					// Extract the time part
-					var timePart = parts[1];
+					// Set time for user Feedback
+					var parts = data.last.split(" ");
+					var FinishtimePart = parts[1];
 					//Set time for user
-					$('#tijd' + machine).val(timePart);
+					$('#tijd' + machine).val(FinishtimePart);
+					var parts = data.picked.split(" ");
+					var PickedtimePart = parts[1];
+					//Set time for user
+					$('#pickup' + machine).val(PickedtimePart);
+
 					// Set time for script
-					$('#machine' + machine).attr('tijd', data.tijd);
+					$('#machine' + machine).attr('tijd', data.last);
 					$('#machine' + machine).attr('picked', data.picked);
 
+					// Picked Time - Time
 					var tijdAttr = $('#machine' + machine).attr("tijd");
 					var pickedAttr = $('#machine' + machine).attr("picked");
-					var tijd = new Date(tijdAttr).getTime();
-					var Timediff = currentTime - tijd;
+					
 
-					//console.log("Machine" + machine +  " : " + tijdAttr + " - " + tijd + " = " + Timediff);
+					var PickTime = new Date(pickedAttr).getTime();
+					var FinishTime = new Date(tijdAttr).getTime();
+
+					var Timediff = FinishTime - PickTime;
+
+					console.log(Timediff);
+					console.log("Machine" + machine +  " : " + tijdAttr + " - " + pickedAttr + " = " + Timediff);
 
 					// Check if the time difference is less than 5 minutes (300000 milliseconds)
-					if (Timediff >= 30000000) {
+					if (tijdAttr == pickedAttr || pickedAttr >= tijdAttr) {
 						$('#machine' + machine).removeClass("red-background");
 						$('#machine' + machine).removeClass("yellow-background");
 						$('#machine' + machine).removeClass("green-background");
-					
-					} else if (Timediff >= 300000) {
+						
+					} else if (Timediff >= 120000) {
 						$('#machine' + machine).addClass("red-background");
 						$('#machine' + machine).removeClass("yellow-background");
 						$('#machine' + machine).removeClass("green-background");
@@ -120,8 +131,7 @@ $(document).ready(function(){
 					} else {
 						$('#machine' + machine).removeClass("yellow-background");
 						$('#machine' + machine).removeClass("red-background");
-						$('#machine' + machine).addClass("green-background");
-						
+						//$('#machine' + machine).addClass("green-background");
 					}
 			});
         });

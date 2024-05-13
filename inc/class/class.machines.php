@@ -19,10 +19,10 @@ class MachineManager {
 			$result = "Niet alle waardes zijn ingevuld.";
 			return;
 		}
-
 		$data['gereed'] = date("Y-m-d H:i:s");
-		
+
 		$time = $this->getLastTimeAPI($data['machine']);
+
 		if(strtotime("-1 minutes") >= strtotime($time) || $time == '') {
 			// THis function sets value in vanda_mahcine_def for quick handling.
 			if($this->db->updateQuery("vanda_machine_def", $data, "machine = ".$data['machine'])){
@@ -43,7 +43,7 @@ class MachineManager {
 			$result = "Niet alle waardes zijn ingevuld.";
 			return;
 		}		
-		$time = $this->getLastTimeAPI($data['machine']);
+		$time = $this->getLastTimePickup($data['machine']);
 
 		if(strtotime("-1 minutes") >= strtotime($time) || $time == '') {
 			// Do machine registration and update the vanda_machine_def table.
@@ -139,9 +139,9 @@ class MachineManager {
 	function getAllMachines($picking = 0) {
 		// datum is added for backward compatibility
 		if($picking){
-			$qry = "SELECT *, gereed AS 'datum' FROM `vanda_machine_def` ORDER BY gereed ASC";
+			$qry = "SELECT MAX(vm.datum) AS pickup, vmd.gereed AS tijd, vmd.gereed AS datum, vmd.* FROM vanda_machine_def vmd LEFT JOIN vanda_machines vm ON vm.machine = vmd.machine GROUP BY vmd.machine ORDER BY pickup DESC";
 		} else {
-			$qry = "SELECT *, gereed AS 'datum' FROM `vanda_machine_def`ORDER BY machine ASC";
+			$qry = "SELECT MAX(vm.datum) AS pickup, vmd.gereed AS tijd, vmd.gereed AS datum, vmd.* FROM vanda_machine_def vmd LEFT JOIN vanda_machines vm ON vm.machine = vmd.machine GROUP BY vmd.machine ORDER BY vmd.machine ASC";
 		}
 		return $this->db->selectQuery($qry);
 	}
