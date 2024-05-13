@@ -509,9 +509,9 @@ class RollsManager {
 		
 		// filter formulier waardes in een sessie zetten.
 		if(isset($page)) { $_SESSION['page'] = $page; } else { $page = $_SESSION['page']; }
-		if(isset($sort)) { $_SESSION['sort'] = $sort; } else { $sort = $_SESSION['sort']; } 	 
+		if(isset($sort)) { $_SESSION['sort'] = $sort; } else { $sort = (isset($_SESSION['sort']) ? $_SESSION['sort'] : ''); } 	 
 		if(isset($pg)) { $_SESSION['pg'] = $pg; } else { $pg = $_SESSION['pg']; }
-		if(isset($order)) { $_SESSION['order'] = $order; } else { $order = $_SESSION['order']; } 
+		if(isset($order)) { $_SESSION['order'] = $order; } else {$order = (isset($_SESSION['order']) ? $_SESSION['order'] : '');  } 
 		if(isset($viewtype)) { $_SESSION['viewtype'] = $viewtype; } else { $viewtype =  isset($_SESSION['viewtype']) ? $_SESSION['viewtype']  : '' ; }
 		if(isset($free_search)) { $_SESSION['free_search'] = $free_search; } else { $free_search = isset($_SESSION['free_search']) ? $_SESSION['free_search']  : ''; }
 		
@@ -648,8 +648,7 @@ class RollsManager {
 		$output .= "</table>";
 		$output .= "<input type='button' name='verwijder' id='input_verwijder' value='Verwijder' />";
 		$output .= "<input type='hidden' name='task' id='task' value='verzend' />";
-		// TODO Check wat deze regel deed, volgens mij niet veel.
-		//$output .= "<label for='klant'>Klant: </label><input type='text' name='klant' id='roll-klant' value=''>";
+		$output .= "<label for='klant'>Klant: </label><input type='text' name='klant' id='roll-klant' value=''>";
 		$output .= "<input type='button' name='haalterug' id='input_haalterug' value='Haal Terug' />";
 		$output .= "<input type='submit' name='verzend' value='Verzend'/>";
 		$output .= "</form>";
