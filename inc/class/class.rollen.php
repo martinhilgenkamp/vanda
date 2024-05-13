@@ -509,9 +509,9 @@ class RollsManager {
 		
 		// filter formulier waardes in een sessie zetten.
 		if(isset($page)) { $_SESSION['page'] = $page; } else { $page = $_SESSION['page']; }
-		if(isset($sort)) { $_SESSION['sort'] = $sort; } else { $sort = $_SESSION['sort']; } 	 
+		if(isset($sort)) { $_SESSION['sort'] = $sort; } else { $sort = (isset($_SESSION['sort']) ? $_SESSION['sort'] : ''); } 	 
 		if(isset($pg)) { $_SESSION['pg'] = $pg; } else { $pg = $_SESSION['pg']; }
-		if(isset($order)) { $_SESSION['order'] = $order; } else { $order = $_SESSION['order']; } 
+		if(isset($order)) { $_SESSION['order'] = $order; } else {$order = (isset($_SESSION['order']) ? $_SESSION['order'] : '');  } 
 		if(isset($viewtype)) { $_SESSION['viewtype'] = $viewtype; } else { $viewtype =  isset($_SESSION['viewtype']) ? $_SESSION['viewtype']  : '' ; }
 		if(isset($free_search)) { $_SESSION['free_search'] = $free_search; } else { $free_search = isset($_SESSION['free_search']) ? $_SESSION['free_search']  : ''; }
 		
