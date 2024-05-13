@@ -57,3 +57,6 @@ upload/*
 
 # exception to the rule
 !upload/.gitkeep 
+
+# Exclude request log.
+request_log.txt

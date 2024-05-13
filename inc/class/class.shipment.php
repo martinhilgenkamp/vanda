@@ -18,7 +18,6 @@ class ShipmentManager {
 
 	function updateShipment($ship, $id) {
 		$data = array("verzonden" => $ship);
-
 		return $this->db->updateQuery("vanda_shipment", $data, "ship_id = ".(int)$id);
 	}
 
@@ -70,8 +69,7 @@ class ShipmentManager {
 	}
 
 	function getAllUnShippedShipments() {
-		$qry = "SELECT ship_id as id, klant, DATE_FORMAT(datum,'%d-%m-%Y') as datum FROM  vanda_shipment WHERE verzonden != 1 GROUP BY datum DESC";
-
+		$qry = "SELECT ship_id as id, klant,(SELECT COUNT(*) FROM `vanda_production` WHERE vanda_production.shipping_id = vanda_shipment.ship_id) as Colli ,DATE_FORMAT(datum,'%d-%m-%Y') as datum FROM  vanda_shipment WHERE verzonden != 1 GROUP BY datum DESC";
 		return $this->db->selectQuery($qry);
 	}
 

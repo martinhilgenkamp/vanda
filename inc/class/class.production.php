@@ -58,7 +58,7 @@ class ProductionManager {
 	}
 
 	function getBarcode() {
-		$qry = "SELECT barcode FROM vanda_production WHERE shipping_id = 0 ORDER BY barcode ASC";
+		$qry = "SELECT barcode FROM vanda_production WHERE shipping_id = 0 AND removed = 0 ORDER BY barcode ASC";
 		
 		$res = $this->db->selectQuery($qry);
 

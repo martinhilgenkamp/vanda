@@ -11,7 +11,6 @@ require_once("../../inc/class/class.option.php");
 $pm = new ProductionManager();
 $sm = new ShipmentManager();
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $klant = $_POST['klant'];
@@ -44,6 +43,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         break;
 
         case 'ship':
+            // DEBUGGING - TO CHECK WHAT HAPPENS ON DUOBLE SHIPMENTS
+            // Define the log file path
+            $logFile = 'request_log.txt';
+            // Get the request method (GET or POST)
+            $requestMethod = $_SERVER['REQUEST_METHOD'];
+            // Get the request URI
+            $requestURI = $_SERVER['REQUEST_URI'];
+            // Get the request parameters based on the request method
+            if ($requestMethod === 'GET') {
+                $requestData = $_GET;
+            } elseif ($requestMethod === 'POST') {
+                $requestData = $_POST;
+            } else {
+                // Handle other request methods if necessary
+                $requestData = [];
+            }
+            // Format the request data
+            $requestDataString = json_encode($requestData);
+            // Create the log message
+            $logMessage = "[$requestMethod] $requestURI - ".date("d-m-Y H:m:i")."  - Parameters: $requestDataString" . PHP_EOL;
+            // Append the log message to the log file
+            file_put_contents($logFile, $logMessage, FILE_APPEND);
+            
             // controleer of de barcode bestaat en niet verzonden is returns barcode object
             $barcodeExists = $pm->getProductShipmentByBarcode($barcode);
             if ($barcodeExists) {

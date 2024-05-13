@@ -78,21 +78,24 @@ $(document).ready(function(){
             var machine =  $(this).attr("machine");
 			fetchDataFromServer(machine)
 			 .done(function(data){
-
+					console.log(data);
+					
 					// Set the current kwaliteit if not active.
 					if (!$('#input_kwaliteit'+machine).is(":focus")) {
 						$('#input_kwaliteit'+machine).val(data.kwaliteit);
 					}
 					
-					var parts = data.last.split(" ");
+					var parts = data.tijd.split(" ");
 					// Extract the time part
 					var timePart = parts[1];
 					//Set time for user
 					$('#tijd' + machine).val(timePart);
 					// Set time for script
-					$('#machine' + machine).attr('tijd', data.last);
-					
+					$('#machine' + machine).attr('tijd', data.tijd);
+					$('#machine' + machine).attr('picked', data.picked);
+
 					var tijdAttr = $('#machine' + machine).attr("tijd");
+					var pickedAttr = $('#machine' + machine).attr("picked");
 					var tijd = new Date(tijdAttr).getTime();
 					var Timediff = currentTime - tijd;
 

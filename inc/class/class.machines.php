@@ -78,10 +78,10 @@ class MachineManager {
 	}
 
 	// Function for last Pick Time.
-	function getLastTimePickup($data) {
-		$qry = "SELECT datum FROM `vanda_machines` WHERE persoon = '".$data['persoon']."' AND machine = '".$data['machine']."' ORDER BY datum DESC LIMIT 1";
+	function getLastTimePickup($machine) {
+		$qry = "SELECT MAX(datum) AS pickup FROM `vanda_machines` WHERE  machine = '".$machine."' ORDER BY datum DESC LIMIT 1";
 		$res = $this->db->selectQuery($qry);
-		return $res[0]->datum;
+		return $res[0]->pickup;
 	}
 		
 	function getLastPersoon($machine){

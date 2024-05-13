@@ -21,7 +21,8 @@ if($req == 'GET'){
        
         // Check if we want to know the time only or all info.
         if ($value == 'tijd'){
-            $data['last'] = $mm->getLastTimeAPI($machineno);
+            $data['gereed'] = $mm->getLastTimeAPI($machineno);
+            $data['picked'] = $mm->getLastTimePickup($machineno);
         } else if ($value == 'kwaliteit'){ 
             $data['kwaliteit'] = $mm->getLastKwaliteit($machineno);
         } else if ($value == 'persoon'){ 
@@ -30,6 +31,7 @@ if($req == 'GET'){
             $data['persoon'] = $mm->getLastPersoon($machineno);
             $data['kwaliteit'] = $mm->getLastKwaliteit($machineno);
             $data['last'] = $mm->getLastTimeAPI($machineno);
+            $data['picked'] = $mm->getLastTimePickup($machineno);
         }
         
         echo json_encode($data); 
