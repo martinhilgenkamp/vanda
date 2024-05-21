@@ -1,48 +1,33 @@
 <?php
-/**
- * PHPExcel
- *
- * Copyright (c) 2006 - 2015 PHPExcel
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * @category   PHPExcel
- * @package    PHPExcel
- * @copyright  Copyright (c) 2006 - 2015 PHPExcel (http://www.codeplex.com/PHPExcel)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    ##VERSION##, ##DATE##
- */
-
 /** Error reporting */
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', TRUE);
 date_default_timezone_set('Europe/Amsterdam');
 
-if (PHP_SAPI == 'cli')
-	die('This example should only be run from a Web Browser');
+date_default_timezone_set('Europe/Amsterdam');
+require '../../vendor/autoload.php';
+require_once('../../inc/class/class.db.php');
 
-/** Include PHPExcel */
-require_once dirname(__FILE__) . '/../../inc/class/PHPExcel.php';
-require_once dirname(__FILE__) . '/../../inc/class/class.db.php';
+use PhpOffice\PhpSpreadsheet\Helper\Sample;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
+$helper = new Sample();
+if ($helper->isCli()) {
+    $helper->log('This example should only be run from a Web Browser' . PHP_EOL);
+    return;
+}
 
+// Check if ship_id is provided in $_GET
+if (!isset($_GET['ship_id'])) {
+    // If ship_id is not provided, stop execution and display error message
+    die("Zendingsnummer is niet ingegeven.");
+}
 // Get the ship id to read data.
 $ship_id = $_GET['ship_id'];
 
-class PHPExcelData extends PHPExcel{
+class PHPExcelData extends Spreadsheet{
 	// Var totaal voor totaal leverings gewicht.
 	public $query;
 
@@ -81,20 +66,17 @@ class PHPExcelData extends PHPExcel{
 $objPHPExcel = new PHPExcelData();
 
 // Set document properties
-$objPHPExcel->getProperties()->setCreator("Vanda Carpets")
-							 ->setLastModifiedBy("Vanda Carpets")
-							 ->setTitle("Vanda Carpets")
-							 ->setSubject("Vanda Carpets")
-							 ->setDescription("Vanda Carpets")
-							 ->setKeywords("office 2007 openxml php")
-							 ->setCategory("Vanda Carpets");
+$objPHPExcel->getProperties()->setCreator('Vanda Carpets')
+			->setLastModifiedBy('Vanda Carpets')
+			->setTitle('Zending-'.$ship_id)
+			->setSubject('Paklijst')
+			->setDescription('Paklijst zending'.$ship_id)
+			->setKeywords('paklijst vanda ' .$ship_id)
+			->setCategory('Paklijst');
 
 
 // Add some data
 $objPHPExcel->setActiveSheetIndex(0)
-
-
-// Hier komt de vulling....
             ->setCellValue('A1', 'Rolnummer')
             ->setCellValue('B1', 'Kwaliteit')
             ->setCellValue('C1', 'Referentie')
@@ -124,20 +106,20 @@ $objPHPExcel->getActiveSheet()->calculateColumnWidths();
 $objPHPExcel->setActiveSheetIndex(0);
 
 
-// Redirect output to a client’s web browser (Excel2007)
+// Redirect output to a client’s web browser (Xlsx)
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="F00830'.date('ymd').'.xlsx"');
+header('Content-Disposition: attachment;filename="Vanda-Zending-'.$ship_id.'.xlsx"');
 header('Cache-Control: max-age=0');
 // If you're serving to IE 9, then the following may be needed
 header('Cache-Control: max-age=1');
 
 // If you're serving to IE over SSL, then the following may be needed
-header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-header ('Pragma: public'); // HTTP/1.0
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+header('Pragma: public'); // HTTP/1.0
 
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Xlsx');
 $objWriter->save('php://output');
 exit;
 
