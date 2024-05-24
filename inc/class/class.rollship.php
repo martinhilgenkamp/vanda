@@ -190,7 +190,7 @@ class RollsShipment {
 									
 			// Generate table rows
 			$output .= "	<tr id='row_".$row->id."' class='data-table-row'>".$nl;
-			$output .= "		<td><a href='pages/generate/generate_roll_pdf.php?ship_id=".$row->id."' target='_blanc'><img src='images/printer.png' height='20'></a> <a href='pages/generate/generate_excel.php?ship_id=".$row->id."' target='_blanc'><img src='images/excel.png' height='20'></a></td>".$nl;
+			$output .= "		<td><a href='pages/generate/generate_roll_pdf.php?ship_id=".$row->id."' target='_blanc'><img src='images/printer.png' height='20'></a> <a href='pages/generate/generate_roll_excel.php?ship_id=".$row->id."' target='_blanc'><img src='images/excel.png' height='20'></a></td>".$nl;
 			$output .= "		<td>".$row->id."</td>".$nl;
 			$output .= "		<td>".$row->klant."</td>".$nl;
 			$output .= "		<td>".$row->datum."</td>".$nl;
