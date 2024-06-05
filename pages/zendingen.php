@@ -36,7 +36,7 @@ if(count($zendingen)){
 				<a href='pages/generate/generate_pdf.php?ship_id=".$zending->ship_id."' target='_blanc'>
 					<img src='images/printer.png' height='20' />
 				</a> 
-				<a href='pages/generate/generate_xlsx.php?ship_id=".$zending->ship_id."' target='_blanc'>
+				<a href='pages/generate/generate_excel.php?ship_id=".$zending->ship_id."' target='_blanc'>
 					<img src='images/excel.png' height='20' />
 				</a>
 			</td>
