@@ -141,8 +141,10 @@ $rows = $rm->getRegistrationOverviewByPeriod($period, $periode, $today, $selectd
 						<td><span class="delete" id="'.$row->id.'"></span>' : '')."</td>
 					  </tr>";
 			}
+			$c = $c + $row->amount;
 		}
-		echo "<tr><th class='ui-corner-bottom' colspan='5'>Er zijn ". count($rows) . " resultaten weergegeven.</th></tr>";
+		echo "<tr><th class='ui-corner-bl' colspan='1'>Totaal: ". $c . "</th>";
+		echo "<th class='ui-corner-br' colspan='4'>Er zijn ". count($rows) . " resultaten weergegeven.</th></tr>";
 	} else {
 		echo "<tr><th class='ui-corner-bottom' colspan='5'>Er zijn geen resultaten om weer te geven.</th></tr>";
 	}
