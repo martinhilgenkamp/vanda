@@ -18,7 +18,6 @@ unset($query);
 
 $today = date('y-m-d');
 $period = isset($_GET['period']) ? $_GET['period'] : null;
-$beheer = isset($_GET['beheer']) ? $_GET['beheer'] : null;
 
 $selectdate = isset($_POST['selectdate']) ? $_POST['selectdate'] : null;
 $startdate = isset($_POST['startdate']) ? $_POST['startdate'] : null;
@@ -70,7 +69,6 @@ $rows = $rm->getRegistrationOverviewByPeriod($period, $periode, $today, $selectd
 
 <form method="post" name="filterform" id="filterform" class="filterform" >
 <h1><?php echo $title; ?></h1>
-<?php echo $beheer; ?>
 <div id="filterdiv">
 <?php 
 	switch($period){

@@ -13,7 +13,7 @@
           <a href="index.php?page=machinetable"><li>Overzicht Machines</li></a>
         </ul>
     </li></a>
-   	<li>Overzichten
+   	<li>Registratie Overzichten
     	<ul class="submenu">
             <a href="index.php?page=summary&period=day"><li>Dag overzicht</li></a>
             <a href="index.php?page=summary&period=week"><li>Week Overzicht</li></a>
@@ -21,6 +21,14 @@
             <a href="index.php?page=summary&period=custom"><li>Aangepast</li></a>
             <a href="index.php?page=summary"><li>Registraties</li></a>
             <a href="index.php?page=machinetable"><li>Overzicht Machines</li></a>
+        </ul>
+    </li>
+    <li>Productie Overzichten
+    	<ul class="submenu">
+            <a href="index.php?page=stock-summary&period=day"><li>Dag overzicht</li></a>
+            <a href="index.php?page=stock-summary&period=week"><li>Week Overzicht</li></a>
+            <a href="index.php?page=stock-summary&period=month"><li>Maand Overzicht</li></a>
+            <a href="index.php?page=stock-summary&period=custom"><li>Aangepast</li></a>
         </ul>
     </li>
     <a href="index.php?page=voorraad"><li>Voorraad

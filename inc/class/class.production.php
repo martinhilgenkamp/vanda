@@ -77,6 +77,10 @@ class ProductionManager {
 	}
 
 	function getStockProductsQuery($startdate, $stopdate, $voorraadfilter, $productfilter, $order, $sort) {
+		
+		$where = '';
+		$order = '';
+		
 		if($startdate && $stopdate){
 			$where_array[] = "vanda_production.datum BETWEEN '".$startdate."' AND '".$stopdate." 23:59:59' "; 
 			$title = "Aangepast Overzicht van ".$startdate.' tot '.$stopdate;
@@ -118,9 +122,98 @@ class ProductionManager {
 
 	function getStockProducts($startdate, $stopdate, $voorraadfilter, $productfilter, $order, $sort) {
 		$qry = $this->getStockProductsQuery($startdate, $stopdate, $voorraadfilter, $productfilter, $order, $sort);
-		
 		return $this->db->selectQuery($qry);
 	}
+
+	function getProducedProductsQuery($period, $selectdate, $startdate, $stopdate, $productfilter, $order, $sort){
+		$select = "SELECT id, artikelnummer, kwaliteit, datum, SUM(gewicht) AS totaal_gewicht FROM vanda_production ";
+		$where = '';
+		$order = '';
+
+		switch($period) {
+			case 'day':
+				if($selectdate && $selectdate != ''){
+					$where .= "WHERE DATE_FORMAT( vanda_production.datum, '%Y-%m-%d' ) = '".date('Y-m-d',strtotime($selectdate))."'  AND YEAR(vanda_production.datum) = '".date('Y')."' "; 
+				} else {
+					$where = "WHERE DATE_FORMAT( vanda_production.datum, '%Y-%m-%d' ) = '".date('Y-m-d')."' AND YEAR(vanda_production.datum) = '".date('Y')."' "; 
+				}
+				$order = "GROUP BY artikelnummer ORDER BY datum DESC";
+			break;	
+			
+			case 'week':
+				if($selectdate && $selectdate != ''){
+					$where .= " WHERE WEEKOFYEAR(vanda_production.datum) = '". date('W',strtotime($selectdate)) ."' AND YEAR(vanda_production.datum) = '".date('Y',strtotime($selectdate))."' ";	
+				} else {
+					$where = "WHERE  WEEKOFYEAR(vanda_production.datum) = '".date('W')."' AND YEAR(vanda_production.datum) = '".date('Y')."'"; 
+				}
+				$order = "GROUP BY artikelnummer ORDER BY datum DESC";
+			break;
+			
+			case 'month':
+				if($selectdate && $selectdate != ''){
+					$where = "WHERE  DATE_FORMAT( vanda_production.datum, '%m' ) = '".date('m',strtotime($selectdate))."' AND YEAR(vanda_production.datum) = '".date('Y',strtotime($selectdate))."' "; 
+				} else {
+					$where = "WHERE  DATE_FORMAT( vanda_production.datum, '%m' ) = '".date('m')."' AND YEAR(vanda_production.datum) = '".date('Y')."' "; 
+				}
+				
+				$order = "GROUP BY artikelnummer ORDER BY datum DESC";
+			break;
+			
+			case 'custom':
+				
+				if($startdate && $stopdate){
+					$where = "WHERE  vanda_production.datum BETWEEN '".$startdate."' AND '".$stopdate." 23:59:59' "; 
+					$title = "Aangepast Overzicht van ".$startdate.' tot '.$stopdate;
+				} else {
+				  $time = strtotime(date("Y-m-d"));
+				  $final = date("Y-m-d", strtotime("-1 month", $time));
+				  $where = "WHERE  vanda_production.datum BETWEEN '".$final."' AND '".date('Y-m-d',$time)." 23:59:59' "; 
+				}
+				$order = "GROUP BY artikelnummer ORDER BY datum DESC";
+			break;
+			
+			default:				
+				// van tot mogelijk maken
+				if($startdate && $stopdate){
+					$where = "WHERE  vanda_production.datum BETWEEN '".$startdate."' AND '".$stopdate." 23:59:59' "; 
+					$title = "Aangepast Overzicht van ".$startdate.' tot '.$stopdate;
+				} else {
+				  $time = strtotime(date("Y-m-d"));
+				  $final = date("Y-m-d", strtotime("-1 month", $time));
+				  $where = "WHERE  vanda_production.datum BETWEEN '".$final."' AND '".date('Y-m-d',$time)." 23:59:59' ";
+				}
+								
+
+				$order = "ORDER BY vanda_production.datum DESC LIMIT 0, 2000";
+			break;	
+		}
+		
+		// Add the filter to the where clause
+		if($productfilter){
+			if($where != ''){
+				$where .= "AND artikelnummer = '".$productfilter."' ";	
+			} else {
+				$where .= "WHERE artikelnummer = '".$productfilter."' ";	
+			}
+		}
+
+		//Prevent removed articles form adding in the results.
+		if($where != ''){
+			$where .= " AND vanda_production.removed = '0'";
+		} else {
+			$where .= "WHERE vanda_production.removed = '0'";	
+		}		
+		
+		$qry = $select.$where.$order;
+		return $qry;
+
+	}
+
+	function getProducedProducts($period, $selectdate, $startdate, $stopdate,  $productfilter, $order, $sort) {
+		$query = $this->getProducedProductsQuery($period, $selectdate, $startdate, $stopdate, $productfilter, $order, $sort);
+		return $this->db->selectQuery($query);
+	}
+
 
 	function getProductByBarcode($barcode) {
 		$qry = "SELECT * FROM vanda_production WHERE barcode = '".$barcode."' AND removed = 0 LIMIT 1";
