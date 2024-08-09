@@ -20,6 +20,8 @@ $periode['custom'] = 'Aangepast';
 $periode = isset($_GET['period']) ? $periode[$period] : null;
 
 $productfilter = isset($_POST['productfilter']) ? $_POST['productfilter'] : null;
+$producttype = isset($_POST['producttype']) ? $_POST['producttype'] : null;
+
 
 $title = "Productie over periode:";
 switch($period) {
@@ -71,8 +73,8 @@ elseif (isset($_POST['pg'])) {
 
 // Load products from the database.
 $product_list = $pm->getArticleNumbers();
-$products = $pm->getProducedProducts($period, $selectdate, $startdate, $stopdate,  $productfilter, $order, $sort);
-$query = $pm->getProducedProductsQuery($period, $selectdate, $startdate, $stopdate, $productfilter, $order, $sort);
+$products = $pm->getProducedProducts($period, $selectdate, $startdate, $stopdate,  $productfilter, $producttype, $order, $sort);
+$query = $pm->getProducedProductsQuery($period, $selectdate, $startdate, $stopdate, $productfilter, $producttype, $order, $sort);
 
 // Hieronder word output gegenereerd.
 $output = "<table id='product-table' class=\"data-table results\" cellpadding=\"0\" cellspacing=\"0\">";
@@ -158,6 +160,13 @@ $output .= "</table>";
 					echo "<option value='".$product->artikelnummer."' ".($productfilter == $product->artikelnummer ? "selected='selected'" : "" ).">".$product->artikelnummer."</option>";
 				}
 			?>
+	    </select>
+
+		<label for="productfilter">Product type:</label>
+	    <select class="ui-corner-all" name="producttype" id="producttype" onChange="this.form.submit()">
+	    		<option value="" <?php echo  ($producttype == "" ? "selected='selected'" : "" );?> >Alles</option>
+	    		<option value="stansen" <?php echo  ($producttype == "stansen" ? "selected='selected'" : "" );?> > Stansen</option>";
+				<option value="overig" <?php echo ($producttype == "overig"? "selected='selected'" : "" );?> > Overig</option>";
 	    </select>
 	    <label for="startdate">Van:</label><input class="datepicker ui-corner-all" id="startdate" name="startdate" value="<?php echo ($startdate ? $startdate :  $final); ?>" onchange="$('#filterform').submit()"/>
 	    <label for="startdate">Tot:</label><input class="datepicker ui-corner-all" id="stopdate" name="stopdate" value="<?php echo ($stopdate ? $stopdate : date('Y-m-d',$time)); ?>" onchange="$('#filterform').submit()"/>

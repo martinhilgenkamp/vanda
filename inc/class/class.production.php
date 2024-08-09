@@ -125,7 +125,7 @@ class ProductionManager {
 		return $this->db->selectQuery($qry);
 	}
 
-	function getProducedProductsQuery($period, $selectdate, $startdate, $stopdate, $productfilter, $order, $sort){
+	function getProducedProductsQuery($period, $selectdate, $startdate, $stopdate, $productfilter, $producttype, $order, $sort){
 		$select = "SELECT id, artikelnummer, kwaliteit, datum, SUM(gewicht) AS totaal_gewicht FROM vanda_production ";
 		$where = '';
 		$order = '';
@@ -197,20 +197,36 @@ class ProductionManager {
 			}
 		}
 
+		// Add the typefilter to the where clause
+		if($producttype == 'stansen'){
+			if($where != ''){
+				$where .= " AND kwaliteit != '' ";	
+			} else {
+				$where .= " WHERE kwaliteit != ''  ";	
+			}
+		} else if ($producttype == 'overig'){
+			if($where != ''){
+				$where .= " AND kwaliteit = \"\" ";	
+			} else {
+				$where .= " WHERE kwaliteit = \"\"  ";	
+			}
+		}
+
 		//Prevent removed articles form adding in the results.
 		if($where != ''){
 			$where .= " AND vanda_production.removed = '0'";
 		} else {
-			$where .= "WHERE vanda_production.removed = '0'";	
+			$where .= " WHERE vanda_production.removed = '0'";	
 		}		
+		
 		
 		$qry = $select.$where.$order;
 		return $qry;
 
 	}
 
-	function getProducedProducts($period, $selectdate, $startdate, $stopdate,  $productfilter, $order, $sort) {
-		$query = $this->getProducedProductsQuery($period, $selectdate, $startdate, $stopdate, $productfilter, $order, $sort);
+	function getProducedProducts($period, $selectdate, $startdate, $stopdate,  $productfilter, $producttype, $order, $sort) {
+		$query = $this->getProducedProductsQuery($period, $selectdate, $startdate, $stopdate, $productfilter, $producttype, $order, $sort);
 		return $this->db->selectQuery($query);
 	}
 
