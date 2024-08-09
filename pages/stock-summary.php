@@ -82,7 +82,7 @@ $output = "<table id='product-table' class=\"data-table results\" cellpadding=\"
 $output .= " <tr>
   			  <th class=\"ui-corner-tl\"><a href='?page=voorraad&sort=artikelnummer&order=".$order."'>Artikelnummer</a></th>
 			  <th><a href='?page=voorraad&sort=kwaliteit&order=".$order."'>Kwaliteit</a></th>
-			   <th><a href='?page=voorraad&sort=datum&order=".$order."'>Laatst Geproduceer</a></th>
+			   <th><a href='?page=voorraad&sort=datum&order=".$order."'>Laatst Geproduceerd</a></th>
 			  <th class=\"ui-corner-tr\"><a href='?page=voorraad&sort=geleverd&order=".$order."'>Totaal Geproduceerd</a></th>";			  
 
 // THERE IS NO USER LEVEL, JUST IN PLACE TO REMEMBER TO BE ABLE TO USE IT..
