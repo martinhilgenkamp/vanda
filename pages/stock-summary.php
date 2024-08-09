@@ -168,8 +168,17 @@ $output .= "</table>";
 	    		<option value="stansen" <?php echo  ($producttype == "stansen" ? "selected='selected'" : "" );?> > Stansen</option>";
 				<option value="overig" <?php echo ($producttype == "overig"? "selected='selected'" : "" );?> > Overig</option>";
 	    </select>
-	    <label for="startdate">Van:</label><input class="datepicker ui-corner-all" id="startdate" name="startdate" value="<?php echo ($startdate ? $startdate :  $final); ?>" onchange="$('#filterform').submit()"/>
-	    <label for="startdate">Tot:</label><input class="datepicker ui-corner-all" id="stopdate" name="stopdate" value="<?php echo ($stopdate ? $stopdate : date('Y-m-d',$time)); ?>" onchange="$('#filterform').submit()"/>
+		<?php
+		
+		if($period == 'custom'){
+			echo "<label for=\"startdate\">Van:</label><input class=\"datepicker ui-corner-all\" id=\"startdate\" name=\"startdate\" value=\"" . ($startdate ? $startdate :  $final) . "\" onchange=\"$('#filterform').submit()\"/>";
+			echo "<label for=\"startdate\">Tot:</label><input class=\"datepicker ui-corner-all\" id=\"stopdate\" name=\"stopdate\" value=\"". ($stopdate ? $stopdate : date('Y-m-d',$time)) . "\" onchange=\"$('#filterform').submit()\"/>";
+		} else {
+			$time = date("Y-m-d");
+			echo "<input " . ($period == 'month' ? 'id="monthselect" ' : 'id="selectdate" ') . " class=\"datepicker ui-corner-all\" name=\"selectdate\" value=\"" . ($selectdate ? $selectdate : $time) . "\" onchange=\"$('#filterform').submit()\"/>";
+		}	    
+
+		?>
     </div>
 </form>
 
