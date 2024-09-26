@@ -60,3 +60,6 @@ upload/*
 
 # Exclude request log.
 request_log.txt
+
+#Prevent Uploads to be synced
+/pages/workorder/upload/

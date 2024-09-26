@@ -1,8 +1,14 @@
 <?php
 date_default_timezone_set("Europe/Amsterdam");
 require_once('inc/class/class.workorder.php');
-$db = new DB();
-$workorder = new Workorder($db);
+
+$workorder = new Workorder();
+
+echo ini_get('file_uploads');         // Should be "1"
+echo ini_get('upload_max_filesize');  // Should be large enough, e.g., "2M"
+echo ini_get('post_max_size');        // Should be large enough, e.g., "8M"
+
+echo "user: ".$user->name;
 ?>
 
     <title>Bewerk Werkbon</title>
@@ -35,12 +41,12 @@ $workorder = new Workorder($db);
     </script>
    
     <h1>Opdracht aanmaken</h1>
-    <form action="pages/workorder/processorder.php" method="POST" onsubmit="return validateForm();" id="workorderform">
-        <label for="opdrachtnr">Opdrachtnr</label><br>
+    <form action="pages/workorder/processorder.php" method="POST" onsubmit="return validateForm();" id="workorderform" enctype="multipart/form-data">
+        <label for="opdrachtnr">Opdrachtnr Vanda</label><br>
         <input type="text" id="opdrachtnr" name="opdrachtnr" required maxlength="10" pattern="\d+">*<br><br>
 
         <label for="omschrijving">Omschrijving:</label><br>
-        <textarea id="omschrijving" name="omschrijving" required minlength="10" maxlength="500">*</textarea><br><br>
+        <textarea id="omschrijving" name="omschrijving" required minlength="10" maxlength="500"></textarea><br><br>
 
         <label for="klant">Klant</label><br>
         <input type="text" id="klant" name="klant" required minlength="3" maxlength="100">*<br><br>
@@ -49,7 +55,7 @@ $workorder = new Workorder($db);
         <input type="text" id="opdrachtnr_klant" name="opdrachtnr_klant" required>*<br><br>
 
         <label for="omschrijving_klant">Omschrijving Klant:</label><br>
-        <textarea id="omschrijving_klant" name="omschrijving_klant" required>*</textarea><br><br>
+        <textarea id="omschrijving_klant" name="omschrijving_klant" required></textarea><br><br>
 
         <label for="leverdatum">Leverdatum</label><br>
         <input type="date" id="leverdatum" name="leverdatum" required>*<br><br>
@@ -61,8 +67,8 @@ $workorder = new Workorder($db);
         <textarea id="opmerkingen" name="opmerkingen"></textarea><br><br>
 
         <!-- File upload input -->
-        <label for="file">Upload a file (optional, only PDF or image files):</label><br>
-        <input type="file" id="file" name="file" accept=".pdf, .jpg, .jpeg, .png"><br><br>
+        <label for="file">Inkoop Order (PDF, JPG, PNG)</label><br>
+        <input type="file" id="inkooporder" name="inkooporder" accept=".pdf, .jpg, .jpeg, .png"><br><br>
 
         <input type="submit" value="Create Work Order">
     </form>

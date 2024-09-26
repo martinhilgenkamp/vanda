@@ -4,8 +4,12 @@ require_once("class.db.php");
 class UserManager {
 	private $db;
 
+	public $username;
+
+
 	function __construct() {
 		$this->db = new DB();
+
 	}
 
 	function checkLogin($data){ 

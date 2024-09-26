@@ -2,6 +2,10 @@
 require_once('../../inc/class/class.workorder.php');
 require_once('../../inc/class/class.user.php');
 
+echo "<pre>";
+print_r($_FILES);
+echo "</pre>";
+
 // Directory where files will be uploaded
 $uploadDir = 'uploads/';
 

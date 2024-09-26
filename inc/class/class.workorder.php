@@ -3,11 +3,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
 date_default_timezone_set("Europe/Amsterdam");
-require_once("class.user.php");
-require_once("class.db.php");
-
 
 class WorkOrder {
     private $db;
@@ -24,12 +20,17 @@ class WorkOrder {
     public $leverdatum;
     public $verpakinstructie;
     public $opmerkingen;
-    
+    public $createdby;
+    public $modifiedby;
 
     public $errors;
 
     public function __construct() {
-      $this->userManager = new UserManager();
+      $this->user = new UserManager();
+      $this->user->getUserByName($_SESSION['username']);
+      
+      print_r($this->user);
+      
       // Initialize the DB connection
       $this->db = new DB(); // Assuming DB is your database connection class
 
@@ -103,9 +104,9 @@ class WorkOrder {
                         <th>Leverdatum</th>
                         <th>Verpakinstructie</th>
                         <th>Opmerkingen</th>
-                        <th>File Path</th>
-                        <th>Created</th>
-                        <th class='ui-corner-tr'>Modified</th>
+                        <th>Gemaakt</th>
+                        <th>Aangepast</th>
+                        <th class='ui-corner-tr'>Inkoop Order</th>
                       </tr>";
 
                 // Fetch and display each row
@@ -120,9 +121,9 @@ class WorkOrder {
                             <td>" . $row['leverdatum'] . "</td>
                             <td>" . $row['verpakinstructie'] . "</td>
                             <td>" . $row['opmerkingen'] . "</td>
-                            <td>" . $row['file_path'] . "</td>
                             <td>" . $row['created'] . "</td>
                             <td>" . $row['modified'] . "</td>
+                            <td>" . ($row['file_path'] ? "<a href='pages/workorder/".$row['file_path']."' target='blank'>FILE</a>" : "n.v.t." ) . "</td>
                           </tr>";
                 }
                 echo "<tfoot><tr><td class='ui-corner-bottom' colspan='12'>" . $result->num_rows ." resultaten weergegeven</td></tr></tfoot>";
