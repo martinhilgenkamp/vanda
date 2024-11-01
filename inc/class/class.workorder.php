@@ -22,18 +22,14 @@ class WorkOrder {
     public $opmerkingen;
     public $createdby;
     public $modifiedby;
+    public $file_path;
 
     public $errors;
 
     public function __construct() {
-      $this->user = new UserManager();
-      $this->user->getUserByName($_SESSION['username']);
-      
-      print_r($this->user);
-      
       // Initialize the DB connection
       $this->db = new DB(); // Assuming DB is your database connection class
-
+    
       // Check if the connection is properly established
       if (!$this->db->link) {
           die("Database connection failed: " . $this->db->link->linkect_error);

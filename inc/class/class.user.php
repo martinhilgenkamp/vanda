@@ -5,25 +5,42 @@ class UserManager {
 	private $db;
 
 	public $username;
+	public $name;
+	public $email;
+	public $id;
+	public $active;
+	public $level;
 
-
-	function __construct() {
+	function __construct($username = null) {
 		$this->db = new DB();
-
+		if($username){
+			$qry = "SELECT * FROM vanda_user WHERE username = '".$username."' LIMIT 1";
+			if ($result = $this->db->link->query($qry)) {
+				if ($result->num_rows > 0) {
+					while ($row = $result->fetch_assoc()) {
+						$this->id = $row['id'];
+						$this->name = $row['username'];
+						$this->email = $row['email'];
+						$this->level = $row['level'];
+						$this->active = $row['active'];
+						$this->username = $row['username'];
+					}
+				}
+			}
+		}
 	}
 
 	function checkLogin($data){ 
-	
-		if (isset($data['username']) and isset($data['password'])){
+			if (isset($data['username']) and isset($data['password'])){
 			//3.1.1 Assigning posted values to variables.
 			$username = $data['username'];
 			$password = $data['password'];
 			
 			//3.1.2 Checking the values are existing in the database or not
-			$user = $this->getUserByName($username);
+			$this->username = $this->getUserByName($username);
 
 			//3.1.2 If the posted values are equal to the database values, then session will be created for the user.
-			if ($user && $this->checkCredentials($user, $password)){
+			if ($this->name && $this->checkCredentials($this->name, $password)){
 				$_SESSION['username'] = $username;
 				setcookie('username',$_SESSION['username'],time()+30*24*60*60);
 			}else{
@@ -34,8 +51,8 @@ class UserManager {
 		
 		//Check if cookie is there.		
 		if (isset($_COOKIE['username'])){
-			$user = $this->getUserByName($_COOKIE['username']);
-			if ($user){
+			$this->name = $this->getUserByName($_COOKIE['username']);
+			if ($this->name){
 				$_SESSION['username'] = $_COOKIE['username'];				
 				setcookie('username',$_COOKIE['username'],time()+30*24*60*60);
 				return true;
@@ -87,14 +104,14 @@ class UserManager {
 		
 		$res = $this->db->selectQuery($qry);
 
+		print_r($res);
+
 		return count($res) > 0 ? $res[0] : null;
 	}
 
 	function getUserByName($username) {
 		$qry = "SELECT * FROM vanda_user WHERE username = '".$username."'";
-		
 		$res = $this->db->selectQuery($qry);
-
 		return count($res) > 0 ? $res[0] : null;
 	}	
 
@@ -115,7 +132,7 @@ class UserManager {
     function listUsers() {
         $qry = "SELECT * FROM `vanda_user` WHERE active = 1";
         
-        return $this->db->selectQuery($qry);
+        return c($qry);
     }
 
     function getUserById($id) {
@@ -143,5 +160,4 @@ class UserManager {
         return $this->db->updateQuery('vanda_user', $data, $where);
     }
 }
-
 ?>

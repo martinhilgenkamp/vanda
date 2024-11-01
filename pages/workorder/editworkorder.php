@@ -4,11 +4,6 @@ require_once('inc/class/class.workorder.php');
 
 $workorder = new Workorder();
 
-echo ini_get('file_uploads');         // Should be "1"
-echo ini_get('upload_max_filesize');  // Should be large enough, e.g., "2M"
-echo ini_get('post_max_size');        // Should be large enough, e.g., "8M"
-
-echo "user: ".$user->name;
 ?>
 
     <title>Bewerk Werkbon</title>
@@ -72,5 +67,6 @@ echo "user: ".$user->name;
 
         <input type="submit" value="Create Work Order">
     </form>
+    <?php print_R($um); ?>
 </body>
 </html>
