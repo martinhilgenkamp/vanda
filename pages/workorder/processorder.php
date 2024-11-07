@@ -2,9 +2,6 @@
 require_once('../../inc/class/class.workorder.php');
 require_once('../../inc/class/class.user.php');
 
-echo "<pre>";
-print_r($_FILES);
-echo "</pre>";
 
 // Directory where files will be uploaded
 $uploadDir = 'uploads/';
@@ -26,11 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $workOrder->leverdatum = sanitize($_POST['leverdatum']);
     $workOrder->verpakinstructie = sanitize($_POST['verpakinstructie']);
     $workOrder->opmerkingen = sanitize($_POST['opmerkingen']);
+    $workOrder->start = sanitize($_POST['start']);
+    $workOrder->end = sanitize($_POST['end']);
+    $workOrder->machine = sanitize($_POST['machine']);
+    $workOrder->id = sanitize($_POST['id']);
 
      // Initialize an error array
      $errors = [];
      $workOrder->errors= $errors;
  
+
+     
      // Server-side validation
      //if (!is_numeric($workOrder->opdrachtnr)) {
      //    $errors[] = "Opdrachtnr must be numeric.";
@@ -73,11 +76,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          }
      } else {
          // Try to insert into database
-         if ($workOrder->createWorkOrder()) {
-             echo "<p style='color:green;'>Work order created successfully!</p>";
+         if($workOrder->id != 0 ){
+            if ($workOrder->updateWorkOrder()) {
+                echo "Work order updated successfully.";
+            } else {
+                echo "Failed to update work order.";
+            }
          } else {
-             echo "<p style='color:red;'>Error creating work order.</p>";
-         }
+            if ($workOrder->createWorkOrder()) {
+                echo "<p style='color:green;'>Work order created successfully!</p>";
+            } else {
+                echo "<p style='color:red;'>Error creating work order.</p>";
+            }
+        }
      }
 }
    

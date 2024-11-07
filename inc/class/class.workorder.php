@@ -18,6 +18,9 @@ class WorkOrder {
     public $created;
     public $modified;
     public $leverdatum;
+    public $start;
+    public $end;
+    public $machine;
     public $verpakinstructie;
     public $opmerkingen;
     public $createdby;
@@ -30,16 +33,15 @@ class WorkOrder {
       // Initialize the DB connection
       $this->db = new DB(); // Assuming DB is your database connection class
     
-      // Check if the connection is properly established
       if (!$this->db->link) {
-          die("Database connection failed: " . $this->db->link->linkect_error);
+        die("Database connection failed: " . $this->db->link->connect_error);
       }
     }
 
     public function createWorkOrder() {
         $query = "INSERT INTO " . $this->table_name . " 
-                  (opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, verpakinstructie, opmerkingen, file_path, created, modified) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                  (opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, machine, verpakinstructie, opmerkingen, file_path, created, modified) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $this->created = date("Y-m-d H:i:s");
         $this->modified = date("Y-m-d H:i:s");
@@ -49,13 +51,16 @@ class WorkOrder {
 
             // Bind the parameters
             if (!$stmt->bind_param(
-                "sssssssssss",
+                "ssssssssssssss",
                 $this->opdrachtnr,
                 $this->omschrijving,
                 $this->klant,
                 $this->opdrachtnr_klant,
                 $this->omschrijving_klant,
                 $this->leverdatum,
+                $this->start,
+                $this->end,
+                $this->machine,
                 $this->verpakinstructie,
                 $this->opmerkingen,
                 $this->file_path,
@@ -81,10 +86,105 @@ class WorkOrder {
         }
     }
     
+    public function updateWorkOrder() {
+        // Update the modified date
+        $this->modified = date("Y-m-d H:i:s");
+        
+        print_r($this);
+
+
+        // SQL update query
+        $query = "UPDATE " . $this->table_name . " 
+                  SET opdrachtnr = ?, omschrijving = ?, klant = ?, opdrachtnr_klant = ?, omschrijving_klant = ?, 
+                      leverdatum = ?, start = ?, end = ?, machine = ?, verpakinstructie = ?, opmerkingen = ?, file_path = ?, 
+                      file_path = ?, modified = ? 
+                  WHERE id = ?";
+    
+        // Prepare the statement
+        if ($stmt = $this->db->link->prepare($query)) {
+            // Bind the parameters
+            if (!$stmt->bind_param(
+                "ssssssssssssssi",
+                $this->opdrachtnr,
+                $this->omschrijving,
+                $this->klant,
+                $this->opdrachtnr_klant,
+                $this->omschrijving_klant,
+                $this->leverdatum,
+                $this->start,
+                $this->end,
+                $this->machine,
+                $this->verpakinstructie,
+                $this->opmerkingen,
+                $this->file_path,
+                $this->created,
+                $this->modified,
+                $this->$id
+            )) {
+                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                return false;
+            }
+    
+            // Execute the statement
+            if (!$stmt->execute()) {
+                echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                return false;
+            }
+    
+            // Close the statement
+            $stmt->close();
+            return true;
+        } else {
+            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
+            return false;
+        }
+    }
+
+    public function getWorkOrderById($workOrderId) {
+        // Prepare the query to fetch the work order with the specific ID
+        $query = "SELECT id, opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, machine, verpakinstructie, opmerkingen, file_path, created, modified 
+                  FROM " . $this->table_name . " 
+                  WHERE id = ?";
+    
+        // Prepare the statement
+        if ($stmt = $this->db->link->prepare($query)) {
+            // Bind the parameter (assuming $workOrderId is an integer)
+            $stmt->bind_param("i", $workOrderId);
+    
+            // Execute the query
+            if ($stmt->execute()) {
+                // Get the result
+                $result = $stmt->get_result();
+    
+                // Check if a work order was found
+                if ($result->num_rows > 0) {
+                    // Fetch the data as an associative array
+                    $workOrder = $result->fetch_assoc();
+    
+                    // Close the statement and return the work order data
+                    $stmt->close();
+                    return $workOrder;
+                } else {
+                    // No work order found with that ID
+                    $stmt->close();
+                    return null;
+                }
+            } else {
+                // Handle execution error
+                echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                $stmt->close();
+                return null;
+            }
+        } else {
+            // Handle preparation error
+            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
+            return null;
+        }
+    }
 
     // Method to get and display all work orders
     public function getWorkorders() {
-        $query = "SELECT id, opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, verpakinstructie, opmerkingen, file_path, created, modified FROM " . $this->table_name;
+        $query = "SELECT id, opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, verpakinstructie, opmerkingen, file_path, created, modified FROM " . $this->table_name;
 
         if ($result = $this->db->link->query($query)) {
             if ($result->num_rows > 0) {
@@ -129,6 +229,21 @@ class WorkOrder {
             }
         } else {
             echo "Query failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
+        }
+    }
+
+
+
+    public function getWorkordersJson(){
+        $query = "SELECT id, opdrachtnr as title, start, end, machine as resourceId FROM " . $this->table_name;
+        $data = []; // Initialize $data as an empty array
+        if ($result = $this->db->link->query($query)) {
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+                return json_encode($data);
+            }
         }
     }
 }

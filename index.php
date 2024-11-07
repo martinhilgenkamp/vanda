@@ -96,6 +96,9 @@
 	<!-- Load jQuery scripts and functions !-->
 	<script src="inc/script/jquery.js" language="javascript" type="text/javascript"></script>
 	<script src="inc/script/jquery-ui.min.js" language="javascript" type="text/javascript"></script>
+	
+	<!-- Load Calendar Scripts !-->
+	<script src="inc/script/calendar/index.global.js"></script>
 
 
 	<!-- Load Vanda Scripts !-->

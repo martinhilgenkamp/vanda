@@ -3,6 +3,7 @@
     <a href="index.php?page=task" ><li>Werkbonnen<ul class="submenu">
             <a href="index.php?page=workorder/editworkorder"><li>Nieuwe Werkbon</li></a>
             <a href="index.php?page=workorder/showworkorders"><li>Werkbonnen Overzicht</li></a>
+            <a href="index.php?page=workorder/timeline"><li>Werkbonnen Planning</li></a>
             <a href="index.php?page=task&view=51"><li>Taken Nummer 51</li></a>
             <a href="index.php?page=task&view=63"><li>Taken Nummer 63</li></a>
         </ul>
