@@ -99,8 +99,11 @@ if (isset($_GET['id'])) {
     <label for="start">Eind Tijd</label><br>
     <input type="datetime-local" id="end" name="end" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['end']) : ''; ?>"><br><br>
 
-    <label for="machine">Machine Nummer</label><br>
-    <input type="text" id="machine" name="machine" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['machine']) : ''; ?>"><br><br>
+    <label for="resource1">Resource 1</label><br>
+    <input type="text" id="resource1" name="resource1" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['resource1']) : ''; ?>"><br><br>
+
+    <label for="resource2">Resource 2</label><br>
+    <input type="text" id="resource2" name="resource2" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['resource2']) : ''; ?>"><br><br>
 
     <label for="verpakinstructie">Verpakinstructie:</label><br>
     <textarea id="verpakinstructie" name="verpakinstructie"><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['verpakinstructie']) : ''; ?></textarea><br><br>
@@ -112,5 +115,5 @@ if (isset($_GET['id'])) {
     <label for="file">Inkoop Order (PDF, JPG, PNG)</label><br>
     <input type="file" id="inkooporder" name="inkooporder" accept=".pdf, .jpg, .jpeg, .png"><br><br>
 
-    <input type="submit" value="Create Work Order">
+    <input type="submit" value="<?php echo $isEditMode ? 'Bewerk Werkbon' : 'Opdracht aanmaken'; ?>">
 </form>

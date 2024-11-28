@@ -20,7 +20,8 @@ class WorkOrder {
     public $leverdatum;
     public $start;
     public $end;
-    public $machine;
+    public $resource1;
+    public $resource2;
     public $verpakinstructie;
     public $opmerkingen;
     public $createdby;
@@ -31,7 +32,7 @@ class WorkOrder {
 
     public function __construct() {
       // Initialize the DB connection
-      $this->db = new DB(); // Assuming DB is your database connection class
+      $this->db = new DB();
     
       if (!$this->db->link) {
         die("Database connection failed: " . $this->db->link->connect_error);
@@ -40,8 +41,8 @@ class WorkOrder {
 
     public function createWorkOrder() {
         $query = "INSERT INTO " . $this->table_name . " 
-                  (opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, machine, verpakinstructie, opmerkingen, file_path, created, modified) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                  (opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resource1, resource2, verpakinstructie, opmerkingen, file_path, created, modified) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $this->created = date("Y-m-d H:i:s");
         $this->modified = date("Y-m-d H:i:s");
@@ -51,7 +52,7 @@ class WorkOrder {
 
             // Bind the parameters
             if (!$stmt->bind_param(
-                "ssssssssssssss",
+                "sssssssssssssss",
                 $this->opdrachtnr,
                 $this->omschrijving,
                 $this->klant,
@@ -60,7 +61,8 @@ class WorkOrder {
                 $this->leverdatum,
                 $this->start,
                 $this->end,
-                $this->machine,
+                $this->resource1,
+                $this->resource2,
                 $this->verpakinstructie,
                 $this->opmerkingen,
                 $this->file_path,
@@ -81,7 +83,7 @@ class WorkOrder {
             $stmt->close();
             return true;
         } else {
-            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->conn->error;
+            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
             return false;
         }
     }
@@ -89,22 +91,19 @@ class WorkOrder {
     public function updateWorkOrder() {
         // Update the modified date
         $this->modified = date("Y-m-d H:i:s");
-        
-        print_r($this);
-
 
         // SQL update query
         $query = "UPDATE " . $this->table_name . " 
                   SET opdrachtnr = ?, omschrijving = ?, klant = ?, opdrachtnr_klant = ?, omschrijving_klant = ?, 
-                      leverdatum = ?, start = ?, end = ?, machine = ?, verpakinstructie = ?, opmerkingen = ?, file_path = ?, 
-                      file_path = ?, modified = ? 
+                      leverdatum = ?, start = ?, end = ?, resource1 = ?, resource2 = ?, verpakinstructie = ?, opmerkingen = ?, 
+                      file_path = ?, modified = ?
                   WHERE id = ?";
     
         // Prepare the statement
         if ($stmt = $this->db->link->prepare($query)) {
             // Bind the parameters
             if (!$stmt->bind_param(
-                "ssssssssssssssi",
+                "ssssssssiissssi",
                 $this->opdrachtnr,
                 $this->omschrijving,
                 $this->klant,
@@ -113,14 +112,16 @@ class WorkOrder {
                 $this->leverdatum,
                 $this->start,
                 $this->end,
-                $this->machine,
+                $this->resource1,
+                $this->resource2,
                 $this->verpakinstructie,
                 $this->opmerkingen,
                 $this->file_path,
-                $this->created,
                 $this->modified,
-                $this->$id
+                $this->id
             )) {
+                
+                
                 echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
                 return false;
             }
@@ -142,7 +143,7 @@ class WorkOrder {
 
     public function getWorkOrderById($workOrderId) {
         // Prepare the query to fetch the work order with the specific ID
-        $query = "SELECT id, opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, machine, verpakinstructie, opmerkingen, file_path, created, modified 
+        $query = "SELECT id, opdrachtnr, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resource1, resource2, verpakinstructie, opmerkingen, file_path, created, modified 
                   FROM " . $this->table_name . " 
                   WHERE id = ?";
     
@@ -209,7 +210,7 @@ class WorkOrder {
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>
                             <td>" . $row['id'] . "</td>
-                            <td>" . $row['opdrachtnr'] . "</td>
+                            <td><a href='?page=workorder/editworkorder&id=" . $row['id'] . "'>" . $row['opdrachtnr'] . "</a></td>
                             <td>" . $row['omschrijving'] . "</td>
                             <td>" . $row['klant'] . "</td>
                             <td>" . $row['opdrachtnr_klant'] . "</td>
@@ -234,17 +235,40 @@ class WorkOrder {
 
 
 
-    public function getWorkordersJson(){
-        $query = "SELECT id, opdrachtnr as title, start, end, machine as resourceId FROM " . $this->table_name;
+    public function getWorkordersJson()
+    {
+        $query = "SELECT id, opdrachtnr as title, start, end, resource1, resource2 FROM " . $this->table_name;
         $data = []; // Initialize $data as an empty array
+
         if ($result = $this->db->link->query($query)) {
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    $data[] = $row;
+                    // Check if resource1 is set
+                    if (!empty($row['resource1'])) {
+                        $data[] = [
+                            'id' => $row['id'],
+                            'title' => $row['title'],
+                            'start' => $row['start'],
+                            'end' => $row['end'],
+                            'resourceId' => $row['resource1'],
+                        ];
+                    }
+
+                    // Check if resource2 is set
+                    if (!empty($row['resource2'])) {
+                        $data[] = [
+                            'id' => $row['id'],
+                            'title' => $row['title'],
+                            'start' => $row['start'],
+                            'end' => $row['end'],
+                            'resourceId' => $row['resource2'],
+                        ];
+                    }
                 }
                 return json_encode($data);
             }
         }
+        return json_encode($data); // Return an empty JSON array if no rows found
     }
 }
 ?>

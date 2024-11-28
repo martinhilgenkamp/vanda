@@ -1,6 +1,8 @@
 <?php
+
 require_once('../../inc/class/class.workorder.php');
 require_once('../../inc/class/class.user.php');
+
 
 
 // Directory where files will be uploaded
@@ -25,8 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $workOrder->opmerkingen = sanitize($_POST['opmerkingen']);
     $workOrder->start = sanitize($_POST['start']);
     $workOrder->end = sanitize($_POST['end']);
-    $workOrder->machine = sanitize($_POST['machine']);
-    $workOrder->id = sanitize($_POST['id']);
+    $workOrder->resource1 = sanitize($_POST['resource1']); 
+    $workOrder->resource2 = sanitize($_POST['resource2']); 
+    $workOrder->id = isset($_POST['id']) ? sanitize($_POST['id']) : null;
 
      // Initialize an error array
      $errors = [];
@@ -35,17 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
      
      // Server-side validation
-     //if (!is_numeric($workOrder->opdrachtnr)) {
-     //    $errors[] = "Opdrachtnr must be numeric.";
-    // }
+     if (!is_numeric($workOrder->opdrachtnr)) {
+         $errors[] = "Opdrachtnr must be numeric.";
+     }
  
      if (strlen($workOrder->klant) < 3) {
          $errors[] = "Klant name must be at least 3 characters long.";
      }
  
-     //if (date(Y-m-d, strtotime($workOrder->leverdatum)) < date('Y-m-d')) {
-     //    $errors[] = "Leverdatum cannot be in the past.";
-    //}
+    // if (date('Y-m-d', strtotime($workOrder->leverdatum)) < date('Y-m-d')) {
+    //     $errors[] = "Leverdatum cannot be in the past.";
+    // }
     
      // Handle file upload
      if (!empty($_FILES['file']['name'])) {
