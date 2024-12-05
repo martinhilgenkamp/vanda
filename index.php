@@ -14,13 +14,16 @@
 
 	//Check if user logged in
 	$user_loggedin = $um->checkLogin($_POST);
+
 	if(!$user_loggedin || is_string($user_loggedin)){
 		require_once('pages/loginform.php');
 		exit;	
 	}
 	
 	$user = $um->getUserByName($_SESSION['username']);	
-	
+
+	print_r($user);
+
 	// Security on ip base
 	// Function to get the client ip address
 	function get_client_ip() {
