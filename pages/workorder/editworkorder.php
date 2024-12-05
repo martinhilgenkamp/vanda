@@ -1,6 +1,4 @@
 <?php
-print_r($_POST);
-
 //Load requirements
 date_default_timezone_set("Europe/Amsterdam");
 require_once('inc/class/class.workorder.php');
@@ -21,12 +19,27 @@ if (isset($_GET['id'])) {
 } elseif (isset($_POST)){
     $isEditMode = true;
     $existingWorkOrder = new $workorder;
-    $existingWorkOrder->start = isset($_POST['start']) ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['start'], , ENT_QUOTES, 'UTF-8'))) : null;
-    $existingWorkOrder->end = $stop = isset($_POST['stop']) ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['stop'],, ENT_QUOTES, 'UTF-8'))) : null;
-    $existingWorkOrder->end = $stop = isset($_POST['stop']) ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['stop'],, ENT_QUOTES, 'UTF-8'))) : null;
-    $existingWorkOrder->leverdatum = $stop = isset($_POST['stop']) ? date('Y-m-d', strtotime(htmlspecialchars($_POST['stop'],, ENT_QUOTES, 'UTF-8'))) : null;
-    $existingWorkOrder->opdrachtnr = $eventTitle = isset($_POST['eventtitle']) ? htmlspecialchars($_POST['eventtitle'], ENT_QUOTES, 'UTF-8') : null;
-    $existingWorkOrder->resource1 = $eventTitle = isset($_POST['eventtitle']) ? htmlspecialchars($_POST['resource1'], ENT_QUOTES, 'UTF-8') : null;
+
+$existingWorkOrder->start = isset($_POST['start']) && $_POST['start'] !== ''
+    ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['start'] ?? '', ENT_QUOTES, 'UTF-8')))
+    : null;
+
+$existingWorkOrder->end = isset($_POST['stop']) && $_POST['stop'] !== ''
+    ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['stop'] ?? '', ENT_QUOTES, 'UTF-8')))
+    : null;
+
+$existingWorkOrder->leverdatum = isset($_POST['leverdatum']) && $_POST['leverdatum'] !== ''
+    ? date('Y-m-d', strtotime(htmlspecialchars($_POST['leverdatum'] ?? '', ENT_QUOTES, 'UTF-8')))
+    : null;
+
+$existingWorkOrder->opdrachtnr = isset($_POST['eventtitle']) && $_POST['eventtitle'] !== ''
+    ? htmlspecialchars($_POST['eventtitle'] ?? '', ENT_QUOTES, 'UTF-8')
+    : null;
+
+$existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'] !== ''
+    ? htmlspecialchars($_POST['resource1'] ?? '', ENT_QUOTES, 'UTF-8')
+    : null;
+
     
 }
 ?>
