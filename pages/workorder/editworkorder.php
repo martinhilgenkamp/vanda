@@ -21,10 +21,10 @@ if (isset($_GET['id'])) {
 } elseif (isset($_POST)){
     $isEditMode = true;
     $existingWorkOrder = new $workorder;
-    $existingWorkOrder->start = isset($_POST['start']) ? date('Y-m-d\TH:i', strtotime(filter_var($_POST['start'], FILTER_SANITIZE_STRING))) : null;
-    $existingWorkOrder->end = $stop = isset($_POST['stop']) ? date('Y-m-d\TH:i', strtotime(filter_var($_POST['stop'], FILTER_SANITIZE_STRING))) : null;
-    $existingWorkOrder->end = $stop = isset($_POST['stop']) ? date('Y-m-d\TH:i', strtotime(filter_var($_POST['stop'], FILTER_SANITIZE_STRING))) : null;
-    $existingWorkOrder->leverdatum = $stop = isset($_POST['stop']) ? date('Y-m-d', strtotime(filter_var($_POST['stop'], FILTER_SANITIZE_STRING))) : null;
+    $existingWorkOrder->start = isset($_POST['start']) ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['start'], , ENT_QUOTES, 'UTF-8'))) : null;
+    $existingWorkOrder->end = $stop = isset($_POST['stop']) ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['stop'],, ENT_QUOTES, 'UTF-8'))) : null;
+    $existingWorkOrder->end = $stop = isset($_POST['stop']) ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['stop'],, ENT_QUOTES, 'UTF-8'))) : null;
+    $existingWorkOrder->leverdatum = $stop = isset($_POST['stop']) ? date('Y-m-d', strtotime(htmlspecialchars($_POST['stop'],, ENT_QUOTES, 'UTF-8'))) : null;
     $existingWorkOrder->opdrachtnr = $eventTitle = isset($_POST['eventtitle']) ? htmlspecialchars($_POST['eventtitle'], ENT_QUOTES, 'UTF-8') : null;
     $existingWorkOrder->resource1 = $eventTitle = isset($_POST['eventtitle']) ? htmlspecialchars($_POST['resource1'], ENT_QUOTES, 'UTF-8') : null;
     
