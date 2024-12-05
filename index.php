@@ -22,8 +22,6 @@
 	
 	$user = $um->getUserByName($_SESSION['username']);	
 
-	print_r($user);
-
 	// Security on ip base
 	// Function to get the client ip address
 	function get_client_ip() {

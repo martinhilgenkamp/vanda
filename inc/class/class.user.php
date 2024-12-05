@@ -4,7 +4,7 @@ require_once("class.db.php");
 class UserManager {
 	private $db;
     private $table_name = "vanda_user";
-    private $columns = "id, username, email, level, active, password, isResource";
+    private $columns = "id, username, email, level, active, password, isresource";
 
 	function __construct($username = null) {
 		$this->db = new DB();
@@ -86,15 +86,19 @@ class UserManager {
     function getUserById($id) {
         $qry = "SELECT {$this->columns} FROM {$this->table_name} WHERE id = ?";
         $stmt = $this->db->link->prepare($qry);
+        
         if ($stmt) {
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->num_rows > 0 ? $result->fetch_assoc() : null;
+            $stmt->bind_param("i", $id); // Bind the parameter as an integer
+            $stmt->execute(); // Execute the prepared statement
+            $result = $stmt->get_result(); // Get the result set
+            
+            // Return the first row as an object if a result exists, otherwise return null
+            return $result->num_rows > 0 ? $result->fetch_object() : null;
         }
-        return null;
+        
+        return null; // Return null if the statement could not be prepared
     }
-
+    
 	//Change password of a user
 	// Change user password
     function changePassword($username, $password, $currentPassword, &$errors) {
@@ -109,24 +113,34 @@ class UserManager {
     // List all active users with optional filtering
     function listUsers($filters = []) {
         $qry = "SELECT {$this->columns} FROM {$this->table_name} WHERE active = 1";
-
+    
         // Apply optional filters
-        if (isset($filters['isResource'])) {
-            $qry .= " AND isResource = " . (int)$filters['isResource'];
+        if (isset($filters['isresource'])) {
+            $qry .= " AND isresource = " . (int)$filters['isresource'];
         }
-
+        // Apply ordering
         if (isset($filters['orderBy'])) {
             $qry .= " ORDER BY " . $filters['orderBy'];
         }
-
+    
         $result = $this->db->link->query($qry);
-        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    
+        if ($result) {
+            $users = [];
+            while ($row = $result->fetch_object()) {
+                $row->username = ucfirst($row->username);
+                $users[] = $row; // Add each object to the array
+            }
+            return $users;
+        }
+    
+        return []; // Return an empty array if no results
     }
     
 
     // Add a new user
     function addUser($data) {
-        $qry = "INSERT INTO {$this->table_name} (username, email, password, level, active, isResource) 
+        $qry = "INSERT INTO {$this->table_name} (username, email, password, level, active, isresource) 
                 VALUES (?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->db->link->prepare($qry);
@@ -138,7 +152,7 @@ class UserManager {
                 password_hash($data['password'], PASSWORD_DEFAULT),
                 $data['level'],
                 $data['active'],
-                $data['isResource']
+                $data['isresource']
             );
             return $stmt->execute();
         }
@@ -172,5 +186,7 @@ class UserManager {
     function deleteUser($id) {
         return $this->editUser(['active' => 0], $id);
     }
+
+    
 }
 ?>

@@ -17077,12 +17077,12 @@ var FullCalendar = (function (exports) {
             return null;
         }
         getChildren() {
-            let thisResourceId = this._resource.id;
+            let thisresourceId = this._resource.id;
             let context = this._context;
             let { resourceStore } = context.getCurrentData();
             let childApis = [];
             for (let resourceId in resourceStore) {
-                if (resourceStore[resourceId].parentId === thisResourceId) {
+                if (resourceStore[resourceId].parentId === thisresourceId) {
                     childApis.push(new ResourceApi(context, resourceStore[resourceId]));
                 }
             }
@@ -17093,14 +17093,14 @@ var FullCalendar = (function (exports) {
         TODO: make EventApi::resourceIds a hash or keep an index in the Calendar's state
         */
         getEvents() {
-            let thisResourceId = this._resource.id;
+            let thisresourceId = this._resource.id;
             let context = this._context;
             let { defs, instances } = context.getCurrentData().eventStore;
             let eventApis = [];
             for (let instanceId in instances) {
                 let instance = instances[instanceId];
                 let def = defs[instance.defId];
-                if (def.resourceIds.indexOf(thisResourceId) !== -1) { // inefficient!!!
+                if (def.resourceIds.indexOf(thisresourceId) !== -1) { // inefficient!!!
                     eventApis.push(new EventImpl(context, def, instance));
                 }
             }

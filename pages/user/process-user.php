@@ -22,7 +22,8 @@ switch ($post->task) {
             "password" => password_hash($post->password, PASSWORD_DEFAULT),
             "email" => $post->email,
             "level" => $post->level,
-            "active" => $post->active
+            "active" => $post->active,
+            "isresource" => $post->isresource
         );
 
         echo $um->addUser($data);
@@ -32,7 +33,8 @@ switch ($post->task) {
             "username" => $post->username,
             "email" => $post->email,
             "level" => $post->level,
-            "active" => $post->active
+            "active" => $post->active,
+            "isresource" => $post->isresource
         );
 
         if (!empty($post->password)) {
@@ -45,9 +47,6 @@ switch ($post->task) {
         $um->deleteUser($post->id);
         break;
     
-    default:
-        header('Location: index.php?page=user/users');
-        break;
 }
 
 ?>

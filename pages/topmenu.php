@@ -48,8 +48,9 @@
     		<a href="index.php?page=roll-shipments"><li>Zending overzicht</li></a>
 		</ul>
 	</li>
-    <li>Programma
+    <li><img src="images/menu.png" class="burgermenu" id="burgermenu" />
     	<ul class="submenu">
+        <li><a href="index.php?page=user/userdetail&task=edit&id=<?php echo $user->id; ?>"><?php echo ucfirst($user->username); ?></a></li>    
         <a href="index.php?page=verzondenmail"><li>Verstuurde Tansportmail</li></a>
             <a href="index.php?page=tasksummary"><li>Taak Overzicht</li></a>
             <?php if($user->level){

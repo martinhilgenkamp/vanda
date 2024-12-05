@@ -44,13 +44,14 @@ $(function () {
         var password = $('#editpassword').val(); 
         var email = $('#editemail').val(); 
         var level = $('#editlevel').val(); 
-        var active = $('#editactive').val(); 
+        var active = $('#editactive').val();
+        var isresource = $('#isresource').val();  
 
         if ($("#task").val() === "add") {
-            AddUser(username, password, email, level, active);
+            AddUser(username, password, email, level, active, isresource);
         }
         else if ($("#task").val() === "edit") {
-            EditUser(id, username, password, email, level, active);
+            EditUser(id, username, password, email, level, active, isresource);
         }
     });
 
@@ -73,8 +74,8 @@ $(function () {
     });
 });
 
-function AddUser(username, password, email, level, active) {
-    var dataString = 'task=add&username=' + username + '&password=' + password + '&email=' + email + '&level=' + level + '&active=' + active;
+function AddUser(username, password, email, level, active, isresource) {
+    var dataString = 'task=add&username=' + username + '&password=' + password + '&email=' + email + '&level=' + level + '&active=' + active + '&isresource=' + isresource;
     $.ajax({  
         type: "POST",  
         url: "pages/user/process-user.php",  
@@ -90,8 +91,9 @@ function AddUser(username, password, email, level, active) {
     });
 }
 
-function EditUser(id, username, password, email, level, active) {
-     var dataString = 'task=edit&id=' + id + '&username=' + username + '&password=' + password + '&email=' + email + '&level=' + level + '&active=' + active;
+function EditUser(id, username, password, email, level, active, isresource) {
+     var dataString = 'task=edit&id=' + id + '&username=' + username + '&password=' + password + '&email=' + email + '&level=' + level + '&active=' + active + '&isresource=' + isresource;
+     alert(dataString);
     $.ajax({  
         type: "POST",  
         url: "pages/user/process-user.php",  
