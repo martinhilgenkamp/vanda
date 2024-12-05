@@ -1,4 +1,6 @@
 $(function () {
+   
+    
     $('.user-row').dblclick(function (e) {
         e.preventDefault();
 
@@ -93,7 +95,6 @@ function AddUser(username, password, email, level, active, isresource) {
 
 function EditUser(id, username, password, email, level, active, isresource) {
      var dataString = 'task=edit&id=' + id + '&username=' + username + '&password=' + password + '&email=' + email + '&level=' + level + '&active=' + active + '&isresource=' + isresource;
-     alert(dataString);
     $.ajax({  
         type: "POST",  
         url: "pages/user/process-user.php",  

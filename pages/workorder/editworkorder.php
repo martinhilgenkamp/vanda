@@ -1,4 +1,6 @@
 <?php
+print_r($_POST);
+
 //Load requirements
 date_default_timezone_set("Europe/Amsterdam");
 require_once('inc/class/class.workorder.php');
@@ -16,8 +18,17 @@ if (isset($_GET['id'])) {
     $workOrderId = $_GET['id'];
     $existingWorkOrder = $workorder->getWorkOrderById($workOrderId); // Fetch existing work order details
     print_r($existingWorkOrder);
+} elseif (isset($_POST)){
+    $isEditMode = true;
+    $existingWorkOrder = new $workorder;
+    $existingWorkOrder->start = isset($_POST['start']) ? date('Y-m-d\TH:i', strtotime(filter_var($_POST['start'], FILTER_SANITIZE_STRING))) : null;
+    $existingWorkOrder->end = $stop = isset($_POST['stop']) ? date('Y-m-d\TH:i', strtotime(filter_var($_POST['stop'], FILTER_SANITIZE_STRING))) : null;
+    $existingWorkOrder->end = $stop = isset($_POST['stop']) ? date('Y-m-d\TH:i', strtotime(filter_var($_POST['stop'], FILTER_SANITIZE_STRING))) : null;
+    $existingWorkOrder->leverdatum = $stop = isset($_POST['stop']) ? date('Y-m-d', strtotime(filter_var($_POST['stop'], FILTER_SANITIZE_STRING))) : null;
+    $existingWorkOrder->opdrachtnr = $eventTitle = isset($_POST['eventtitle']) ? htmlspecialchars($_POST['eventtitle'], ENT_QUOTES, 'UTF-8') : null;
+    $existingWorkOrder->resource1 = $eventTitle = isset($_POST['eventtitle']) ? htmlspecialchars($_POST['resource1'], ENT_QUOTES, 'UTF-8') : null;
+    
 }
-
 ?>
 
 <title><?php echo $isEditMode ? 'Bewerk Werkbon' : 'Opdracht aanmaken'; ?></title>
@@ -67,49 +78,45 @@ if (isset($_GET['id'])) {
 
 <form action="pages/workorder/processorder.php" method="POST" onsubmit="return validateForm();" id="workorderform" enctype="multipart/form-data">
 
-    <?php
-    // Add id if in edit mode.
-    if ($isEditMode): 
-    ?>
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($workOrderId); ?>">
+    <?php if (isset($workOrderId)): ?>
+    <input type="hidden" name="id" value="<?php echo htmlspecialchars($workOrderId); ?>">
     <?php endif; ?>
 
-
     <label for="opdrachtnr">Opdrachtnr Vanda</label><br>
-    <input type="text" id="opdrachtnr" name="opdrachtnr" required maxlength="10" pattern="\d+" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['opdrachtnr']) : ''; ?>">*<br><br>
+    <input type="text" id="opdrachtnr" name="opdrachtnr" required maxlength="10" pattern="\d+" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->opdrachtnr) : ''; ?>">*<br><br>
 
     <label for="omschrijving">Omschrijving:</label><br>
-    <textarea id="omschrijving" name="omschrijving" required minlength="10" maxlength="500"><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['omschrijving']) : ''; ?></textarea><br><br>
+    <textarea id="omschrijving" name="omschrijving" required minlength="10" maxlength="500"><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->omschrijving) : ''; ?></textarea><br><br>
 
     <label for="klant">Klant</label><br>
-    <input type="text" id="klant" name="klant" required minlength="3" maxlength="100" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['klant']) : ''; ?>">*<br><br>
+    <input type="text" id="klant" name="klant" required minlength="3" maxlength="100" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->klant) : ''; ?>">*<br><br>
 
     <label for="opdrachtnr_klant">Opdrachtnr Klant:</label><br>
-    <input type="text" id="opdrachtnr_klant" name="opdrachtnr_klant" required value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['opdrachtnr_klant']) : ''; ?>">*<br><br>
+    <input type="text" id="opdrachtnr_klant" name="opdrachtnr_klant" required value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->opdrachtnr_klant) : ''; ?>">*<br><br>
 
     <label for="omschrijving_klant">Omschrijving Klant:</label><br>
-    <textarea id="omschrijving_klant" name="omschrijving_klant" required><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['omschrijving_klant']) : ''; ?></textarea><br><br>
+    <textarea id="omschrijving_klant" name="omschrijving_klant" required><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->omschrijving_klant) : ''; ?></textarea><br><br>
 
     <label for="leverdatum">Leverdatum</label><br>
-    <input type="date" id="leverdatum" name="leverdatum" required value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['leverdatum']) : ''; ?>">*<br><br>
+    <input type="date" id="leverdatum" name="leverdatum" required value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->leverdatum) : ''; ?>">*<br><br>
 
     <label for="start">Start Tijd</label><br>
-    <input type="datetime-local" id="start" name="start" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['start']) : ''; ?>"><br><br>
+    <input type="datetime-local" id="start" name="start" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->start) : ''; ?>"><br><br>
 
     <label for="start">Eind Tijd</label><br>
-    <input type="datetime-local" id="end" name="end" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['end']) : ''; ?>"><br><br>
+    <input type="datetime-local" id="end" name="end" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->end) : ''; ?>"><br><br>
 
     <label for="resource1">Resource 1</label><br>
-    <input type="text" id="resource1" name="resource1" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['resource1']) : ''; ?>"><br><br>
+    <input type="text" id="resource1" name="resource1" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->resource1) : ''; ?>"><br><br>
 
     <label for="resource2">Resource 2</label><br>
-    <input type="text" id="resource2" name="resource2" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['resource2']) : ''; ?>"><br><br>
+    <input type="text" id="resource2" name="resource2" value="<?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->resource2) : ''; ?>"><br><br>
 
     <label for="verpakinstructie">Verpakinstructie:</label><br>
-    <textarea id="verpakinstructie" name="verpakinstructie"><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['verpakinstructie']) : ''; ?></textarea><br><br>
+    <textarea id="verpakinstructie" name="verpakinstructie"><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->verpakinstructie) : ''; ?></textarea><br><br>
 
     <label for="opmerkingen">Opmerkingen:</label><br>
-    <textarea id="opmerkingen" name="opmerkingen"><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder['opmerkingen']) : ''; ?></textarea><br><br>
+    <textarea id="opmerkingen" name="opmerkingen"><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->opmerkingen) : ''; ?></textarea><br><br>
 
     <!-- File upload input -->
     <label for="file">Inkoop Order (PDF, JPG, PNG)</label><br>

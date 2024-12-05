@@ -3,6 +3,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+
 date_default_timezone_set("Europe/Amsterdam");
 
 class WorkOrder {
@@ -46,13 +48,16 @@ class WorkOrder {
 
         $this->created = date("Y-m-d H:i:s");
         $this->modified = date("Y-m-d H:i:s");
-        
+
+        //prevent resource2 error
+        $this->resource2 = isset($this->resource2) && $this->resource2 !== '' ? (int)$this->resource2 : null;
+
         // Prepare the statement
         if ($stmt = $this->db->link->prepare($query)) {
 
             // Bind the parameters
             if (!$stmt->bind_param(
-                "sssssssssssssss",
+                "ssssssssiisssss",
                 $this->opdrachtnr,
                 $this->omschrijving,
                 $this->klant,
@@ -160,7 +165,7 @@ class WorkOrder {
                 // Check if a work order was found
                 if ($result->num_rows > 0) {
                     // Fetch the data as an associative array
-                    $workOrder = $result->fetch_assoc();
+                    $workOrder = $result->fetch_object();
     
                     // Close the statement and return the work order data
                     $stmt->close();

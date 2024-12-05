@@ -93,10 +93,13 @@
 	<link rel="stylesheet" href="inc/style/jquery-ui.min.css" type="text/css" />
 	<link rel="stylesheet" href="inc/style/jquery-ui.structure.min.css" type="text/css" />
 	<link rel="stylesheet" href="inc/style/jquery-ui.theme.min.css" type="text/css" />
+	<link rel="stylesheet" href="inc/style/sweetalert2.min.css">
+
 
 	<!-- Load jQuery scripts and functions !-->
 	<script src="inc/script/jquery.js" language="javascript" type="text/javascript"></script>
 	<script src="inc/script/jquery-ui.min.js" language="javascript" type="text/javascript"></script>
+	<script src="inc/script/sweetalert2.all.min.js"></script>
 	
 	<!-- Load Calendar Scripts !-->
 	<script src="inc/script/calendar/index.global.js"></script>

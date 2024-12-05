@@ -53,7 +53,7 @@
         <li><a href="index.php?page=user/userdetail&task=edit&id=<?php echo $user->id; ?>"><?php echo ucfirst($user->username); ?></a></li>    
         <a href="index.php?page=verzondenmail"><li>Verstuurde Tansportmail</li></a>
             <a href="index.php?page=tasksummary"><li>Taak Overzicht</li></a>
-            <?php if($user->level){
+            <?php if($user->level == 1){
                 echo "<a href=\"index.php?page=options\"><li>Opties</li></a>";
                 echo "<a href=\"index.php?page=user/users\"><li>Medewerkers</li></a>";
             }?>

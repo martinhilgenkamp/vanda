@@ -86,7 +86,7 @@ $output .= " <tr>
 			  <th class=\"ui-corner-tr\"><a href='?page=voorraad&sort=geleverd&order=".$order."'>Totaal Geproduceerd</a></th>";			  
 
 // THERE IS NO USER LEVEL, JUST IN PLACE TO REMEMBER TO BE ABLE TO USE IT..
-//if($user->level){
+//if($user->level == 1){
 //$output .= "<th><a href='?page=voorraad&sort=datum&order=".$order."'>Laatste Productie</a></th>";
 //$output .= "<th class='ui-corner-tr'>&nbsp;</th>";	
 //} else {
@@ -112,7 +112,7 @@ if(count($products) > 0) {
 					<td>".date('d-m-Y',strtotime($product->datum))."</td>
 					<td>".($product->totaal_gewicht ? $product->totaal_gewicht : '-')."</td>";
 		// THERE IS NO USER LEVEL, JUST IN PLACE TO REMEMBER TO BE ABLE TO USE IT..
-		//if($user->level) {
+		//if($user->level == 1) {
 		//	$output .= "<td><span class='delete-stock' id='".$product->id."'></span></td>";	
 		//}	
 
@@ -120,7 +120,7 @@ if(count($products) > 0) {
 
 		$totaal = $totaal + $product->totaal_gewicht;
 	}
-	if($user->level){
+	if($user->level == 1){
 		$output .= "<tfoot><tr><td class=\"ui-corner-bottom\" colspan='9'>Er zijn in totaal ".$totaal." producten van ".count($products)." verschillende types geproduceerd</td></tr></tfoot>";	
 	} else {
 		$output .= "<tfoot><tr><td class=\"ui-corner-bottom\" colspan='8'>Er zijn in totaal ".$totaal." producten van ".count($products)." verschillende types geproduceerd</td></tr></tfoot>";	
@@ -128,7 +128,7 @@ if(count($products) > 0) {
 	
 }
 else {
-	if($user->level){
+	if($user->level == 1){
 		$output .= "<tr><td class=\"ui-corner-bottom\" colspan='9'>Geen resultaten</td></tr>";
 	} else {
 		$output .= "<tr><td class=\"ui-corner-bottom\" colspan='8'>Geen resultaten</td></tr>";

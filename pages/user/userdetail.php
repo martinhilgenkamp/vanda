@@ -39,7 +39,8 @@ if (isset($_GET['id'])) {
                 <td>
                     <select id="editlevel" name="editlevel">
                         <option value="0" <?= !empty($recUser) && $recUser->level == 0 ? 'selected' : '' ?>>Medewerker</option>
-                        <option value="1" <?= !empty($recUser) && $recUser->level == 1 ? 'selected' : '' ?>>Administrator</option>
+                        <option value="2" <?= !empty($recUser) && $recUser->level == 2 ? 'selected' : '' ?>>Machine</option>
+                        <option value="1" <?= !empty($recUser) && $recUser->level == 1 ? 'selected' : '' ?>>Beheerder</option>
                     </select>
                 </td>
             </tr>

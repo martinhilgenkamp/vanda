@@ -181,6 +181,30 @@ class UserManager {
         return false;
     }
 
+    // Fetch users by id and username where isresource is set, and return as JSON
+    function getResources() {
+        $qry = "SELECT id, level, username as title FROM {$this->table_name} WHERE isresource = 1";
+        $result = $this->db->link->query($qry);
+
+        if ($result) {
+            $users = [];
+            while ($row = $result->fetch_object()) {
+                //Determine the prefix based on the level
+                $prefix = $row->level == 1 ? 'Beheerder' : ($row->level == 2 ? 'Machine' : 'Medewerker');
+                
+                // Add the prefix to the title
+                $row->title = "{$prefix}-{$row->title}";
+                unset($row->level);
+                $users[] = $row; // Add each user object to the array
+            }
+            // Return the JSON-encoded result
+            return json_encode($users, JSON_PRETTY_PRINT);
+        } else {
+            throw new Exception("Error fetching users: " . $this->db->link->error);
+        }
+
+        return json_encode([]); // Return an empty JSON array if no results
+    }
 
      // Soft delete a user
     function deleteUser($id) {

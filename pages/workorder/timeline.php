@@ -2,8 +2,13 @@
 
 date_default_timezone_set("Europe/Amsterdam");
 require_once('inc/class/class.workorder.php');
-$db = new DB();
-$workorder = new Workorder($db);
+require_once('inc/class/class.user.php');
+
+
+
+
+$workorder = new Workorder();
+$um = new UserManager();
 
 
 ?>
@@ -21,6 +26,85 @@ $workorder = new Workorder($db);
       initialDate: formattedDate,
       editable: false, // enable draggable events
       selectable: true,
+      select: function (arg) {
+              Swal.fire({
+                  html: '<div class="mb-7">Nieuwe Opdracht inplannen?</div><div class="fw-bolder mb-5">Oprdachtnummer:</div><input type="text" class="form-control" name="event_name" />',
+                  icon: "info",
+                  showCancelButton: true,
+                  buttonsStyling: false,
+                  confirmButtonText: "Yes, create it!",
+                  cancelButtonText: "No, return",
+                  customClass: {
+                      confirmButton: "btn btn-primary",
+                      cancelButton: "btn btn-active-light"
+                  }
+              }).then(function (result) {
+                  if (result.value) {
+                      var title = document.querySelector('input[name="event_name"]').value;
+                      if (title) {
+                          var start = arg.start.toISOString();
+                          var stop = arg.end.toISOString();
+                          var id = arg.end.toISOString();
+                          var resource1 = arg.resource.id;
+
+                          // Create a form dynamically
+                          var form = document.createElement('form');
+                          form.method = 'POST';
+                          form.action = 'index.php?page=workorder/editworkorder';
+
+                          // Add hidden inputs
+                          var inputStart = document.createElement('input');
+                          inputStart.type = 'hidden';
+                          inputStart.name = 'start';
+                          inputStart.value = start;
+                          form.appendChild(inputStart);
+
+                          var inputStop = document.createElement('input');
+                          inputStop.type = 'hidden';
+                          inputStop.name = 'stop';
+                          inputStop.value = stop;
+                          form.appendChild(inputStop);
+
+                          var inputTitle = document.createElement('input');
+                          inputTitle.type = 'hidden';
+                          inputTitle.name = 'eventtitle';
+                          inputTitle.value = title;
+                          form.appendChild(inputTitle);
+
+                          var inputResource1 = document.createElement('input');
+                          inputResource1.type = 'hidden';
+                          inputResource1.name = 'resource1';
+                          inputResource1.value = resource1;
+                          form.appendChild(inputResource1);
+
+
+                          // Append form to body and submit
+                          document.body.appendChild(form);
+                          form.submit();
+                      } else {
+                          Swal.fire({
+                              text: "Event title is required.",
+                              icon: "error",
+                              buttonsStyling: false,
+                              confirmButtonText: "Ok, got it!",
+                              customClass: {
+                                  confirmButton: "btn btn-primary",
+                              }
+                          });
+                      }
+                  } else if (result.dismiss === 'cancel') {
+                      Swal.fire({
+                          text: "Event creation was declined!",
+                          icon: "error",
+                          buttonsStyling: false,
+                          confirmButtonText: "Ok, got it!",
+                          customClass: {
+                              confirmButton: "btn btn-primary",
+                          }
+                      });
+                  }
+              });
+            },
       aspectRatio: 3.6,
       headerToolbar: {
         left: 'today prev,next',
@@ -35,25 +119,18 @@ $workorder = new Workorder($db);
           buttonText: '7 dagen'
         }
       },
-      resourceAreaHeaderContent: 'Machines',
-      resources: [
-        { id: '1', title: 'Machine 1' },
-        { id: '2', title: 'Machine 2', eventColor: 'green' },
-        { id: '3', title: 'Machine 3', eventColor: 'orange' },
-        { id: '4', title: 'Machine 4', eventColor: 'red' },
-        { id: '5', title: 'Machine 5' },
-        { id: '6', title: 'Machine 6', eventColor: 'red' },
-        { id: '7', title: 'Machine 7' },
-        { id: '8', title: 'Machine 8' },
-        { id: '9', title: 'Machine 9' }
-      ],
+      resourceAreaHeaderContent: 'Resources',
+      resources: <?php echo $um->getResources(); ?>,
       events: <?php echo $workorder->getWorkordersJson(); ?>
     });
 
     calendar.render();
   });
 
+
+
 </script>
 
 
 <div id='calendar'></div>
+

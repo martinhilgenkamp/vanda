@@ -24,7 +24,15 @@ $resUsers = $um->listUsers();
     </tr>
     <?php
         foreach ($resUsers as $user) {
-            $role = $user->level == 1 ? 'Administrator' : 'Medewerker';
+            // Define Role for the resource
+            if ($user->level == 1) {
+                $role = 'Beheerder';
+            } elseif ($user->level == 2) {
+                $role = 'Machine';
+            } else {
+                $role = 'Medewerker';
+            }
+
             $active = $user->active == 1 ? 'Actief' : 'Inactief';
             $isresource = $user->isresource == 1 ? 'Ja' : 'Nee';
 
