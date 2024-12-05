@@ -24,20 +24,83 @@ $um = new UserManager();
     var calendar = new FullCalendar.Calendar(calendarEl, {
       locale: 'nl',  
       initialDate: formattedDate,
-      editable: false, // enable draggable events
+      editable: true, // enable draggable events
+      eventDrop: function(info) {
+              Swal.fire({
+                  title: "Opdracht verplaatsen?",
+                  text: "wil je deze opdracht verplaatsen?",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Verplaats"
+              }).then((result) => {
+              if (result.isConfirmed) {
+                var title = document.querySelector('input[name="event_name"]').value;
+                      if (title) {
+                          var start = arg.start.toISOString();
+                          var stop = arg.end.toISOString();
+                          var id = arg.end.toISOString();
+                          var resource1 = arg.resource.id;
+
+                          // Create a form dynamically
+                          var form = document.createElement('form');
+                          form.method = 'POST';
+                          form.action = 'index.php?page=workorder/moveworkorder';
+
+                          // Add hidden inputs
+                          var inputStart = document.createElement('input');
+                          inputStart.type = 'hidden';
+                          inputStart.name = 'start';
+                          inputStart.value = start;
+                          form.appendChild(inputStart);
+
+                          var inputStop = document.createElement('input');
+                          inputStop.type = 'hidden';
+                          inputStop.name = 'stop';
+                          inputStop.value = stop;
+                          form.appendChild(inputStop);
+
+                          var inputTitle = document.createElement('input');
+                          inputTitle.type = 'hidden';
+                          inputTitle.name = 'eventtitle';
+                          inputTitle.value = title;
+                          form.appendChild(inputTitle);
+
+                          var inputResource1 = document.createElement('input');
+                          inputResource1.type = 'hidden';
+                          inputResource1.name = 'resource1';
+                          inputResource1.value = resource1;
+                          form.appendChild(inputResource1);
+
+
+                          // Append form to body and submit
+                          document.body.appendChild(form);
+                          form.submit();
+                      } else {
+                          Swal.fire({
+                              text: "Opdrachtnummer is verplicht",
+                              icon: "error",
+                              buttonsStyling: true,
+                              confirmButtonText: "Ik snap het",
+                              confirmButtonColor: "#3085d6"
+                          });
+                      }
+              } else {
+                info.revert();
+              }
+            });
+      },
       selectable: true,
       select: function (arg) {
               Swal.fire({
                   html: '<div class="mb-7">Nieuwe Opdracht inplannen?</div><div class="fw-bolder mb-5">Oprdachtnummer:</div><input type="text" class="form-control" name="event_name" />',
-                  icon: "info",
+                  icon: "question",
                   showCancelButton: true,
-                  buttonsStyling: false,
-                  confirmButtonText: "Yes, create it!",
-                  cancelButtonText: "No, return",
-                  customClass: {
-                      confirmButton: "btn btn-primary",
-                      cancelButton: "btn btn-active-light"
-                  }
+                  confirmButtonText: "Maak aan",
+                  cancelButtonText: "Anuleer",
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
               }).then(function (result) {
                   if (result.value) {
                       var title = document.querySelector('input[name="event_name"]').value;
@@ -83,24 +146,22 @@ $um = new UserManager();
                           form.submit();
                       } else {
                           Swal.fire({
-                              text: "Event title is required.",
+                              text: "Opdrachtnummer is verplicht",
                               icon: "error",
-                              buttonsStyling: false,
-                              confirmButtonText: "Ok, got it!",
-                              customClass: {
-                                  confirmButton: "btn btn-primary",
-                              }
+                              buttonsStyling: true,
+                              confirmButtonText: "Ik snap het",
+                              confirmButtonColor: "#3085d6"
                           });
                       }
-                  } else if (result.dismiss === 'cancel') {
+                  
+                  
+                    } else if (result.dismiss === 'cancel') {
                       Swal.fire({
-                          text: "Event creation was declined!",
+                          text: "Opdrach is niet aangemaakt!",
                           icon: "error",
-                          buttonsStyling: false,
-                          confirmButtonText: "Ok, got it!",
-                          customClass: {
-                              confirmButton: "btn btn-primary",
-                          }
+                          buttonsStyling: true,
+                          confirmButtonText: "Sluiten",
+                          confirmButtonColor: "#3085d6"
                       });
                   }
               });

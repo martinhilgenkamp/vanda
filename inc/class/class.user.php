@@ -185,7 +185,7 @@ class UserManager {
     function getResources() {
         $qry = "SELECT id, level, username as title FROM {$this->table_name} WHERE isresource = 1";
         $result = $this->db->link->query($qry);
-
+        
         if ($result) {
             $users = [];
             while ($row = $result->fetch_object()) {
@@ -193,7 +193,7 @@ class UserManager {
                 $prefix = $row->level == 1 ? 'Beheerder' : ($row->level == 2 ? 'Machine' : 'Medewerker');
                 
                 // Add the prefix to the title
-                $row->title = "{$prefix}-{$row->title}";
+                $row->title = "{$row->id} : {$prefix} - {$row->title}";
                 unset($row->level);
                 $users[] = $row; // Add each user object to the array
             }
