@@ -183,17 +183,23 @@ class UserManager {
 
     // Fetch users by id and username where isresource is set, and return as JSON
     function getResources() {
-        $qry = "SELECT id, level, username as title FROM {$this->table_name} WHERE isresource = 1";
+        $qry = "SELECT id, level, username as title FROM {$this->table_name} WHERE isresource = 1 ORDER BY LEVEL DESC, username ASC";
         $result = $this->db->link->query($qry);
         
         if ($result) {
             $users = [];
+            $i = 1;
             while ($row = $result->fetch_object()) {
                 //Determine the prefix based on the level
                 $prefix = $row->level == 1 ? 'Beheerder' : ($row->level == 2 ? 'Machine' : 'Medewerker');
                 
                 // Add the prefix to the title
-                $row->title = "{$row->id} : {$prefix} - {$row->title}";
+                $row->title = "{$prefix} - {$row->title} : {$row->id}";
+                
+                // Add sortorder for FullCalendar
+                $row->sortOrder = $i;
+                $i++;
+
                 unset($row->level);
                 $users[] = $row; // Add each user object to the array
             }

@@ -94,7 +94,7 @@ $um = new UserManager();
       selectable: true,
       select: function (arg) {
               Swal.fire({
-                  html: '<div class="mb-7">Nieuwe Opdracht inplannen?</div><div class="fw-bolder mb-5">Oprdachtnummer:</div><input type="text" class="form-control" name="event_name" />',
+                  html: '<div class="mb-7">Nieuwe Opdracht inplannen?</div><div class="fw-bolder mb-5">Omschrijving:</div><input type="text" class="form-control" name="event_name" />',
                   icon: "question",
                   showCancelButton: true,
                   confirmButtonText: "Maak aan",
@@ -182,6 +182,7 @@ $um = new UserManager();
       },
       resourceAreaHeaderContent: 'Resources',
       resources: <?php echo $um->getResources(); ?>,
+      resourceOrder: 'sortOrder',
       events: <?php echo $workorder->getWorkordersJson(); ?>
     });
 
@@ -191,7 +192,6 @@ $um = new UserManager();
 
 
 </script>
-
 
 <div id='calendar'></div>
 

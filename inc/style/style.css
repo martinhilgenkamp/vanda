@@ -209,11 +209,35 @@ padding: 8px;
 
 .clickable-row:hover{
 	cursor: pointer;
-	background-color: #fdfac6;
+	background-color: #fdfac6 !important;
 }
 
 .clickable-row a {
 	text-decoration: none;
+}
+
+.pagination {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.pagination-link, .current-page {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 8px 12px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.pagination-link:hover {
+    background-color: #f0f0f0;
+}
+
+.current-page {
+    background-color: #222c6a;
+    color: white;
+    border: 1px solid #222c6a;
 }
 
 .results{
