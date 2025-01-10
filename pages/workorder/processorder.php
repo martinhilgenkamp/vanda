@@ -10,14 +10,20 @@ $uploadDir = 'uploads/';
 
 // Helper function to sanitize input
 function sanitize($data) {
-    return htmlspecialchars(strip_tags(trim($data)));
+    if (is_array($data)) {
+        // Recursively sanitize each element of the array
+        return array_map('sanitize', $data);
+    } else {
+        // Sanitize the string
+        return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $workOrder = new WorkOrder();
 
+    print_r($_POST);
     // Sanitize form inputs
-    $workOrder->opdrachtnr = sanitize($_POST['opdrachtnr']);
     $workOrder->omschrijving = sanitize($_POST['omschrijving']);
     $workOrder->klant = sanitize($_POST['klant']);
     $workOrder->opdrachtnr_klant = sanitize($_POST['opdrachtnr_klant']);
@@ -27,20 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $workOrder->opmerkingen = sanitize($_POST['opmerkingen']);
     $workOrder->start = sanitize($_POST['start']);
     $workOrder->end = sanitize($_POST['end']);
-    $workOrder->resource1 = sanitize($_POST['resource1']); 
-    $workOrder->resource2 = sanitize($_POST['resource2']); 
+    $workOrder->resources = sanitize($_POST['resources']); 
     $workOrder->id = isset($_POST['id']) ? sanitize($_POST['id']) : null;
-
+    $workOrder->status = isset($_POST['status']) ? sanitize($_POST['status']) : null;
+    
      // Initialize an error array
      $errors = [];
      $workOrder->errors= $errors;
- 
-
-     
-     // Server-side validation
-     if (!is_numeric($workOrder->opdrachtnr)) {
-         $errors[] = "Opdrachtnr must be numeric.";
-     }
  
      if (strlen($workOrder->klant) < 3) {
          $errors[] = "Klant name must be at least 3 characters long.";

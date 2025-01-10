@@ -182,6 +182,7 @@ class UserManager {
     }
 
     // Fetch users by id and username where isresource is set, and return as JSON
+    // Used for general filling of the resource dropdowns in the editworkorder form.
     function getResources() {
         $qry = "SELECT id, level, username as title FROM {$this->table_name} WHERE isresource = 1 ORDER BY LEVEL DESC, username ASC";
         $result = $this->db->link->query($qry);
@@ -209,14 +210,62 @@ class UserManager {
             throw new Exception("Error fetching users: " . $this->db->link->error);
         }
 
-        return json_encode([]); // Return an empty JSON array if no results
+        return json_encode([], JSON_PRETTY_PRINT); // Return an empty JSON array if no results
     }
 
-     // Soft delete a user
-    function deleteUser($id) {
-        return $this->editUser(['active' => 0], $id);
-    }
+    // Used for new resources to be added to a workorder.
+    function getAvailableResources($startTime, $endTime) {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+        
+        $startTime =  str_Replace('T',' ',$startTime); // Input from client
+        $endTime = str_Replace('T',' ',$endTime);  // Input from client
+        
 
+        // SQL query to fetch available resources
+        $query = "
+            SELECT u.id, u.username as title
+            FROM vanda.vanda_user u
+            WHERE u.id NOT IN (
+                SELECT DISTINCT r.value
+                FROM vanda.vanda_work_orders wo
+                CROSS JOIN JSON_TABLE(
+                    wo.resources, 
+                    '$[*]' COLUMNS (
+                        value VARCHAR(255) PATH '$'
+                    )
+                ) r
+                WHERE wo.start < \"$endTime\"
+                  AND wo.end > \"$startTime\"
+            )
+            AND isresource = 1
+        ";
     
+        // Prepare the query
+        $stmt = $this->db->link->query($query);
+
+        $stmt = $this->db->link->prepare($query);
+        if ($stmt) {
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $resources = [];
+            while ($row = $result->fetch_object()) {
+                $resources[] = $row;
+            }
+            return json_encode($resources, JSON_PRETTY_PRINT);
+        }
+        
+    
+         //Execute and fetch results
+         
+    }
+    
+         // Soft delete a user
+         function deleteUser($id) {
+            return $this->editUser(['active' => 0], $id);
+        }
+    
+
 }
 ?>

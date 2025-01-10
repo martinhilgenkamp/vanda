@@ -833,7 +833,9 @@ margin: 10px;
 #workorderform input[type="text"],
 #workorderform input[type="date"],
 #workorderform textarea,
-#workorderform input[type="file"] {
+#workorderform input[type="file"],
+#workorderform input[type="datetime-local"], 
+#workorderform select{
 	width: 100%;
 	padding: 10px;
 	margin-bottom: 15px;
@@ -866,6 +868,35 @@ margin: 10px;
 	cursor: pointer;
 	border-radius: 5px;
 	width: 100%;
+}
+
+#workorderform #resourceContainer {
+	border-radius: 5px;
+	width: 100%;
+}
+
+#workorderform #addResource{
+	background-color: #28a745;
+	color: #fff;
+	border: none;
+	padding: 15px 20px;
+	font-size: 18px;
+	cursor: pointer;
+	border-radius: 5px;
+	width: 100%;
+	margin: 5px 0px;
+}
+
+#workorderform .removeResource{
+	background-color: #a72828;
+	color: #fff;
+	border: none;
+	padding: 15px 20px;
+	font-size: 18px;
+	cursor: pointer;
+	border-radius: 5px;
+	width: 100%;
+	margin: 5px 0px;
 }
 
 #workorderform input[type="submit"]:hover {

@@ -21,8 +21,8 @@ class WorkOrder {
     public $leverdatum;
     public $start;
     public $end;
-    public $resource1;
-    public $resource2;
+    public $resource1; 
+    public $resources;      // Hier komen de resources in. 
     public $verpakinstructie;
     public $opmerkingen;
     public $createdby;
@@ -43,34 +43,35 @@ class WorkOrder {
 
     public function createWorkOrder() {
         $query = "INSERT INTO " . $this->table_name . " 
-                  (omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resource1, resource2, verpakinstructie, opmerkingen, file_path, status, created, modified) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
-        $this->created = date("Y-m-d H:i:s");
-        $this->modified = date("Y-m-d H:i:s");
-    
-        if ($stmt = $this->db->link->prepare($query)) {
-            if (!$stmt->bind_param(
-                "ssssssssiisssss",
-                $this->omschrijving,
-                $this->klant,
-                $this->opdrachtnr_klant,
-                $this->omschrijving_klant,
-                $this->leverdatum,
-                $this->start,
-                $this->end,
-                $this->resource1,
-                $this->resource2,
-                $this->verpakinstructie,
-                $this->opmerkingen,
-                $this->file_path,
-                $this->status,
-                $this->created,
-                $this->modified
-            )) {
-                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-                return false;
-            }
+              (omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resources, verpakinstructie, opmerkingen, file_path, status, created, modified) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $this->created = date("Y-m-d H:i:s");
+    $this->modified = date("Y-m-d H:i:s");
+
+    $resourcesJson = json_encode($this->resources); // Encode resources array as JSON
+
+    if ($stmt = $this->db->link->prepare($query)) {
+        if (!$stmt->bind_param(
+            "ssssssssssssss",
+            $this->omschrijving,
+            $this->klant,
+            $this->opdrachtnr_klant,
+            $this->omschrijving_klant,
+            $this->leverdatum,
+            $this->start,
+            $this->end,
+            $resourcesJson, // Save resources as JSON
+            $this->verpakinstructie,
+            $this->opmerkingen,
+            $this->file_path,
+            $this->status,
+            $this->created,
+            $this->modified
+        )) {
+            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            return false;
+        }
     
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
@@ -87,41 +88,41 @@ class WorkOrder {
     
     public function updateWorkOrder() {
         $this->modified = date("Y-m-d H:i:s");
-    
-        $query = "UPDATE " . $this->table_name . " 
-                  SET omschrijving = ?, klant = ?, opdrachtnr_klant = ?, omschrijving_klant = ?, 
-                      leverdatum = ?, start = ?, end = ?, resource1 = ?, resource2 = ?, verpakinstructie = ?, opmerkingen = ?, 
-                      file_path = ?, status = ?, modified = ?
-                  WHERE id = ?";
-    
-        if ($stmt = $this->db->link->prepare($query)) {
-            if (!$stmt->bind_param(
-                "ssssssssiissssi",
-                $this->omschrijving,
-                $this->klant,
-                $this->opdrachtnr_klant,
-                $this->omschrijving_klant,
-                $this->leverdatum,
-                $this->start,
-                $this->end,
-                $this->resource1,
-                $this->resource2,
-                $this->verpakinstructie,
-                $this->opmerkingen,
-                $this->file_path,
-                $this->status,
-                $this->modified,
-                $this->id
-            )) {
-                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-                return false;
-            }
+
+    $query = "UPDATE " . $this->table_name . " 
+              SET omschrijving = ?, klant = ?, opdrachtnr_klant = ?, omschrijving_klant = ?, 
+                  leverdatum = ?, start = ?, end = ?, resources = ?, verpakinstructie = ?, opmerkingen = ?, 
+                  file_path = ?, status = ?, modified = ?
+              WHERE id = ?";
+
+    $resourcesJson = json_encode($this->resources); // Encode resources array as JSON
+
+    if ($stmt = $this->db->link->prepare($query)) {
+        if (!$stmt->bind_param(
+            "sssssssssssssi",
+            $this->omschrijving,
+            $this->klant,
+            $this->opdrachtnr_klant,
+            $this->omschrijving_klant,
+            $this->leverdatum,
+            $this->start,
+            $this->end,
+            $resourcesJson, // Update resources as JSON
+            $this->verpakinstructie,
+            $this->opmerkingen,
+            $this->file_path,
+            $this->status,
+            $this->modified,
+            $this->id
+        )) {
+            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            return false;
+        }
     
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 return false;
             }
-    
             $stmt->close();
             return true;
         } else {
@@ -131,45 +132,23 @@ class WorkOrder {
     }
     
     public function getWorkOrderById($workOrderId) {
-        // Prepare the query to fetch the work order with the specific ID, including status
-        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resource1, resource2, verpakinstructie, opmerkingen, file_path, created, modified, status 
+        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resources, verpakinstructie, opmerkingen, file_path, created, modified, status 
                   FROM " . $this->table_name . " 
                   WHERE id = ?";
-        
-        // Prepare the statement
+    
         if ($stmt = $this->db->link->prepare($query)) {
-            // Bind the parameter (assuming $workOrderId is an integer)
             $stmt->bind_param("i", $workOrderId);
-        
-            // Execute the query
+    
             if ($stmt->execute()) {
-                // Get the result
                 $result = $stmt->get_result();
-        
-                // Check if a work order was found
                 if ($result->num_rows > 0) {
-                    // Fetch the data as an associative array
                     $workOrder = $result->fetch_object();
-        
-                    // Close the statement and return the work order data
-                    $stmt->close();
+                    $workOrder->resources = json_decode($workOrder->resources, true); // Decode JSON to array
                     return $workOrder;
-                } else {
-                    // No work order found with that ID
-                    $stmt->close();
-                    return null;
                 }
-            } else {
-                // Handle execution error
-                echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-                $stmt->close();
-                return null;
             }
-        } else {
-            // Handle preparation error
-            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
-            return null;
         }
+        return null;
     }
 
     // Method to get and display all work orders
@@ -255,38 +234,32 @@ class WorkOrder {
 
     public function getWorkordersJson()
     {
-        $query = "SELECT id, omschrijving as title, start, end, resource1, resource2 FROM " . $this->table_name;
+        $query = "SELECT id, omschrijving AS title, start, end, resources FROM " . $this->table_name;
         $data = []; // Initialize $data as an empty array
 
         if ($result = $this->db->link->query($query)) {
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    // Check if resource1 is set
-                    if (!empty($row['resource1'])) {
-                        $data[] = [
-                            'id' => $row['id'],
-                            'title' => $row['title'],
-                            'start' => $row['start'],
-                            'end' => $row['end'],
-                            'resourceId' => $row['resource1'],
-                        ];
-                    }
+                    // Decode the JSON resources array
+                    $resources = json_decode($row['resources'], true);
 
-                    // Check if resource2 is set
-                    if (!empty($row['resource2'])) {
-                        $data[] = [
-                            'id' => $row['id'],
-                            'title' => $row['title'],
-                            'start' => $row['start'],
-                            'end' => $row['end'],
-                            'resourceId' => $row['resource2'],
-                        ];
+                    // Check if resources exist and is a valid array
+                    if (is_array($resources) && count($resources) > 0) {
+                        foreach ($resources as $resource) {
+                            $data[] = [
+                                'id' => $row['id'],
+                                'title' => $row['title'],
+                                'start' => $row['start'],
+                                'end' => $row['end'],
+                                'resourceId' => $resource, // Add each resource as a separate entry
+                            ];
+                        }
                     }
                 }
-                return json_encode($data, JSON_PRETTY_PRINT );
             }
+            return json_encode($data, JSON_PRETTY_PRINT);
         }
-        return json_encode($data); // Return an empty JSON array if no rows found
+        return json_encode($data); // Return an empty JSON array if no rows are found
     }
 
     public function searchWorkOrderCustomers($term) {
@@ -316,5 +289,46 @@ class WorkOrder {
             return json_encode(['error' => 'Query voorbereidings fout']);
         }
     }
+
+    public function getStatusOptions($status) {
+        //$this->status = isset($this->status) ? $this->status : 'Nieuw';
+
+        $options = ['Nieuw', 'In behandeling', 'Afgerond', 'Verzonden', 'Verwijderd'];
+        $statusOptions = '';
+
+        foreach ($options as $option) {
+            $selected = $status == $option ? 'selected' : '';
+            $statusOptions .= "<option value='$option' $selected>$option</option>";
+        }
+
+        return $statusOptions;
+    }
+
+
+    function getAvailableResources($db, $startTime, $endTime) {
+        $query = "
+            SELECT u.id, u.name
+            FROM vanda.users u
+            WHERE u.id NOT IN (
+                SELECT DISTINCT JSON_EXTRACT(r.value, '$')
+                FROM vanda.vanda_work_orders wo
+                CROSS JOIN JSON_TABLE(wo.resources, '$[*]' COLUMNS (value VARCHAR(255) PATH '$')) r
+                WHERE wo.start < :end_time
+                  AND wo.end > :start_time
+            )
+        ";
+    
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':start_time', $startTime);
+        $stmt->bindParam(':end_time', $endTime);
+    
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return available resources
+        } else {
+            throw new Exception("Database query failed: " . implode(", ", $stmt->errorInfo()));
+        }
+    }
 }
+
+
 ?>

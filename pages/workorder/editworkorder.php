@@ -20,8 +20,6 @@ if (isset($_GET['id'])) {
     $isEditMode = true;
     $workOrderId = $_GET['id'];
     $existingWorkOrder = $workorder->getWorkOrderById($workOrderId); // Fetch existing work order details
-    print_r($existingWorkOrder);
-
 } elseif (isset($_POST)){
     $isEditMode = false;
     $existingWorkOrder = new $workorder;
@@ -125,7 +123,6 @@ $existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'
         }
     });
 
-
     // Handle dropdown item click
     $(document).on('click', '.autocomplete-item', function () {
         const selectedText = $(this).text();
@@ -139,6 +136,106 @@ $existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'
             $('#autocompleteDropdown').empty();
         }
     });
+
+
+    // END OF DROPDOWN AUTOFILL SCRIPTS
+    // below is the logic for the resrouces
+
+    // Populate the dropdown with available resources 
+    // Populate the dropdown with available resources 
+    function populateDropdown(dropdownElement, selectedValue = "", ExistingResource = false) {
+        const startTime = $("#start").val();
+        const endTime = $("#end").val();
+
+        if (!startTime || !endTime) {
+            alert("Please provide both start and end times.");
+            return;
+        }
+
+        const params = { start: startTime, end: endTime };
+        if (ExistingResource) {
+            params.ExistingResource = true;
+        }
+
+        $.get("pages/workorder/ajax.resources.php", params, function (data) {
+            if (data && Array.isArray(data)) {
+                dropdownElement.empty();
+                dropdownElement.append('<option value="">Select a resource</option>');
+
+                data.forEach(function (resource) {
+                    const option = $('<option></option>')
+                        .val(resource.id)
+                        .text(resource.title)
+                        .prop("selected", resource.id == selectedValue);
+                    dropdownElement.append(option);
+                });
+
+
+                 // Disable the dropdown if ExistingResource is true
+                if (ExistingResource) {
+                    dropdownElement.prop("disabled", true);
+                    // Add a hidden input to submit the value
+                    const hiddenInput = $(`<input type="hidden" name="${dropdownElement.attr('name')}" value="${selectedValue}">`);
+                    dropdownElement.after(hiddenInput);
+                }
+            } else {
+                alert("Invalid response format from server.");
+                dropdownElement.empty().append('<option value="">No resources available</option>');
+            }
+        }).fail(function () {
+            alert("Failed to load resources.");
+            dropdownElement.empty().append('<option value="">No resources available</option>');
+        });
+    }
+
+    const resources = <?php echo json_encode($existingWorkOrder->resources ?? []); ?>;
+    const resourceContainer = $("#resourceContainer");
+
+    // Generate dropdowns for each resource
+    resources.forEach(function (resource, index) {
+        const dropdownContainer = $(`
+            <div class="resource-dropdown" id="resource-${index}">
+                <select name="resources[]" required></select>
+                <button type="button" class="removeResource" data-resource-id="resource-${index}">Remove</button>
+            </div>
+        `);
+
+        resourceContainer.append(dropdownContainer);
+
+        // Populate the dropdown with available resources and preselect the current value
+        const dropdownElement = dropdownContainer.find("select");
+        populateDropdown(dropdownElement, resource, true);
+    });
+
+    
+     // Add new resource dropdown
+     let resourceCounter = 0;
+     $("#addResource").on("click", function () {
+        const dropdownId = `resource-${resourceCounter++}`;
+        const dropdownContainer = $(`
+            <div class="resource-dropdown" id="${dropdownId}">
+                <select name="resources[]" required></select>
+                <button type="button" class="removeResource" data-resource-id="${dropdownId}">Remove</button>
+            </div>
+        `);
+
+        resourceContainer.append(dropdownContainer);
+        const dropdownElement = dropdownContainer.find("select");
+        populateDropdown(dropdownElement, "", false);
+    });
+
+    // Remove a resource dropdown
+    resourceContainer.on("click", ".removeResource", function () {
+        const resourceId = $(this).data("resource-id");
+        $(`#${resourceId}`).remove();
+
+        // Remove the associated hidden input
+        const hiddenInputName = $(`#${resourceId}`).find("select").attr("name");
+        $(`input[name="${hiddenInputName}"]`).remove();
+    });
+
+
+
 
     // Set minimum dates for 'start' and 'end' fields
     document.addEventListener("DOMContentLoaded", function () {
@@ -219,19 +316,24 @@ function validateForm() {
     <input type="datetime-local" id="end" name="end" 
            value="<?php echo $existingWorkOrder->end ? htmlspecialchars($existingWorkOrder->end ?? '', ENT_QUOTES, 'UTF-8') : $currentDate . ' 17:00:00'; ?>"><br><br>
 
-    <label for="resource1">Resource 1</label><br>
-    <input type="text" id="resource1" name="resource1" 
-           value="<?php echo $existingWorkOrder->resource1 ? htmlspecialchars($existingWorkOrder->resource1 ?? '', ENT_QUOTES, 'UTF-8') : ''; ?>"><br><br>
+    <label for="resource-dropdown">Resource:</label><br>       
+    <div id="resourceContainer">
+    <button type="button" id="addResource">Add Resource</button>    
+    </div>
 
-    <label for="resource2">Resource 2</label><br>
-    <input type="text" id="resource2" name="resource2" 
-           value="<?php echo $existingWorkOrder->resource2 ? htmlspecialchars($existingWorkOrder->resource2 ?? '', ENT_QUOTES, 'UTF-8') : ''; ?>"><br><br>
 
     <label for="verpakinstructie">Verpakinstructie:</label><br>
     <textarea id="verpakinstructie" name="verpakinstructie"><?php echo $existingWorkOrder->verpakinstructie ? htmlspecialchars($existingWorkOrder->verpakinstructie ?? '', ENT_QUOTES, 'UTF-8') : ''; ?></textarea><br><br>
 
     <label for="opmerkingen">Opmerkingen:</label><br>
     <textarea id="opmerkingen" name="opmerkingen"><?php echo $existingWorkOrder->opmerkingen ? htmlspecialchars($existingWorkOrder->opmerkingen ?? '', ENT_QUOTES, 'UTF-8') : ''; ?></textarea><br><br>
+
+    <label for="status">Status:</label><br>
+    <select id="status" name="status">
+    <?php echo $workorder->getStatusOptions($existingWorkOrder->status); ?>
+    </select>
+    <br><br>
+
 
     <!-- File upload input -->
     <label for="file">Inkoop Order (PDF, JPG, PNG)</label><br>
