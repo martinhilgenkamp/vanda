@@ -14,7 +14,7 @@ $existingWorkOrder = null;
 $currentDate = date("Y-m-d");
 
 // Check if there is an ID provided (for edit mode)
-// TODO: check if post settings are correct
+// TODO: if timeframe is selected in full calendar the resource is not comming along.
 
 if (isset($_GET['id'])) {
     $isEditMode = true;

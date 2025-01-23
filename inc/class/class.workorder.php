@@ -130,6 +130,35 @@ class WorkOrder {
             return false;
         }
     }
+
+    function MoveWorkOrder($id, $startMySQL, $stopMySQL){
+
+        $query = "UPDATE " . $this->table_name . " 
+                  SET start = ?, end = ?
+                  WHERE id = ?";
+
+        if ($stmt = $this->db->link->prepare($query)) {
+            if (!$stmt->bind_param("ssi", $startMySQL, $stopMySQL, $id)) {
+                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                return false;
+            }
+    
+            if (!$stmt->execute()) {
+                echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                return false;
+            }
+    
+            $stmt->close();
+            
+            echo "Werkbon is verplaatst!";
+            return true;
+            
+        } else {
+            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
+            return false;
+        }
+
+    }
     
     public function getWorkOrderById($workOrderId) {
         $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resources, verpakinstructie, opmerkingen, file_path, created, modified, status 
