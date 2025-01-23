@@ -35,7 +35,7 @@ if (isset($_GET['id'])) {
     $existingWorkOrder = new $workorder;
 
     $existingWorkOrder->start = isset($_POST['start']) && $_POST['start'] !== ''
-        ? adjustTime(date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['start'] ?? '', ENT_QUOTES, 'UTF-8'))), '08:00')
+        ? adjustTime(date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['start'] ?? '', ENT_QUOTES, 'UTF-8'))), '07:00')
         : null;
 
     $existingWorkOrder->end = isset($_POST['stop']) && $_POST['stop'] !== ''

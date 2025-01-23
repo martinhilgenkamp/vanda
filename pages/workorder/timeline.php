@@ -24,6 +24,7 @@ $um = new UserManager();
       locale: 'nl',  
       initialDate: formattedDate,
       editable: true, // enable draggable events
+      nowIndicator: true,
       eventClick: function(info) {
         Swal.fire({
                   title: "Opdracht bewerken?",
@@ -181,17 +182,18 @@ $um = new UserManager();
       headerToolbar: {
         left: 'today prev,next',
         center: 'title',
-        right: 'resourceTimelineDay,resourceTimelineThreeDays,dayGridMonth,listWeek'
+        right: 'resourceTimelineWeek,resourceTimelineMonth,listWeek'
       },
-      initialView: 'resourceTimelineDay',
+      initialView: 'resourceTimelineMonth',
       views: {
-        resourceTimelineDay: {
-          buttonText: 'Dag'
+        resourceTimelineWeek: {
+          buttonText: 'Week',
+          duration: { weeks: 1 },
         },
-        resourceTimelineThreeDays: {
+        resourceTimelineMonth: {
           type: 'resourceTimeline',
-          duration: { days: 7 },
-          buttonText: '7 dagen'
+          duration: { months: 1 },
+          buttonText: 'Maand'
         },
         dayGridMonth: {
           buttonText: 'Maand'
@@ -200,6 +202,8 @@ $um = new UserManager();
           buttonText: 'Lijst'
         }
       },
+      slotDuration: "12:00:00",
+      slotWidth: "500px",
       resourceAreaHeaderContent: 'Resources',
       resources: <?php echo $um->getResources(); ?>,
       resourceOrder: 'sortOrder',

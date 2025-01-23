@@ -15,12 +15,12 @@ $resUsers = $um->listUsers();
 
 <table class="data-table" id="userTable">
     <tr>
-        <th>Naam</th>
+        <th class="ui-corner-tl">Naam</th>
         <th>Email</th>
         <th>Rol</th>
         <th>Actief</th>
         <th>Planbaar</th>
-        <th>Verwijder</th>
+        <th class="ui-corner-tr">Verwijder</th>
     </tr>
     <?php
         foreach ($resUsers as $user) {
@@ -36,7 +36,7 @@ $resUsers = $um->listUsers();
             $active = $user->active == 1 ? 'Actief' : 'Inactief';
             $isresource = $user->isresource == 1 ? 'Ja' : 'Nee';
 
-            $html = "<tr class='data-table-row user-row' data-user-id='". $user->id ."'>";
+            $html = "<tr class='data-table-row user-row clickable-row' data-user-id='". $user->id ."'>";
             $html .= "<td>". $user->username ."</td>";
             $html .= "<td>". $user->email ."</td>";
             $html .= "<td>". $role ."</td>";
@@ -49,4 +49,9 @@ $resUsers = $um->listUsers();
         }
 
     ?>
+    <tr>
+        <th class="ui-corner-bottom" colspan="6">
+            &nbsp;
+        </th>
+    </tr>
 </table>
