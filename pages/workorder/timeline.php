@@ -1,5 +1,4 @@
 <?php
-
 date_default_timezone_set("Europe/Amsterdam");
 require_once('inc/class/class.workorder.php');
 require_once('inc/class/class.user.php');
@@ -43,61 +42,63 @@ $um = new UserManager();
               }
             });
         },
-        eventDrop: function(info) {
-    Swal.fire({
-        title: "Opdracht verplaatsen?",
-        text: "Wil je deze opdracht verplaatsen?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Verplaats"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var start = info.event.start.toISOString(); // Convert to ISO string
-            var stop = info.event.end ? info.event.end.toISOString() : ""; // Handle cases where `end` might be null
-            var resource = info.resource ? info.resource.id : ""; // Check if resource exists
-            var title = info.event.title || ""; // Event title
-            var id = info.event.id || ""; // Additional properties if any
+      eventDrop: function(info) {
+          Swal.fire({
+              title: "Opdracht verplaatsen?",
+              text: "Wil je deze opdracht verplaatsen?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Verplaats"
+          }).then((result) => {
+              if (result.isConfirmed) {
+                      // Gather data to send via AJAX
+                var data = {
+                    id: info.event.id || "", // Event ID
+                    start: info.event.start.toISOString(), // Start time in ISO format
+                    stop: info.event.end ? info.event.end.toISOString() : "", // End time in ISO format
+                    eventtitle: info.event.title || "", // Event title
+                    resource: info.newResource ? info.newResource.id : "", // Resource ID if exists
+                    oldresource: info.oldResource ? info.oldResource.id : "" // Resource ID if exists
+                };
 
-            // Create a form dynamically
-            var form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'index.php?page=workorder/moveworkorder';
-
-            // Add hidden inputs
-            var inputId = document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = 'id';
-            inputId.value = id;
-            form.appendChild(inputId);
-
-            var inputStart = document.createElement('input');
-            inputStart.type = 'hidden';
-            inputStart.name = 'start';
-            inputStart.value = start;
-            form.appendChild(inputStart);
-
-            var inputStop = document.createElement('input');
-            inputStop.type = 'hidden';
-            inputStop.name = 'stop';
-            inputStop.value = stop;
-            form.appendChild(inputStop);
-
-            var inputTitle = document.createElement('input');
-            inputTitle.type = 'hidden';
-            inputTitle.name = 'eventtitle';
-            inputTitle.value = title;
-            form.appendChild(inputTitle);
-
-            // Append form to body and submit
-            document.body.appendChild(form);
-            form.submit();
-        } else {
-            info.revert(); // Revert the event back to its original position
-        }
-    });
-},
+                // Make AJAX POST request
+                $.ajax({
+                    url: 'pages/workorder/moveworkorder.php', // The server endpoint
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        // Assuming the server responds with a success flag
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Succes!",
+                                text: "De opdracht is succesvol verplaatst.",
+                                icon: "success"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Fout!",
+                                text: response.message || "De opdracht kon niet worden verplaatst.",
+                                icon: "error"
+                            });
+                            info.revert(); // Revert the event to its original position
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: "Fout!",
+                            text: "Er is een fout opgetreden bij het verplaatsen van de opdracht.",
+                            icon: "error"
+                        });
+                        info.revert(); // Revert the event to its original position
+                    }
+                });
+              } else {
+                  info.revert(); // Revert the event back to its original position
+              }
+          });
+        },
       selectable: true,
       select: function (arg) {
               Swal.fire({
@@ -108,14 +109,17 @@ $um = new UserManager();
                   cancelButtonText: "Anuleer",
                   confirmButtonColor: "#3085d6",
                   cancelButtonColor: "#d33",
+
               }).then(function (result) {
                   if (result.value) {
                       var title = document.querySelector('input[name="event_name"]').value;
                       if (title) {
-                          var start = arg.start.toISOString();
-                          var stop = arg.end.toISOString();
-                          var id = arg.end.toISOString();
-                          var resources = arg.resource.id;
+                          var start = arg.start ? arg.start.toISOString() : null;
+                          var stop = arg.end ? arg.end.toISOString() : null;
+                          var id = arg.id ? arg.id : null;
+                          var resources = arg.resource && arg.resource.id ? arg.resource.id : null;
+
+                          console.log("Starting New Order");
 
                           // Create a form dynamically
                           var form = document.createElement('form');
@@ -173,18 +177,27 @@ $um = new UserManager();
                   }
               });
             },
-      aspectRatio: 3.6,
+      aspectRatio: 2,
       headerToolbar: {
         left: 'today prev,next',
         center: 'title',
-        right: 'resourceTimelineDay,resourceTimelineThreeDays,timeGridWeek,dayGridMonth,listWeek'
+        right: 'resourceTimelineDay,resourceTimelineThreeDays,dayGridMonth,listWeek'
       },
       initialView: 'resourceTimelineDay',
       views: {
+        resourceTimelineDay: {
+          buttonText: 'Dag'
+        },
         resourceTimelineThreeDays: {
           type: 'resourceTimeline',
           duration: { days: 7 },
           buttonText: '7 dagen'
+        },
+        dayGridMonth: {
+          buttonText: 'Maand'
+        },
+        listWeek: {
+          buttonText: 'Lijst'
         }
       },
       resourceAreaHeaderContent: 'Resources',
@@ -192,7 +205,6 @@ $um = new UserManager();
       resourceOrder: 'sortOrder',
       events: <?php echo $workorder->getWorkordersJson(); ?>
     });
-
     calendar.render();
   });
 

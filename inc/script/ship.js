@@ -1,5 +1,24 @@
 // Docuement ready functions
 $(document).ready(function(){
+    // Autocomplete barcode
+	$.ajax({  
+		type: "POST",  
+		url: "pages/process.php", 
+		data: { 
+		  	task: 'getbarcode'
+	  	}, 
+		success: function(data) {  
+			$("#barcode").autocomplete({
+			  source: data
+			});
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			var error = (xhr.status);
+			error = error + ' ' + thrownError;
+			$('#errorbox').html(error);
+		}  
+	});
+
     // Do the shipment on submit
     $('#shipform').submit(function(e) {
         e.preventDefault(); // Prevent the form from submitting traditionally
@@ -103,7 +122,6 @@ $(document).ready(function(){
     // Initialize the page and set the timer and focus
     // Build the table with active shipments
     loadShipments($('#openshipments'));
-    resetTimer(); 
     selectBarcode();
 }); // End document ready
 

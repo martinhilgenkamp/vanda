@@ -1,5 +1,5 @@
 <?php
-//Load requirements
+// Load requirements
 date_default_timezone_set("Europe/Amsterdam");
 require_once('inc/class/class.workorder.php');
 
@@ -10,43 +10,52 @@ $workorder = new Workorder();
 $isEditMode = false;
 $existingWorkOrder = null;
 
-//Get Current Date
+// Get Current Date
 $currentDate = date("Y-m-d");
 
+// Function to adjust time
+function adjustTime($dateTime, $newTime) {
+    $date = new DateTime($dateTime);
+    if ($date->format('H:i') === '00:00') {
+        list($hour, $minute) = explode(':', $newTime);
+        $date->setTime($hour, $minute);
+    }
+    return $date->format('Y-m-d\TH:i');
+}
+
 // Check if there is an ID provided (for edit mode)
-// TODO: if timeframe is selected in full calendar the resource is not comming along.
+// TODO: if timeframe is selected in full calendar the resource is not coming along.
 
 if (isset($_GET['id'])) {
     $isEditMode = true;
     $workOrderId = $_GET['id'];
     $existingWorkOrder = $workorder->getWorkOrderById($workOrderId); // Fetch existing work order details
-} elseif (isset($_POST)){
+} elseif (isset($_POST)) {
     $isEditMode = false;
     $existingWorkOrder = new $workorder;
 
-$existingWorkOrder->start = isset($_POST['start']) && $_POST['start'] !== ''
-    ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['start'] ?? '', ENT_QUOTES, 'UTF-8')))
-    : null;
+    $existingWorkOrder->start = isset($_POST['start']) && $_POST['start'] !== ''
+        ? adjustTime(date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['start'] ?? '', ENT_QUOTES, 'UTF-8'))), '08:00')
+        : null;
 
-$existingWorkOrder->end = isset($_POST['stop']) && $_POST['stop'] !== ''
-    ? date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['stop'] ?? '', ENT_QUOTES, 'UTF-8')))
-    : null;
+    $existingWorkOrder->end = isset($_POST['stop']) && $_POST['stop'] !== ''
+        ? adjustTime(date('Y-m-d\TH:i', strtotime(htmlspecialchars($_POST['stop'] ?? '', ENT_QUOTES, 'UTF-8'))), '17:00')
+        : null;
 
-$existingWorkOrder->leverdatum = isset($_POST['leverdatum']) && $_POST['leverdatum'] !== ''
-    ? date('Y-m-d', strtotime(htmlspecialchars($_POST['leverdatum'] ?? '', ENT_QUOTES, 'UTF-8')))
-    : null;
+    $existingWorkOrder->leverdatum = isset($_POST['leverdatum']) && $_POST['leverdatum'] !== ''
+        ? date('Y-m-d', strtotime(htmlspecialchars($_POST['leverdatum'] ?? '', ENT_QUOTES, 'UTF-8')))
+        : null;
 
-$existingWorkOrder->omschrijving = isset($_POST['eventtitle']) && $_POST['eventtitle'] !== ''
-    ? htmlspecialchars($_POST['eventtitle'] ?? '', ENT_QUOTES, 'UTF-8')
-    : null;
+    $existingWorkOrder->omschrijving = isset($_POST['eventtitle']) && $_POST['eventtitle'] !== ''
+        ? htmlspecialchars($_POST['eventtitle'] ?? '', ENT_QUOTES, 'UTF-8')
+        : null;
 
-$existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'] !== ''
-    ? htmlspecialchars($_POST['resource1'] ?? '', ENT_QUOTES, 'UTF-8')
-    : null;
-
-    
+    $existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'] !== ''
+        ? htmlspecialchars($_POST['resource1'] ?? '', ENT_QUOTES, 'UTF-8')
+        : null;
 }
 ?>
+
 
 <title><?php echo $isEditMode ? 'Bewerk Werkbon' : 'Opdracht aanmaken'; ?></title>
 <style>
@@ -73,6 +82,59 @@ $existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'
     </style>
 <script>
    $(document).ready(function () {
+    
+    $("#workorderform").on("submit", function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Show Swal confirmation dialog
+        Swal.fire({
+            title: "Bevestig uw actie",
+            text: "Weet u zeker dat u dit wilt indienen?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ja, indienen",
+            cancelButtonText: "Annuleren"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Gather form data
+                const formData = new FormData(this);
+
+                // Send AJAX request
+                $.ajax({
+                    url: "pages/workorder/processorder.php", // Server-side script to handle form submission
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        // Handle successful submission
+                        Swal.fire({
+                            title: "Succes!",
+                            text: "De opdracht is succesvol ingediend.",
+                            icon: "success"
+                        }).then(() => {
+                            // Optionally redirect or reset form
+                            window.location.href = "index.php?page=workorder/timeline"; // Update with the appropriate redirect URL
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors
+                        Swal.fire({
+                            title: "Fout",
+                            text: "Er is iets misgegaan bij het indienen van de opdracht. Probeer het opnieuw.",
+                            icon: "error"
+                        });
+                    }
+                });
+            }
+        });
+    });
+    
+    
+
+    // END OF FORM SUBMISSION SCRIPTS
+    // below is the logic for the resrouces   
+    
     // Autocomplete for 'klant' field
     $('#klant').on('input', function () {
         const searchTerm = $(this).val();
@@ -109,6 +171,7 @@ $existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'
         });
     });
 
+
     // Handle dropdown item click
     $(document).on('click', '.autocomplete-item', function () {
         const selectedText = $(this).text();
@@ -140,8 +203,7 @@ $existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'
 
     // END OF DROPDOWN AUTOFILL SCRIPTS
     // below is the logic for the resrouces
-
-    // Populate the dropdown with available resources 
+    
     // Populate the dropdown with available resources 
     function populateDropdown(dropdownElement, selectedValue = "", ExistingResource = false) {
         const startTime = $("#start").val();
@@ -298,7 +360,7 @@ function validateForm() {
     <br><br>
 
     <label for="opdrachtnr_klant">Opdrachtnr Klant:</label><br>
-    <input type="text" id="opdrachtnr_klant" name="opdrachtnr_klant" required 
+    <input type="text" id="opdrachtnr_klant" name="opdrachtnr_klant" required autocomplete="off" 
            value="<?php echo $existingWorkOrder->opdrachtnr_klant ? htmlspecialchars($existingWorkOrder->opdrachtnr_klant ?? '', ENT_QUOTES, 'UTF-8') : ''; ?>">*<br><br>
 
     <label for="omschrijving_klant">Omschrijving Klant:</label><br>

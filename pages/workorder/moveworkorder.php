@@ -6,12 +6,6 @@ header('Content-Type: application/json');
 include_once '../../inc/class/class.db.php'; // Your database connection file
 include_once '../../inc/class/class.workorder.php';
 
-
-
-//Debug
-//print_r($_POST); 
-
-
 // Function to convert ISO 8601 to MySQL DATETIME
 function convertToMySQLDateTime($isoDate) {
     if (!$isoDate) {
@@ -31,8 +25,9 @@ function convertToMySQLDateTime($isoDate) {
 $startISO = $_POST['start'] ?? null;
 $stopISO = $_POST['stop'] ?? null;
 $eventTitle = $_POST['eventtitle'] ?? null;
-$resources = $_POST['resources'] ?? null;
-$id = $_POST['id'] ?? null;
+$oldresource = $_POST['oldresource'] ?? null;
+$resource = $_POST['resource'] ?? null;
+$eventid = $_POST['id'] ?? null;
 
 // Convert date values.
 $startMySQL = convertToMySQLDateTime($startISO);
@@ -45,7 +40,7 @@ $db = new DB();
 $workOrder = new WorkOrder($db); // Pass the $db connection object
 
 // Call the searchWorkOrders method and output the results
-echo $workOrder->MoveWorkOrder($id, $startMySQL, $stopMySQL);
+echo $workOrder->MoveWorkOrder($eventid, $startMySQL, $stopMySQL, $oldresource, $resource);
 
 
 ?>

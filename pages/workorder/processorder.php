@@ -1,8 +1,9 @@
 <?php
+date_default_timezone_set("Europe/Amsterdam");
+header('Content-Type: application/json');
 
 require_once('../../inc/class/class.workorder.php');
 require_once('../../inc/class/class.user.php');
-
 
 
 // Directory where files will be uploaded
@@ -22,7 +23,6 @@ function sanitize($data) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $workOrder = new WorkOrder();
 
-    print_r($_POST);
     // Sanitize form inputs
     $workOrder->omschrijving = sanitize($_POST['omschrijving']);
     $workOrder->klant = sanitize($_POST['klant']);
@@ -73,22 +73,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
      // Check for errors before proceeding
      if (count($errors) > 0) {
-         foreach ($errors as $error) {
-             echo "<p style='color:red;'>$error</p>";
-         }
+        echo json_encode(['status' => 'error', 'message' => 'Probleem met het aanmaken van de oprdacht: ' . $workOrder->errors]);
      } else {
          // Try to insert into database
          if($workOrder->id != 0 ){
             if ($workOrder->updateWorkOrder()) {
-                echo "Work order updated successfully.";
+                echo json_encode(['status' => 'success', 'message' => 'Opdracht is met success aangemaakt']);
             } else {
-                echo "Failed to update work order.";
+                echo json_encode(['status' => 'error', 'message' => 'Probleem met het aanmaken van de oprdacht: ' . $workOrder->errors]);
             }
          } else {
             if ($workOrder->createWorkOrder()) {
-                echo "<p style='color:green;'>Work order created successfully!</p>";
+                echo json_encode(['status' => 'success', 'message' => 'Opdracht is met success aangemaakt']);
             } else {
-                echo "<p style='color:red;'>Error creating work order.</p>";
+                echo json_encode(['status' => 'error', 'message' => 'Probleem met het aanmaken van de oprdacht: ' . $workOrder->errors]);
             }
         }
      }

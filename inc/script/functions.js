@@ -476,25 +476,6 @@ $(document).ready(function(){
 			  }  
 		});
 	} // endif leverid.length
-	
-	// Autocomplete barcode
-	$.ajax({  
-		type: "POST",  
-		url: "pages/process.php", 
-		data: { 
-		  	task: 'getbarcode'
-	  	}, 
-		success: function(data) {  
-			$("#barcode").autocomplete({
-			  source: data
-			});
-		},
-		error: function (xhr, ajaxOptions, thrownError) {
-			var error = (xhr.status);
-			error = error + ' ' + thrownError;
-			$('#errorbox').html(error);
-		}  
-	});
 });  // close document.ready()
 
 // Process Layout of dynamic generated content

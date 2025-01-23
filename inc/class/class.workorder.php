@@ -131,35 +131,73 @@ class WorkOrder {
         }
     }
 
-    function MoveWorkOrder($id, $startMySQL, $stopMySQL){
-
+    function MoveWorkOrder($id, $startMySQL, $stopMySQL, $oldresource, $resource){
+        $WorkOrderResources = $this->getWorkOrderResources($id);
+    
+        // Set new resources if they are different
+        if(isset($oldresource) && isset($resource)){
+            $resources = json_decode($WorkOrderResources->resources, true);
+            $key = array_search($oldresource, $resources);
+            if ($key !== false) {
+                $resources[$key] = $resource;
+                $WorkOrderResources->resources = json_encode($resources);
+            }
+        }      
+    
+        $SQLResource = $WorkOrderResources->resources;
         $query = "UPDATE " . $this->table_name . " 
-                  SET start = ?, end = ?
+                  SET start = ?, end = ?, resources = ?
                   WHERE id = ?";
-
+    
         if ($stmt = $this->db->link->prepare($query)) {
-            if (!$stmt->bind_param("ssi", $startMySQL, $stopMySQL, $id)) {
+            if (!$stmt->bind_param("sssi", $startMySQL, $stopMySQL, $SQLResource, $id)) {
                 echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
                 return false;
             }
+           
+            //DEBUG
+            // Construct the effective query for debugging
+            // $effectiveQuery = sprintf(
+            //   "UPDATE %s SET start = '%s', end = '%s', resources = '%s' WHERE id = %d",
+            //    $this->table_name,
+            //    $startMySQL,
+            //    $stopMySQL,
+            //    $SQLResource,
+            //    $id
+            // );
+            // echo "Effective query: " . $effectiveQuery;
     
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 return false;
-            }
+            }            
     
             $stmt->close();
-            
-            echo "Werkbon is verplaatst!";
-            return true;
-            
+            return json_encode(['success' => true, 'message' => 'Werkbon met success verplaatst.']);            
         } else {
-            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
-            return false;
+            return json_encode(['success' => false, 'message' => 'Probleem bij het verplaatsen (" . $this->db->link->errno . ") " . $this->db->link->error']);
         }
-
     }
     
+    public function getWorkOrderResources($workOrderId) {
+        $query = "SELECT resources 
+                  FROM " . $this->table_name . " 
+                  WHERE id = ?";
+    
+        if ($stmt = $this->db->link->prepare($query)) {
+            $stmt->bind_param("i", $workOrderId);
+    
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                if ($result->num_rows > 0) {
+                    $workOrder = $result->fetch_object();
+                    return $workOrder;
+                }
+            }
+        }
+        return null;
+    }
+
     public function getWorkOrderById($workOrderId) {
         $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resources, verpakinstructie, opmerkingen, file_path, created, modified, status 
                   FROM " . $this->table_name . " 
@@ -179,6 +217,7 @@ class WorkOrder {
         }
         return null;
     }
+
 
     // Method to get and display all work orders
     // Method to get and display all work orders
