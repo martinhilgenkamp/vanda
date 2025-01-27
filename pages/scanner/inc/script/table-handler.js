@@ -11,7 +11,13 @@ $(document).ready(function() {
         sessionStorage.setItem('selectedKlant', klant);
         sessionStorage.setItem('selectedship_id', ship_id);
 
+        // prevent OSK popup
+        $('#barcode').prop("readonly", true);  
         $('#barcode').focus();
+        setTimeout(function() {
+            $('#barcode').prop("readonly", false);
+        }, 100);
+        
     }); // End click listener
 
     // Check for and retrieve stored values on page load

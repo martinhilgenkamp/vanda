@@ -1,0 +1,113 @@
+/* IF OLD SCANNER PAGE IS GONE THE OTHER STYLE CAN BE REMOVED */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  * {
+    font-family:  Arial;
+  }
+    
+  label{
+        display: inline-block;
+        width: 100%;
+        font-size: 0.8em;	
+    }
+  
+  #notice{
+      width: 90%;
+      margin: 5px auto;
+      
+  }
+  
+  .notice {
+          border: 1px solid #6879FF;
+          background: #C8CEFF;
+          margin: 5px;
+  }
+  
+  .error {
+         border: 1px solid #FF8D82;
+          background: #FFD4A4;
+          margin: 5px;
+  }
+
+    input[type=text] {
+        display: inline-block;
+        margin: 5px 0px;
+        text-align: center;
+    }
+  
+
+    #shipmenttable {
+      border-collapse: collapse; /* Ensures no gaps between table cells */
+      width: 100%; /* Adjusts table to occupy full width */
+    }
+
+    #shipmenttable th {
+      background-color: #222c6a; 
+      color: white; 
+    }
+
+  .shipmentrow {
+    border-bottom: 1px dotted #ccc;
+  }
+
+  .shipmentrow:hover{
+    cursor:  pointer;
+    background: #ccc;
+    text-align:  center;
+    padding: 0px;
+    margin: 0px;
+  }
+  
+  table tr td{
+   text-align:  center;
+  }
+
+
+  #shipform-container, #openshipments {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+
+  }
+
+  #shiplist {
+    list-style: none;
+    padding: 0;
+  }
+
+  #shiplist li {
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  #shiplist label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    width: 100%;
+  }
+
+  #shiplist input, #shiplist button {
+    padding: 10px;
+    margin: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  #result, #openshipments {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 16px;
+  }
