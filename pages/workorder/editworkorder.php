@@ -378,11 +378,13 @@ function validateForm() {
            value="<?php echo $existingWorkOrder->end ? htmlspecialchars($existingWorkOrder->end ?? '', ENT_QUOTES, 'UTF-8') : $currentDate . ' 17:00:00'; ?>"><br><br>
 
     <label for="resource-dropdown">Resource:</label><br>       
-    <div id="resourceContainer">
+    <div id="resourceContainer" style="width=100%">
     <button type="button" id="addResource">Add Resource</button>    
     </div>
 
-    <div class="clr"></div>
+    <!-- FORCE LINE BREAK -->
+    <br style="clear: both;" /><br>
+
     <label for="verpakinstructie">Verpakinstructie:</label><br>
     <textarea id="verpakinstructie" name="verpakinstructie"><?php echo $existingWorkOrder->verpakinstructie ? htmlspecialchars($existingWorkOrder->verpakinstructie ?? '', ENT_QUOTES, 'UTF-8') : ''; ?></textarea><br><br>
 

@@ -306,11 +306,12 @@ input[type=text], select, .textfield, .datepicker {
 #workorderform input[type="datetime-local"],
 #workorderform select {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 10px 15px;
+	margin: 0px !important;
+	height: 40px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 1em;
 }
 
 #workorderform textarea {
@@ -328,12 +329,20 @@ input[type=text], select, .textfield, .datepicker {
     margin-bottom: 20px;
 }
 
+#resourceContainer {
+	width: 100%;
+	display: inline-block;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+
 #workorderform input[type="submit"],
 #workorderform #addResource,
 #workorderform .removeResource {
     border: none;
-    padding: 15px 20px;
-    font-size: 18px;
+    padding: 10px 15px;
+    font-size: 1.1em;
     cursor: pointer;
     border-radius: 5px;
     width: 100%;
