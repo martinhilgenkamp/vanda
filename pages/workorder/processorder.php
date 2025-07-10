@@ -27,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $workOrder->omschrijving = sanitize($_POST['omschrijving']);
     $workOrder->klant = sanitize($_POST['klant']);
     $workOrder->opdrachtnr_klant = sanitize($_POST['opdrachtnr_klant']);
-    $workOrder->omschrijving_klant = sanitize($_POST['omschrijving_klant']);
     $workOrder->leverdatum = sanitize($_POST['leverdatum']);
     $workOrder->verpakinstructie = sanitize($_POST['verpakinstructie']);
     $workOrder->opmerkingen = sanitize($_POST['opmerkingen']);

@@ -25,6 +25,8 @@ function adjustTime($dateTime, $newTime) {
 
 // Check if there is an ID provided (for edit mode)
 // TODO: if timeframe is selected in full calendar the resource is not coming along.
+// Styling is off when zoomed in
+// Check resourced before submitting the form.
 
 if (isset($_GET['id'])) {
     $isEditMode = true;
@@ -315,7 +317,7 @@ if (isset($_GET['id'])) {
 
 // Form validation function
 function validateForm() {
-    let opdrachtnr = document.getElementById("opdrachtnr").value;
+    //let opdrachtnr = document.getElementById("opdrachtnr").value;
     let klant = document.getElementById("klant").value;
     let leverdatum = document.getElementById("leverdatum").value;
 
@@ -362,9 +364,6 @@ function validateForm() {
     <label for="opdrachtnr_klant">Opdrachtnr Klant:</label><br>
     <input type="text" id="opdrachtnr_klant" name="opdrachtnr_klant" required autocomplete="off" 
            value="<?php echo $existingWorkOrder->opdrachtnr_klant ? htmlspecialchars($existingWorkOrder->opdrachtnr_klant ?? '', ENT_QUOTES, 'UTF-8') : ''; ?>">*<br><br>
-
-    <label for="omschrijving_klant">Omschrijving Klant:</label><br>
-    <textarea id="omschrijving_klant" name="omschrijving_klant" required><?php echo $isEditMode ? htmlspecialchars($existingWorkOrder->omschrijving_klant ?? '', ENT_QUOTES, 'UTF-8') : ''; ?></textarea><br><br>
 
     <label for="leverdatum">Leverdatum</label><br>
     <input type="date" id="leverdatum" name="leverdatum" required 
