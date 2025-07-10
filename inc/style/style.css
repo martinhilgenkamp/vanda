@@ -121,6 +121,7 @@ input[type=text], select, .textfield, .datepicker {
     border: 1px solid #ccc;
     line-height: 30px;
     padding: 5px;
+	border-radius: 8px;
 }
 
 .textfield, .datepicker {
@@ -379,6 +380,14 @@ input[type=text], select, .textfield, .datepicker {
 #filter_form input[type=text], #filter_form select, #submit_free_search, #reset_free_form {
     line-height: 32px;
     font: 1em "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+#filter_form_div button {
+	height: 32px;
+	line-height: 32px;
+	font: 1em "Trebuchet MS", Arial, Helvetica, sans-serif;
+	margin-left: 5px;
+	padding: 5px 10px;
 }
 
 #input_free_search {

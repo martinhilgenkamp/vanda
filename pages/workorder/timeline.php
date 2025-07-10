@@ -182,28 +182,29 @@ $um = new UserManager();
       headerToolbar: {
         left: 'today prev,next',
         center: 'title',
-        right: 'resourceTimelineWeek,resourceTimelineMonth,listWeek'
+        right: 'resourceTimelineDay,resourceTimelineWeek,dayGridMonth'
       },
-      initialView: 'resourceTimelineMonth',
+      initialView: 'resourceTimelineDay',
       views: {
+        resourceTimelineDay: {
+          buttonText: 'Dag',
+          duration: { days: 1 },
+          slotDuration: '01:00:00',       // 1-hour blocks
+          slotMinTime: '06:00:00',        // Start at 6:00 AM
+          slotMaxTime: '20:00:00'        // End at 8:00 PM
+        },
         resourceTimelineWeek: {
           buttonText: 'Week',
           duration: { weeks: 1 },
         },
-        resourceTimelineMonth: {
-          type: 'resourceTimeline',
+        dayGridMonth: {
+          type: 'dayGridMonth',
           duration: { months: 1 },
           buttonText: 'Maand'
         },
-        dayGridMonth: {
-          buttonText: 'Maand'
-        },
-        listWeek: {
-          buttonText: 'Lijst'
-        }
       },
       slotDuration: "12:00:00",
-      slotWidth: "500px",
+      
       resourceAreaHeaderContent: 'Resources',
       resources: <?php echo $um->getResources(); ?>,
       resourceOrder: 'sortOrder',

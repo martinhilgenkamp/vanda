@@ -212,23 +212,55 @@ class WorkOrder {
         return null;
     }
 
+    public function sortLink($column, $label, $currentSort, $currentOrder) {
+        $nextOrder = ($currentSort === $column && $currentOrder === 'ASC') ? 'desc' : 'asc';
+        return "<a href='index.php?page=workorder/showworkorders&sort=$column&order=$nextOrder'>" . $label . "</a>";
+    }
+
 
     // Method to get and display all work orders
-    // Method to get and display all work orders
-    public function getWorkorders($itemsPerPage = 10) {
+    public function getWorkorders($itemsPerPage = 10, $sortColumn = 'id', $sortOrder = 'ASC', $searchTerm = '') {
         $currentPage = isset($_GET['pagecount']) ? (int)$_GET['pagecount'] : 1;
         $currentPage = max(1, $currentPage);
     
         $offset = ($currentPage - 1) * $itemsPerPage;
-    
-        $totalQuery = "SELECT COUNT(*) as total FROM " . $this->table_name;
+
+        $allowedSortColumns = ['id', 'omschrijving', 'klant', 'opdrachtnr_klant', 'leverdatum', 'start', 'end', 'verpakinstructie', 'file_path', 'created', 'modified', 'status'];
+
+        $sortColumn = isset($_GET['sort']) && in_array($_GET['sort'], $allowedSortColumns) ? $_GET['sort'] : 'id';
+        $sortOrder = (isset($_GET['order']) && strtolower($_GET['order']) === 'desc') ? 'DESC' : 'ASC';
+        
+        $searchSQL = '';
+
+        if (!empty($searchTerm)) {
+            $searchSQL = "WHERE 
+                omschrijving LIKE '%$searchTerm%' OR 
+                klant LIKE '%$searchTerm%' OR 
+                opdrachtnr_klant LIKE '%$searchTerm%' OR 
+                leverdatum LIKE '%$searchTerm%' OR 
+                verpakinstructie LIKE '%$searchTerm%' OR 
+                status LIKE '%$searchTerm%' OR 
+                created LIKE '%$searchTerm%' OR 
+                modified LIKE '%$searchTerm%'";
+        }
+
+        $totalQuery = "SELECT COUNT(*) as total FROM " . $this->table_name . " " . $searchSQL;
         $totalResult = $this->db->link->query($totalQuery);
         $totalCount = $totalResult->fetch_assoc()['total'];
         $totalPages = ceil($totalCount / $itemsPerPage);
     
         $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, verpakinstructie, file_path, created, modified, status 
-                  FROM " . $this->table_name . " 
-                  LIMIT $itemsPerPage OFFSET $offset";
+                  FROM " . $this->table_name . " $searchSQL 
+                  ORDER BY $sortColumn $sortOrder LIMIT $itemsPerPage OFFSET $offset";
+
+
+        echo "<div id='filter_form_div' style='text-align: right; margin-bottom: 10px;'>
+                <form method='GET' action='index.php' style='display: inline-block;'>
+                    <input type='hidden' name='page' value='workorder/showworkorders'>
+                    <input type='text' name='search' value='$searchTerm' placeholder='Zoek werkbonnen...' style='width: 250px;' />
+                    <button type='submit'>Zoeken</button>
+                </form>
+              </div>";
     
         if ($result = $this->db->link->query($query)) {
             if ($result->num_rows > 0) {
@@ -237,16 +269,16 @@ class WorkOrder {
     
                 echo "<table class='data-table results' cellpadding='0' cellspacing='0'>";
                 echo "<tr>
-                        <th class=\"ui-corner-tl\">ID</th>
-                        <th>Omschrijving</th>
-                        <th>Klant</th>
-                        <th>Opdrachtnr Klant</th>
-                        <th>Leverdatum</th>
-                        <th>Verpakinstructie</th>
-                        <th>Status</th>
-                        <th>Gemaakt</th>
-                        <th>Aangepast</th>
-                        <th class=\"ui-corner-tr\">Inkoop Order</th>
+                        <th class=\"ui-corner-tl\">" . $this->sortLink('id', 'ID', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('omschrijving', 'Omschrijving', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('klant', 'Klant', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('opdrachtnr_klant', 'Opdrachtnr Klant', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('leverdatum', 'Leverdatum', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('verpakinstructie', 'Verpakinstructie', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('status', 'Status', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('created', 'Gemaakt', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('modified', 'Aangepast', $sortColumn, $sortOrder) . "</th>
+                        <th class=\"ui-corner-tr\">" . $this->sortLink('file_path', 'Inkoop Order', $sortColumn, $sortOrder) . "</th>
                       </tr>";
     
                 while ($row = $result->fetch_assoc()) {
