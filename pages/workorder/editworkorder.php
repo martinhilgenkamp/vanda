@@ -382,12 +382,9 @@ function validateForm() {
     <button type="button" id="addResource">Add Resource</button>    
     </div>
 
-
+    <div class="clr"></div>
     <label for="verpakinstructie">Verpakinstructie:</label><br>
     <textarea id="verpakinstructie" name="verpakinstructie"><?php echo $existingWorkOrder->verpakinstructie ? htmlspecialchars($existingWorkOrder->verpakinstructie ?? '', ENT_QUOTES, 'UTF-8') : ''; ?></textarea><br><br>
-
-    <label for="opmerkingen">Opmerkingen:</label><br>
-    <textarea id="opmerkingen" name="opmerkingen"><?php echo $existingWorkOrder->opmerkingen ? htmlspecialchars($existingWorkOrder->opmerkingen ?? '', ENT_QUOTES, 'UTF-8') : ''; ?></textarea><br><br>
 
     <label for="status">Status:</label><br>
     <select id="status" name="status">

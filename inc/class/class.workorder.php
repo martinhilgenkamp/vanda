@@ -23,7 +23,6 @@ class WorkOrder {
     public $resource1; 
     public $resources;      // Hier komen de resources in. 
     public $verpakinstructie;
-    public $opmerkingen;
     public $createdby;
     public $modifiedby;
     public $file_path;
@@ -42,8 +41,8 @@ class WorkOrder {
 
     public function createWorkOrder() {
         $query = "INSERT INTO " . $this->table_name . " 
-              (omschrijving, klant, opdrachtnr_klant,  leverdatum, start, end, resources, verpakinstructie, opmerkingen, file_path, status, created, modified) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+              (omschrijving, klant, opdrachtnr_klant,  leverdatum, start, end, resources, verpakinstructie, file_path, status, created, modified) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $this->created = date("Y-m-d H:i:s");
     $this->modified = date("Y-m-d H:i:s");
@@ -52,7 +51,7 @@ class WorkOrder {
 
     if ($stmt = $this->db->link->prepare($query)) {
         if (!$stmt->bind_param(
-            "sssssssssssss",
+            "ssssssssssss",
             $this->omschrijving,
             $this->klant,
             $this->opdrachtnr_klant,
@@ -61,7 +60,6 @@ class WorkOrder {
             $this->end,
             $resourcesJson, // Save resources as JSON
             $this->verpakinstructie,
-            $this->opmerkingen,
             $this->file_path,
             $this->status,
             $this->created,
@@ -89,7 +87,7 @@ class WorkOrder {
 
     $query = "UPDATE " . $this->table_name . " 
               SET omschrijving = ?, klant = ?, opdrachtnr_klant = ?, 
-                  leverdatum = ?, start = ?, end = ?, resources = ?, verpakinstructie = ?, opmerkingen = ?, 
+                  leverdatum = ?, start = ?, end = ?, resources = ?, verpakinstructie = ?, 
                   file_path = ?, status = ?, modified = ?
               WHERE id = ?";
 
@@ -97,7 +95,7 @@ class WorkOrder {
 
     if ($stmt = $this->db->link->prepare($query)) {
         if (!$stmt->bind_param(
-            "sssssssssssssi",
+            "ssssssssssssi",
             $this->omschrijving,
             $this->klant,
             $this->opdrachtnr_klant,
@@ -106,7 +104,6 @@ class WorkOrder {
             $this->end,
             $resourcesJson, // Update resources as JSON
             $this->verpakinstructie,
-            $this->opmerkingen,
             $this->file_path,
             $this->status,
             $this->modified,
@@ -196,7 +193,7 @@ class WorkOrder {
     }
 
     public function getWorkOrderById($workOrderId) {
-        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, opmerkingen, file_path, created, modified, status 
+        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, file_path, created, modified, status 
                   FROM " . $this->table_name . " 
                   WHERE id = ?";
     
@@ -229,7 +226,7 @@ class WorkOrder {
         $totalCount = $totalResult->fetch_assoc()['total'];
         $totalPages = ceil($totalCount / $itemsPerPage);
     
-        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, verpakinstructie, opmerkingen, file_path, created, modified, status 
+        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, verpakinstructie, file_path, created, modified, status 
                   FROM " . $this->table_name . " 
                   LIMIT $itemsPerPage OFFSET $offset";
     
@@ -246,7 +243,6 @@ class WorkOrder {
                         <th>Opdrachtnr Klant</th>
                         <th>Leverdatum</th>
                         <th>Verpakinstructie</th>
-                        <th>Opmerkingen</th>
                         <th>Status</th>
                         <th>Gemaakt</th>
                         <th>Aangepast</th>
@@ -261,7 +257,6 @@ class WorkOrder {
                             <td>" . $row['opdrachtnr_klant'] . "</td>
                             <td>" . $row['leverdatum'] . "</td>
                             <td>" . $row['verpakinstructie'] . "</td>
-                            <td>" . $row['opmerkingen'] . "</td>
                             <td>" . $row['status'] . "</td>
                             <td>" . $row['created'] . "</td>
                             <td>" . $row['modified'] . "</td>
@@ -271,7 +266,7 @@ class WorkOrder {
     
                 echo "<tfoot>
                         <tr>
-                            <td class=\"ui-corner-bottom\"  colspan='11'>Werkbon $startResult – $endResult van $totalCount</td>
+                            <td class=\"ui-corner-bottom\"  colspan='10'>Werkbon $startResult – $endResult van $totalCount</td>
                         </tr>
                       </tfoot>";
                 echo "</table>";
