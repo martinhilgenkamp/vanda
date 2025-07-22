@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+require_once("class.db.php");
 
 date_default_timezone_set("Europe/Amsterdam");
 
@@ -27,6 +27,10 @@ class WorkOrder {
     public $modifiedby;
     public $file_path;
     public $status;
+    public $recurrence_type;
+    public $recurrence_interval;
+    public $recurrence_until;
+    public $recurrence_days;
 
     public $errors;
 
@@ -41,39 +45,44 @@ class WorkOrder {
 
     public function createWorkOrder() {
         $query = "INSERT INTO " . $this->table_name . " 
-              (omschrijving, klant, opdrachtnr_klant,  leverdatum, start, end, resources, verpakinstructie, file_path, status, created, modified) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, file_path, status, created, modified,
+        recurrence_type, recurrence_interval, recurrence_until, recurrence_days) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    $this->created = date("Y-m-d H:i:s");
-    $this->modified = date("Y-m-d H:i:s");
+        $this->created = date("Y-m-d H:i:s");
+        $this->modified = date("Y-m-d H:i:s");
 
-    $resourcesJson = json_encode($this->resources); // Encode resources array as JSON
+        $resourcesJson = json_encode($this->resources);
 
-    if ($stmt = $this->db->link->prepare($query)) {
-        if (!$stmt->bind_param(
-            "ssssssssssss",
-            $this->omschrijving,
-            $this->klant,
-            $this->opdrachtnr_klant,
-            $this->leverdatum,
-            $this->start,
-            $this->end,
-            $resourcesJson, // Save resources as JSON
-            $this->verpakinstructie,
-            $this->file_path,
-            $this->status,
-            $this->created,
-            $this->modified
-        )) {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-            return false;
-        }
-    
+        if ($stmt = $this->db->link->prepare($query)) {
+            if (!$stmt->bind_param(
+                "sssssssssssssssi", // 16 parameters: 15 strings, 1 integer
+                $this->omschrijving,
+                $this->klant,
+                $this->opdrachtnr_klant,
+                $this->leverdatum,
+                $this->start,
+                $this->end,
+                $resourcesJson,
+                $this->verpakinstructie,
+                $this->file_path,
+                $this->status,
+                $this->created,
+                $this->modified,
+                $this->recurrence_type,
+                $this->recurrence_interval,
+                $this->recurrence_until,
+                $this->recurrence_days
+            )) {
+                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                return false;
+            }
+
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 return false;
             }
-    
+
             $stmt->close();
             return true;
         } else {
@@ -81,42 +90,48 @@ class WorkOrder {
             return false;
         }
     }
+
     
     public function updateWorkOrder() {
         $this->modified = date("Y-m-d H:i:s");
+        $resourcesJson = json_encode($this->resources);
 
-    $query = "UPDATE " . $this->table_name . " 
-              SET omschrijving = ?, klant = ?, opdrachtnr_klant = ?, 
-                  leverdatum = ?, start = ?, end = ?, resources = ?, verpakinstructie = ?, 
-                  file_path = ?, status = ?, modified = ?
-              WHERE id = ?";
+        $query = "UPDATE " . $this->table_name . " 
+                SET omschrijving = ?, klant = ?, opdrachtnr_klant = ?, 
+                    leverdatum = ?, start = ?, end = ?, resources = ?, verpakinstructie = ?, 
+                    file_path = ?, status = ?, modified = ?,
+                    recurrence_type = ?, recurrence_interval = ?, recurrence_until = ?, recurrence_days = ?
+                WHERE id = ?";
 
-    $resourcesJson = json_encode($this->resources); // Encode resources array as JSON
+        if ($stmt = $this->db->link->prepare($query)) {
+            if (!$stmt->bind_param(
+                "sssssssssssisssi",
+                $this->omschrijving,
+                $this->klant,
+                $this->opdrachtnr_klant,
+                $this->leverdatum,
+                $this->start,
+                $this->end,
+                $resourcesJson,
+                $this->verpakinstructie,
+                $this->file_path,
+                $this->status,
+                $this->modified,
+                $this->recurrence_type,
+                $this->recurrence_interval,
+                $this->recurrence_until,
+                $this->recurrence_days,
+                $this->id
+            )) {
+                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                return false;
+            }
 
-    if ($stmt = $this->db->link->prepare($query)) {
-        if (!$stmt->bind_param(
-            "ssssssssssssi",
-            $this->omschrijving,
-            $this->klant,
-            $this->opdrachtnr_klant,
-            $this->leverdatum,
-            $this->start,
-            $this->end,
-            $resourcesJson, // Update resources as JSON
-            $this->verpakinstructie,
-            $this->file_path,
-            $this->status,
-            $this->modified,
-            $this->id
-        )) {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-            return false;
-        }
-    
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 return false;
             }
+
             $stmt->close();
             return true;
         } else {
@@ -193,25 +208,32 @@ class WorkOrder {
     }
 
     public function getWorkOrderById($workOrderId) {
-        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, file_path, created, modified, status 
-                  FROM " . $this->table_name . " 
-                  WHERE id = ?";
-    
-        if ($stmt = $this->db->link->prepare($query)) {
-            $stmt->bind_param("i", $workOrderId);
-    
-            if ($stmt->execute()) {
-                $result = $stmt->get_result();
-                if ($result->num_rows > 0) {
-                    $workOrder = $result->fetch_object();
-                    $workOrder->resources = json_decode($workOrder->resources, true); // Decode JSON to array
-                    return $workOrder;
-                }
+    $query = "SELECT 
+                id, omschrijving, klant, opdrachtnr_klant, leverdatum, 
+                start, end, resources, verpakinstructie, file_path, 
+                created, modified, status,
+                recurrence_type, recurrence_interval, recurrence_until, recurrence_days
+              FROM " . $this->table_name . " 
+              WHERE id = ?";
+
+    if ($stmt = $this->db->link->prepare($query)) {
+        $stmt->bind_param("i", $workOrderId);
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $workOrder = $result->fetch_object();
+                $workOrder->resources = json_decode($workOrder->resources, true); // Decode JSON to array
+
+                // Optioneel: decode recurrence_days naar array als dat handig is
+                // $workOrder->recurrence_days = explode(',', $workOrder->recurrence_days);
+
+                return $workOrder;
             }
         }
-        return null;
     }
-
+    return null;
+}
     public function sortLink($column, $label, $currentSort, $currentOrder) {
         $nextOrder = ($currentSort === $column && $currentOrder === 'ASC') ? 'desc' : 'asc';
         return "<a href='index.php?page=workorder/showworkorders&sort=$column&order=$nextOrder'>" . $label . "</a>";
@@ -248,6 +270,8 @@ class WorkOrder {
         $totalResult = $this->db->link->query($totalQuery);
         $totalCount = $totalResult->fetch_assoc()['total'];
         $totalPages = ceil($totalCount / $itemsPerPage);
+
+
     
         $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, verpakinstructie, file_path, created, modified, status 
                   FROM " . $this->table_name . " $searchSQL 
@@ -324,33 +348,117 @@ class WorkOrder {
 
     public function getWorkordersJson()
     {
-        $query = "SELECT id, omschrijving AS title, start, end, resources FROM " . $this->table_name;
-        $data = []; // Initialize $data as an empty array
+        $query = "SELECT id, omschrijving AS title, start, end, resources,
+                        recurrence_type, recurrence_interval, recurrence_until, recurrence_days
+                FROM " . $this->table_name;
+
+        $data = [];
 
         if ($result = $this->db->link->query($query)) {
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    // Decode the JSON resources array
-                    $resources = json_decode($row['resources'], true);
+            while ($row = $result->fetch_assoc()) {
+               echo "Processing row: " . print_r($row, true); // Debugging output
+                
+                $resources = json_decode($row['resources'], true);
+                $resources = is_array($resources) && count($resources) > 0 ? $resources : [null];
 
-                    // Check if resources exist and is a valid array
-                    if (is_array($resources) && count($resources) > 0) {
+                // Bereken duur van event
+                $startDT = new DateTime($row['start']);
+                $endDT = new DateTime($row['end']);
+                $duration = $startDT->diff($endDT);
+
+                // Herhalend event?
+                if (!empty($row['recurrence_type']) && !empty($row['recurrence_until'])) {
+                     $repeats = $this->generateRecurringDates(
+                        $row['start'],
+                        $row['recurrence_type'],
+                        $row['recurrence_interval'],
+                        $row['recurrence_until'],
+                        $row['recurrence_days']
+                    );
+                    
+                    $resources = json_decode($row['resources'], true);
+                    // Validatie: moet array met geldige niet-lege strings zijn
+                    //if (!is_array($resources) || count(array_filter($resources)) === 0) {
+                    //    error_log("⚠️ Lege of ongeldige resources bij ID {$row['id']} - input: {$row['resources']}");
+                    //    continue; // sla dit event over
+                    //}
+
+                    foreach ($repeats as $startTime) {
+
                         foreach ($resources as $resource) {
+                            $start = new DateTime($startTime);
+                            $end = clone $start;
+                            $end->add($duration);
+
                             $data[] = [
-                                'id' => $row['id'],
+                                'id' => $row['id'] . $resource . $start->format('YmdHis'), // Unieke ID per resource en datum
                                 'title' => $row['title'],
-                                'start' => $row['start'],
-                                'end' => $row['end'],
-                                'resourceId' => $resource, // Add each resource as a separate entry
+                                'start' => $start->format('Y-m-d H:i:s'),
+                                'end'   => $end->format('Y-m-d H:i:s'),
+                                'resourceId' => $resource,
+                                'originalId' => $row['id'] // optioneel: om het echte werkorder-ID mee te geven
                             ];
                         }
+                       error_log("Generated dates for ID {$row['id']}: " . print_r($repeats, true));
+                    }
+                } else {
+                    // Eenmalig event
+                    foreach ($resources as $resource) {
+                        $data[] = [
+                            'id' => $row['id'] . $resource  . (new DateTime($row['start']))->format('YmdHis'),
+                            'title' => $row['title'],
+                            'start' => $row['start'],
+                            'end'   => $row['end'],
+                            'resourceId' => $resource,
+                            'originalId' => $row['id']
+                        ];
                     }
                 }
             }
             return json_encode($data, JSON_PRETTY_PRINT);
         }
-        return json_encode($data); // Return an empty JSON array if no rows are found
+
+        return json_encode($data);
     }
+
+    private function generateRecurringDates($startDateTime, $type, $interval, $until, $days = '')
+    {
+        $dates = [];
+        $current = new DateTime($startDateTime);
+        $end = new DateTime($until);
+
+        $interval = (int)($interval ?: 1); // fallback naar 1 als leeg of 0
+        $daysArray = array_filter(explode(',', $days ?? ''));
+
+        while ($current <= $end) {
+            switch ($type) {
+                case 'daily':
+                    $dates[] = $current->format('Y-m-d H:i:s');
+                    $current->modify("+{$interval} days");
+                    break;
+
+                case 'weekly':
+                    // Voor weekly moet je door alle dagen lopen
+                    if (in_array($current->format('D'), $daysArray)) {
+                        $dates[] = $current->format('Y-m-d H:i:s');
+                    }
+                    $current->modify("+1 day");
+                    break;
+
+                case 'monthly':
+                    $dates[] = $current->format('Y-m-d H:i:s');
+                    $current->modify("+{$interval} months");
+                    break;
+
+                default:
+                    // Ongeldige waarde, return leeg
+                    return [];
+            }
+        }
+
+        return $dates;
+    }
+
 
     public function searchWorkOrderCustomers($term) {
         // Prepare the SQL query

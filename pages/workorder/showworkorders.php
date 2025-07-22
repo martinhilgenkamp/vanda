@@ -7,4 +7,3 @@ $sort = $_GET['sort'] ?? 'id';
 $order = $_GET['order'] ?? 'asc';
 $searchTerm = $_GET['search'] ?? '';
 $workorder->getWorkorders(20, $sort, $order, $searchTerm);
-?>

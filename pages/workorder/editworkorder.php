@@ -32,6 +32,9 @@ if (isset($_GET['id'])) {
     $isEditMode = true;
     $workOrderId = $_GET['id'];
     $existingWorkOrder = $workorder->getWorkOrderById($workOrderId); // Fetch existing work order details
+
+    var_dump($existingWorkOrder); // Debugging line to check the fetched work order details
+
 } elseif (isset($_POST)) {
     $isEditMode = false;
     $existingWorkOrder = new $workorder;
@@ -52,7 +55,7 @@ if (isset($_GET['id'])) {
         ? htmlspecialchars($_POST['eventtitle'] ?? '', ENT_QUOTES, 'UTF-8')
         : null;
 
-    $existingWorkOrder->resource1 = isset($_POST['resource1']) && $_POST['resource1'] !== ''
+    $existingWorkOrder->resource1 = isset($_POST['re']) && $_POST['resource1'] !== ''
         ? htmlspecialchars($_POST['resource1'] ?? '', ENT_QUOTES, 'UTF-8')
         : null;
 }
@@ -84,10 +87,40 @@ if (isset($_GET['id'])) {
     </style>
 <script>
    $(document).ready(function () {
-    
-    $("#workorderform").on("submit", function (event) {
-        event.preventDefault(); // Prevent the default form submission
 
+    
+    // Recurrence visibility function
+        function updateRecurrenceVisibility() {
+            const type = $('#recurrence_type').val();
+            $('#recurrence_options').toggle(type !== '');
+            $('#recurrence_days_container').toggle(type === 'weekly');
+            $('#interval_label').text(type === 'weekly' ? 'weken' : type === 'monthly' ? 'maanden' : 'dagen');
+        }
+
+        $('#recurrence_type').on('change', updateRecurrenceVisibility);
+
+        $('#recurrence_type').trigger('change'); // Activeer update
+        
+        $("#workorderform").on("submit", function (event) {
+            event.preventDefault(); // Prevent the default form submission
+        // Resource check
+        let resourceSelected = false;
+        $("select[name='resources[]']").each(function () {
+            if ($(this).val()) {
+                resourceSelected = true;
+                return false;
+            }
+        });
+
+        if (!resourceSelected) {
+            Swal.fire({
+                icon: "error",
+                title: "Geen resource geselecteerd",
+                text: "Selecteer minimaal één resource voordat je verdergaat.",
+            });
+            return;
+        }
+        
         // Show Swal confirmation dialog
         Swal.fire({
             title: "Bevestig uw actie",
@@ -100,6 +133,21 @@ if (isset($_GET['id'])) {
             if (result.isConfirmed) {
                 // Gather form data
                 const formData = new FormData(this);
+                
+                // Voeg recurrence_type handmatig toe
+                formData.append('recurrence_type', document.getElementById('recurrence_type').value);
+
+                // Voor de dagen als checkbox array
+                const checkedDays = [...document.querySelectorAll('input[name="recurrence_days[]"]:checked')]
+                    .map(cb => cb.value);
+
+                checkedDays.forEach(day => {
+                    formData.append('recurrence_days[]', day);
+                });
+                
+                for (const pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
 
                 // Send AJAX request
                 $.ajax({
@@ -387,6 +435,38 @@ function validateForm() {
 
     <label for="verpakinstructie">Verpakinstructie:</label><br>
     <textarea id="verpakinstructie" name="verpakinstructie"><?php echo $existingWorkOrder->verpakinstructie ? htmlspecialchars($existingWorkOrder->verpakinstructie ?? '', ENT_QUOTES, 'UTF-8') : ''; ?></textarea><br><br>
+
+
+    <label for="recurrence_type">Herhalingstype:</label><br>
+    <select id="recurrence_type" name="recurrence_type">
+        <option value="">Geen herhaling</option>
+        <option value="daily" <?php echo ($existingWorkOrder->recurrence_type ?? '') === 'daily' ? 'selected' : ''; ?>>Dagelijks</option>
+        <option value="weekly" <?php echo ($existingWorkOrder->recurrence_type ?? '') === 'weekly' ? 'selected' : ''; ?>>Wekelijks</option>
+        <option value="monthly" <?php echo ($existingWorkOrder->recurrence_type ?? '') === 'monthly' ? 'selected' : ''; ?>>Maandelijks</option>
+    </select><br><br>
+
+    <div id="recurrence_options" style="display: none;">
+        <label for="recurrence_interval">Herhaal elke:</label>
+        <input type="number" id="recurrence_interval" name="recurrence_interval" min="1" value="<?php echo $existingWorkOrder->recurrence_interval ?? '1'; ?>"> <span id="interval_label">dagen</span><br><br>
+
+        <div id="recurrence_days_container" style="display: none;">
+            <label>Herhaal op (bij weekherhaling):</label><br>
+            <?php
+            $days = ['Mon' => 'Maandag', 'Tue' => 'Dinsdag', 'Wed' => 'Woensdag', 'Thu' => 'Donderdag', 'Fri' => 'Vrijdag', 'Sat' => 'Zaterdag', 'Sun' => 'Zondag'];
+            $selectedDays = explode(',', $existingWorkOrder->recurrence_days ?? '');
+            foreach ($days as $code => $label) {
+                $checked = in_array($code, $selectedDays) ? 'checked' : '';
+                echo "<label><input type='checkbox' name='recurrence_days[]' value='$code' $checked> $label</label><br>";
+            }
+            ?>
+        </div>
+
+        <label for="recurrence_until">Stop op (datum):</label>
+        <input type="date" id="recurrence_until" name="recurrence_until" value="<?php echo $existingWorkOrder->recurrence_until ?? ''; ?>"><br><br>
+    </div>
+
+
+
 
     <label for="status">Status:</label><br>
     <select id="status" name="status">
