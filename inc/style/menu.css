@@ -52,6 +52,9 @@
   z-index: 1000;
   min-width: 200px;
 
+  max-height: 80vh;
+  overflow-y: auto;
+  
   /* New additions */
   border: 1px solid #535faf;
   border-radius: 6px;
