@@ -39,7 +39,7 @@ if($query){
         foreach ($result as $data) {
             fputcsv($fh, get_object_vars($data), ';');
         }
-
+        $test = "test";
 
         // Close the file
         fclose($fh);
