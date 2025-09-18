@@ -93,6 +93,7 @@ class WorkOrder {
 
     
     public function updateWorkOrder() {
+
         $this->modified = date("Y-m-d H:i:s");
         $resourcesJson = json_encode($this->resources);
 
