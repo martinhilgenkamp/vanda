@@ -1,19 +1,3 @@
-<script>
-  // Toggle the menu on mobile
-  document.getElementById("menu-toggle").addEventListener("click", function () {
-    document.querySelector(".main-nav .menu").classList.toggle("active");
-  });
-
-  // Expand/collapse submenu items on mobile
-  document.querySelectorAll(".main-nav .has-submenu > a").forEach(link => {
-    link.addEventListener("click", function (e) {
-      if (window.innerWidth <= 768) {
-        e.preventDefault();
-        this.parentElement.classList.toggle("open");
-      }
-    });
-  });
-</script>
 <nav class="main-nav">
   <div class="logo"><img src="images/logo.jpg" alt="Logo"></div>
   <button id="menu-toggle" aria-label="Toon menu">&#9776;</button>
@@ -98,3 +82,19 @@
     </li>
   </ul>
 </nav>
+<script>
+  // Toggle the menu on mobile
+  document.getElementById("menu-toggle").addEventListener("click", function () {
+    document.querySelector(".main-nav .menu").classList.toggle("active");
+  });
+
+  // Expand/collapse submenu items on mobile
+  document.querySelectorAll(".main-nav .has-submenu > a").forEach(link => {
+    link.addEventListener("click", function (e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        this.parentElement.classList.toggle("open");
+      }
+    });
+  });
+</script>

@@ -42,20 +42,54 @@ class WorkOrder {
       }
     }
 
-    public function createWorkOrder() {
+    public function createWorkOrder()
+    {
         $query = "INSERT INTO " . $this->table_name . " 
-        (omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, file_path, status, created, modified,
-        recurrence_type, recurrence_interval, recurrence_until, recurrence_days) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, file_path, status, created, modified,
+            recurrence_type, recurrence_interval, recurrence_until, recurrence_days) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+        // Set timestamps
         $this->created = date("Y-m-d H:i:s");
         $this->modified = date("Y-m-d H:i:s");
 
+        // Validate resources
+        if (!is_array($this->resources) || empty($this->resources)) {
+            error_log("Invalid or empty resources in createWorkOrder: " . print_r($this->resources, true));
+            $this->errors[] = "Resources must be a non-empty array.";
+            return false;
+        }
         $resourcesJson = json_encode($this->resources);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("JSON encoding error for resources: " . json_last_error_msg());
+            $this->errors[] = "Failed to encode resources: " . json_last_error_msg();
+            return false;
+        }
+
+        // Validate recurrence_until
+        $recurrenceUntil = null;
+        if (!empty($this->recurrence_until)) {
+            try {
+                $date = new DateTime($this->recurrence_until, new DateTimeZone('Europe/Amsterdam'));
+                $recurrenceUntil = $date->format('Y-m-d');
+            } catch (Exception $e) {
+                error_log("Invalid recurrence_until format: " . $this->recurrence_until . " - " . $e->getMessage());
+                $this->errors[] = "Invalid recurrence_until date format.";
+                return false;
+            }
+        }
+
+        // Validate other required fields
+        if (empty($this->omschrijving) || empty($this->klant) || empty($this->opdrachtnr_klant) ||
+            empty($this->leverdatum) || empty($this->start) || empty($this->end)) {
+            error_log("Missing required fields in createWorkOrder: " . print_r(get_object_vars($this), true));
+            $this->errors[] = "All required fields (omschrijving, klant, opdrachtnr_klant, leverdatum, start, end) must be provided.";
+            return false;
+        }
 
         if ($stmt = $this->db->link->prepare($query)) {
             if (!$stmt->bind_param(
-                "sssssssssssssssi", // 16 parameters: 15 strings, 1 integer
+                "sssssssssssssssi",
                 $this->omschrijving,
                 $this->klant,
                 $this->opdrachtnr_klant,
@@ -70,22 +104,27 @@ class WorkOrder {
                 $this->modified,
                 $this->recurrence_type,
                 $this->recurrence_interval,
-                $this->recurrence_until,
+                $recurrenceUntil, // Use validated variable
                 $this->recurrence_days
             )) {
-                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                error_log("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
+                $this->errors[] = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                $stmt->close();
                 return false;
             }
 
             if (!$stmt->execute()) {
-                echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                error_log("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+                $this->errors[] = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                $stmt->close();
                 return false;
             }
 
             $stmt->close();
             return true;
         } else {
-            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
+            error_log("Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error);
+            $this->errors[] = "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
             return false;
         }
     }
