@@ -25,6 +25,7 @@
         <li><a href="index.php?page=machinetable">Overzicht Machines</a></li>
       </ul>
     </li>
+<<<<<<< HEAD
 
     <li class="has-submenu">
       <a href="#">Registratie Overzichten</a>
@@ -98,3 +99,39 @@
     });
   });
 </script>
+=======
+    <a href="index.php?page=voorraad"><li>Voorraad
+    	<ul class="submenu">
+        	<a href="index.php?page=voorraad"><li>Voorraad</li></a>
+            <a href="index.php?page=ship"><li>Leveren</li></a>
+            <a href="index.php?page=zendingen"><li>Zendingen</li></a>
+        </ul>
+    </li></a>
+    <li>Rollen
+    	<ul class="submenu">
+    		<a href="index.php?page=rollen"><li>Inboeken</li></a>	
+    		<a href="index.php?page=rolltable"><li>Rollen overzicht</li></a>
+    		<a href="index.php?page=roll-shipments"><li>Zending overzicht</li></a>
+		</ul>
+	</li>
+     <li>WMS
+    	<ul class="submenu">
+    		<a href="index.php?page=inventory/edit"><li>Inboeken</li></a>
+            <a href="index.php?page=inventory/inventory"><li>Overzicht</li></a>	
+		</ul>
+	</li>
+    <li><img src="images/menu.png" class="burgermenu" id="burgermenu" />
+    	<ul class="submenu">
+        <li><a href="index.php?page=user/userdetail&task=edit&id=<?php echo $user->id; ?>"><?php echo ucfirst($user->username); ?></a></li>    
+        <a href="index.php?page=verzondenmail"><li>Verstuurde Tansportmail</li></a>
+            <a href="index.php?page=tasksummary"><li>Taak Overzicht</li></a>
+            <?php if($user->level == 1){
+                echo "<a href=\"index.php?page=options\"><li>Opties</li></a>";
+                echo "<a href=\"index.php?page=user/users\"><li>Medewerkers</li></a>";
+            }?>
+            <a href="index.php?page=changePassword"><li>Wachtwoord veranderen</li></a>
+            <a href="index.php?page=logout"><li>Uitloggen</li></a>
+        </ul>
+	</li>
+</ul>
+>>>>>>> ramon
