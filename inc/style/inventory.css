@@ -173,3 +173,32 @@ input[type=number] {
 
 /* Optional: tighten field layout (label above input) */
 .form-field { display: grid; gap: 6px; }
+
+/* Clickable DataTable rows */
+#invTable tbody tr.row-link {
+  cursor: pointer;
+  transition: background-color .15s ease, box-shadow .15s ease;
+}
+
+/* Hover highlight */
+#invTable tbody tr.row-link:hover {
+  background: #eef2ff; /* soft indigo */
+}
+
+/* Keyboard focus (accessibility) */
+#invTable tbody tr.row-link:focus,
+#invTable tbody tr.row-link:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: -2px;
+  background: #e0e7ff;
+}
+
+/* Pressed state */
+#invTable tbody tr.row-link:active {
+  background: #c7d2fe;
+}
+
+/* (Optional) ensure hover wins over zebra striping */
+table.dataTable tbody tr.row-link:hover > td {
+  background: inherit !important;
+}

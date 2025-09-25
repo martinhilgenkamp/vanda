@@ -51,7 +51,7 @@
      <li>WMS
     	<ul class="submenu">
     		<a href="index.php?page=inventory/edit"><li>Inboeken</li></a>
-            <a href="index.php?page=inventory/inventory"><li>Overziht</li></a>	
+            <a href="index.php?page=inventory/inventory"><li>Overzicht</li></a>	
 		</ul>
 	</li>
     <li><img src="images/menu.png" class="burgermenu" id="burgermenu" />
