@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 /*
 * Load required classes
 */  
+
 require_once("inc/class/class.inventory.php");
 require_once("inc/class/class.user.php");
 require_once("inc/class/class.option.php");
@@ -26,7 +27,7 @@ $isEdit = $id > 0;
 
 $row = [
   'id'        => '',
-  'rolno'     => '',
+  'barcode'     => '',
   'quality'   => '',
   'location'  => '',
   'processed' => 0,
@@ -51,7 +52,7 @@ if ($isEdit) {
   <input type="hidden" name="id" value="<?= $isEdit ? htmlspecialchars($row['id']) : '' ?>">
 
   <label>Rolnummer *</label>
-  <input type="text" name="rolno" required value="<?= htmlspecialchars($row['rolno']) ?>">
+  <input type="text" name="barcode" required value="<?= htmlspecialchars($row['barcode']) ?>">
 
   <label>Quality *</label>
   <input type="text" name="quality" required value="<?= htmlspecialchars($row['quality']) ?>">

@@ -33,7 +33,7 @@ try {
     $id       = isset($_POST['id']) && $_POST['id'] !== '' ? (int)$_POST['id'] : null;
 
     if ($action === 'save') {
-        $rolno     = trim($_POST['rolno'] ?? '');
+        $barcode     = trim($_POST['barcode'] ?? '');
         $quality   = trim($_POST['quality'] ?? '');
         $location  = trim($_POST['location'] ?? '');
         $processed = isset($_POST['processed']) ? (int)$_POST['processed'] : 0;
@@ -41,7 +41,7 @@ try {
 
         // Validate
         $errors = [];
-        if ($rolno === '')    $errors[] = 'Rolnummer is verplicht.';
+        if ($barcode === '')    $errors[] = 'Rolnummer is verplicht.';
         if ($quality === '')  $errors[] = 'Quality is verplicht.';
         if ($location === '') $errors[] = 'Location is verplicht.';
         if ($dateSql === '')  $errors[] = 'Datum/tijd is verplicht.';
@@ -60,7 +60,7 @@ try {
         if ($id) {
             // Update
             $ok = $im->ModifyStock($id, [
-                'rolno'     => $rolno,
+                'barcode'     => $barcode,
                 'quality'   => $quality,
                 'location'  => $location,
                 'processed' => $processed,
@@ -73,7 +73,7 @@ try {
             exit;
         } else {
             // Create
-            $newId = $im->InsertStock(null, $rolno, $quality, $location, $processed, $dateSql);
+            $newId = $im->InsertStock(null, $barcode, $quality, $location, $processed, $dateSql);
             if (!$newId) {
                 throw new Exception('Aanmaken mislukt.');
             }

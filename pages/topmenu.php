@@ -48,6 +48,12 @@
     		<a href="index.php?page=roll-shipments"><li>Zending overzicht</li></a>
 		</ul>
 	</li>
+     <li>WMS
+    	<ul class="submenu">
+    		<a href="index.php?page=inventory/edit"><li>Inboeken</li></a>
+            <a href="index.php?page=inventory/inventory"><li>Overziht</li></a>	
+		</ul>
+	</li>
     <li><img src="images/menu.png" class="burgermenu" id="burgermenu" />
     	<ul class="submenu">
         <li><a href="index.php?page=user/userdetail&task=edit&id=<?php echo $user->id; ?>"><?php echo ucfirst($user->username); ?></a></li>    

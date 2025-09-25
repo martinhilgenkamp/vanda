@@ -31,7 +31,7 @@ class InventoryManager {
      */
     public function getById(int $id): ?array {
         $stmt = $this->db->link->prepare(
-            "SELECT id, rolno, quality, location, processed, date
+            "SELECT id, barcode, quality, location, processed, date
             FROM vanda_inventory WHERE id = ?"
         );
         if (!$stmt) return null;
@@ -52,15 +52,15 @@ class InventoryManager {
      *
      * @return int Inserted row id (AUTO_INCREMENT id or provided id), or 0 on failure
      */
-    public function InsertStock(?int $id, string $rolno, string $quality, string $location, int $processed, string $date): int {
+    public function InsertStock(?int $id, string $barcode, string $quality, string $location, int $processed, string $date): int {
         if ($id === null) {
-            $sql  = "INSERT INTO vanda_inventory (rolno, quality, location, processed, date)
+            $sql  = "INSERT INTO vanda_inventory (barcode, quality, location, processed, date)
                      VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->link->prepare($sql);
             if (!$stmt) return 0;
 
             $stmt->bind_param("sssds",
-                $rolno,
+                $barcode,
                 $quality,
                 $location,
                 /* processed is tinyint(1) → bind as integer */
@@ -68,14 +68,14 @@ class InventoryManager {
                 $date
             );
         } else {
-            $sql  = "INSERT INTO vanda_inventory (id, rolno, quality, location, processed, date)
+            $sql  = "INSERT INTO vanda_inventory (id, barcode, quality, location, processed, date)
                      VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $this->link->prepare($sql);
             if (!$stmt) return 0;
 
             $stmt->bind_param("isssds",
                 $id,
-                $rolno,
+                $barcode,
                 $quality,
                 $location,
                 $processed,
@@ -96,13 +96,13 @@ class InventoryManager {
     /**
      * Modify existing stock (by ID).
      * $fields is an assoc array of column => value.
-     * Allowed columns: rolno, quality, location, processed, date
+     * Allowed columns: barcode, quality, location, processed, date
      */
     public function ModifyStock(int $id, array $fields): bool {
         if ($id <= 0) return false;
 
         // Whitelist allowed columns to avoid accidental/unsafe updates
-        $allowed = ['rolno', 'quality', 'location', 'processed', 'date'];
+        $allowed = ['barcode', 'quality', 'location', 'processed', 'date'];
 
         $setParts = [];
         $params   = [];
@@ -119,7 +119,7 @@ class InventoryManager {
                     $params[] = (int)$val;
                     break;
                 default:
-                    // rolno, quality, location, date -> strings
+                    // barcode, quality, location, date -> strings
                     $types .= "s";
                     $params[] = (string)$val;
                     break;

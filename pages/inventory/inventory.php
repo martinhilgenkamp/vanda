@@ -12,15 +12,13 @@ require_once("inc/class/class.option.php");
 $im = new InventoryManager();
 $um = new UserManager;
 $om = new OptionManager();
-
-
 ?>
 <link rel="stylesheet" href="inc/style/inventory.css">
 
 <h2>Inventory</h2>
 
 <div class="filters" id="filterdiv">
-  <input type="text" id="f-rolno" placeholder="Rolnummer">
+  <input type="text" id="f-barcode" placeholder="Rolnummer">
   <select id="f-location"><option value="">All locations</option></select>
   <select id="f-processed">
     <option value="">Alles</option>
@@ -52,7 +50,7 @@ $om = new OptionManager();
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 <script>
   // PHP -> JS data
-  const data = <?php echo $im->listInventory(); ?>; // expects an array of objects with keys: id, rolno, quality, location, processed, date
+  const data = <?php echo $im->listInventory(); ?>; // expects an array of objects with keys: id, barcode, quality, location, processed, date
 
   // Build unique locations for the dropdown
   const locations = [...new Set(data.map(r => r.location).filter(Boolean))].sort();
@@ -92,7 +90,7 @@ $om = new OptionManager();
   order: [[5, 'desc']],
   columns: [
     { data: 'id' },
-    { data: 'rolno' },
+    { data: 'barcode' },
     { data: 'quality' },
     { data: 'location' },
     {
@@ -126,8 +124,8 @@ $om = new OptionManager();
   }
 });
   // Wire up filters
-  $('#f-rolno').on('keyup change', function () {
-    table.column(1).search(this.value).draw(); // rolno
+  $('#f-barcode').on('keyup change', function () {
+    table.column(1).search(this.value).draw(); // barcode
   });
 
   $('#f-location').on('change', function () {
