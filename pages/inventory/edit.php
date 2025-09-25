@@ -48,25 +48,45 @@ if ($isEdit) {
   <h1><?= $isEdit ? 'Bewerk voorraad' : 'Nieuwe voorraad' ?></h1>
 
   <form id="inv-form" autocomplete="off">
+
   <input type="hidden" name="action" value="save">
   <input type="hidden" name="id" value="<?= $isEdit ? htmlspecialchars($row['id']) : '' ?>">
 
-  <label>Rolnummer *</label>
-  <input type="text" name="barcode" required value="<?= htmlspecialchars($row['barcode']) ?>">
+  <div class="form-field">
+    <label class="label-as-input">Rolnummer *</label>
+    <input type="text" name="barcode" required value="<?= htmlspecialchars($row['barcode']) ?>">
+  </div>
 
-  <label>Quality *</label>
-  <input type="text" name="quality" required value="<?= htmlspecialchars($row['quality']) ?>">
+  <div class="form-field">
+    <label class="label-as-input">Quality *</label>
+    <input type="text" name="quality" required value="<?= htmlspecialchars($row['quality']) ?>">
+  </div>
 
-  <label>Location *</label>
-  <input type="text" name="location" required value="<?= htmlspecialchars($row['location']) ?>">
+  <div class="form-field">
+    <label class="label-as-input">Lengte</label>
+    <input type="number" step="0.01" name="lengte" value="<?= htmlspecialchars($row['lengte'] ?? '') ?>">
+  </div>
 
-  <label>
+  <div class="form-field">
+    <label class="label-as-input">Breedte</label>
+    <input type="number" step="0.01" name="breedte" value="<?= htmlspecialchars($row['breedte'] ?? '') ?>">
+  </div>
+
+  <div class="form-field">
+    <label class="label-as-input">Location *</label>
+    <input type="text" name="location" required value="<?= htmlspecialchars($row['location']) ?>">
+  </div>
+
+  <div class="form-field">
+  <label class="label-as-input">
     <input type="checkbox" name="processed" value="1" <?= !empty($row['processed']) ? 'checked' : '' ?>>
     Verwerkt
   </label>
   <input type="hidden" name="date" required value="<?= htmlspecialchars(str_replace(' ', 'T', substr($row['date'] ?: date('Y-m-d H:i:s'), 0, 16))) ?>">
+  </div>
+  
   <div class="actions">
-    <button type="submit" id="btn-save"><?= $isEdit ? 'Opslaan' : 'Aanmaken' ?></button>
+    <button class="ui-button ui-corner-all" type="submit" id="btn-save"><?= $isEdit ? 'Opslaan' : 'Aanmaken' ?></button>
     <?php if ($isEdit): ?>
       <button type="button" id="btn-delete" data-id="<?= (int)$row['id'] ?>">Verwijderen</button>
     <?php endif; ?>

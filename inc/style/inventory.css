@@ -76,8 +76,8 @@ label {
 }
 
 input[type=text],
-input[type=datetime-local] {
-    width: 100%;
+input[type=datetime-local],
+input[type=number] {
     padding: 10px 12px;
     border: 1px solid #d1d5db;
     border-radius: 10px;
@@ -145,3 +145,31 @@ input[type=datetime-local] {
     color: #6b7280;
     font-size: .9rem;
 }
+
+
+/* Make labels look like inputs (apply class to labels) */
+.label-as-input {
+  display: flex;
+  align-items: center;
+  height: var(--control-h);
+  padding: 0 var(--control-pad-x);
+  border: var(--control-bd);
+  border-radius: var(--control-br);
+  background: #fff;
+  font-size: var(--control-fs);
+  font-weight: 600;
+  color: #374151;
+  box-sizing: border-box;
+}
+
+/* Keep checkbox row styling untouched */
+.chk label { 
+  border: none; 
+  padding: 0; 
+  height: auto; 
+  font-size: .95rem; 
+  background: transparent; 
+}
+
+/* Optional: tighten field layout (label above input) */
+.form-field { display: grid; gap: 6px; }
