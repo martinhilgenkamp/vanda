@@ -112,8 +112,16 @@
 		echo '<script language="javascript" type="text/javascript" src="inc/script/'.$page.'.js"></script>'; 
 	   }
 	?>
+	
+	
 </head>
 <body>
+	<script>
+		// Check if the URL contains "dev"
+		if (window.location.href.includes("dev")) {
+		document.body.classList.add("dev-env");
+		}
+	</script>
 	<div id="wrapper">
 	    <div id="header">
 	        <div id="topmenu">
