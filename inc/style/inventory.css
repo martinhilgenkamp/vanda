@@ -1,0 +1,147 @@
+/* Wrap table controls in flex */
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_paginate,
+.dataTables_wrapper .dataTables_info {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+/* Place filter (search box) on left, length selector on right */
+.dataTables_wrapper .dataTables_filter {
+    float: left;
+    text-align: left;
+}
+
+.dataTables_wrapper .dataTables_length {
+    float: right;
+}
+
+/* Search box styling */
+.dataTables_wrapper .dataTables_filter input {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-left: .5rem;
+}
+
+/* Length (results per page) dropdown styling */
+.dataTables_wrapper .dataTables_length select {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin: 0 .5rem;
+}
+
+/* Pagination buttons */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    padding: 4px 10px;
+    margin: 0 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #374151 !important;
+}
+
+/* Active page */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #2563eb;
+    color: #fff !important;
+    border: 1px solid #2563eb;
+}
+
+/* Hover effect */
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #2563eb;
+    color: #fff !important;
+    border: 1px solid #2563eb;
+}
+
+
+.dataTables_paginate,
+.dataTables_info {
+    text-align: center;
+}
+
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+label {
+    font-size: .9rem;
+    color: #374151;
+}
+
+input[type=text],
+input[type=datetime-local] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: .95rem;
+}
+
+.row-span-2 {
+    grid-column: span 2;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.btn {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #111827;
+    border-color: #e5e7eb;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.chk {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+}
+
+.alert {
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+.alert-success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.muted {
+    color: #6b7280;
+    font-size: .9rem;
+}
