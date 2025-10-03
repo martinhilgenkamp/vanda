@@ -70,7 +70,16 @@
     border-color: white;
   }
 
-  div.button_selected {
+  div.button_selected_green {
     background-color: greenyellow;
     border-style: inset;
+  }
+
+    div.button_selected_red {
+    background-color: red;
+    border-style: inset;
+  }
+
+  form.disabled {
+    display: none;
   }

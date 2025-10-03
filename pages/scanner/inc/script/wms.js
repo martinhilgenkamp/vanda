@@ -8,12 +8,15 @@ const DISMISS_AFTER_MS = 600;
 //Functions loading after DOM has finished initilizing
   document.onreadystatechange = function () {
     if (document.readyState == "complete") {
+        //Initial init
         checkin = document.getElementById("checkin");
         checkout = document.getElementById("checkout");
 
+        //IN-OUT switch
         checkin.addEventListener("click", function() {enableButton(0)});
         checkout.addEventListener("click", function() {enableButton(1)});
         
+        // ===== INVENTORY IN HANDLING =====
         $('#inventory_in').submit(function(e) {
             e.preventDefault();
             
@@ -26,15 +29,31 @@ const DISMISS_AFTER_MS = 600;
 
         //Reset the entire form
         $('#inventory_in').on('reset', function (e) {
-            $('#barcode').removeAttr('disabled');
-            $('#location').prop('disabled', true)
-            $('#quality').prop('disabled', true)
-            $('#barcode').focus();
+            $('#barcode_in').removeAttr('disabled');
+            $('#location_in').prop('disabled', true)
+            $('#quality_in').prop('disabled', true)
+            $('#barcode_in').focus();
+        });
+      
+
+        // ===== INVENTORY OUT HANDLING =====
+        $('#inventory_out').submit(function(e) {
+            e.preventDefault();
+            
+        })
+
+        //Reset the entire form
+        $('#inventory_out').on('reset', function (e) {
+            $('#barcode_out').removeAttr('disabled');
+            $('#location_out').prop('disabled', true)
+            $('#barcode_out').focus();
         });
 
+        // ===== SHARED functions =====
+        
         //Handle move next field
         $(document)
-        .on('input', '#barcode, #location', function () {
+        .on('input', '#barcode_in, #location_in, #barcode_out' , function () {
             clearTimeout(typingTimer); clearTimeout(dismissTimer);
             const val = this.value.trim(); if (!val) return;
 
@@ -42,7 +61,7 @@ const DISMISS_AFTER_MS = 600;
             dismissTimer = setTimeout(() => { NEXT[this.id]?.(); }, DISMISS_AFTER_MS);
             }, TYPING_IDLE_MS);
         })
-        .on('keydown', '#barcode, #location', function (e) {
+        .on('keydown', '#barcode_in, #location_in, #barcode_out', function (e) {
             if (e.key === 'Enter') {
             e.preventDefault();
             clearTimeout(typingTimer); clearTimeout(dismissTimer);
@@ -50,7 +69,7 @@ const DISMISS_AFTER_MS = 600;
             }
         });
         
-        $('#barcode').focus();
+        $('#barcode_in').focus();
     }
  }
 
@@ -58,32 +77,45 @@ const DISMISS_AFTER_MS = 600;
 function enableButton(button_id) {
     if(button_id === 0) {
         inventory_in = true;
-        checkin.classList.add("button_selected");
-        checkout.classList.remove("button_selected");
+        checkin.classList.add("button_selected_green");
+        checkout.classList.remove("button_selected_red");
+        $('#inventory_out').hide();
+        $('#inventory_in').show();
+        $('#barcode_in').focus();
     } else {
         inventory_in = false;
-        checkin.classList.remove("button_selected");
-        checkout.classList.add("button_selected");
+        checkin.classList.remove("button_selected_green");
+        checkout.classList.add("button_selected_red");
+        $('#inventory_out').show();
+        $('#inventory_in').hide();
+        $('#barcode_out').focus();
     }
 }
 
 const NEXT = {
-  barcode:  () => switchBarLoc(),
-  location:  () => switchLocQua(),
+    barcode_in:  () => switchBarLocIn(),
+    location_in:  () => switchLocQuaIn(),
+    barcode_out: () => switchBarLocOut(),
 };
 
 //Switch barcode and location
-function switchBarLoc () {
-    $('#location').removeAttr('disabled');
-    $('#location').focus();
-    $('#barcode').prop('disabled', true)
+function switchBarLocIn () {
+    $('#location_in').removeAttr('disabled');
+    $('#location_in').focus();
+    $('#barcode_in').prop('disabled', true)
 }
 
 //Switch location to quality
-function switchLocQua () {
-    $('#quality').removeAttr('disabled');
-    $('#quality').focus();
-    $('#location').prop('disabled', true)
+function switchLocQuaIn () {
+    $('#quality_in').removeAttr('disabled');
+    $('#quality_in').focus();
+    $('#location_in').prop('disabled', true)
+}
+
+function switchBarLocOut () {
+    $('#location_out').removeAttr('disabled');
+    $('#location_out').focus();
+    $('#barcode_out').prop('disabled', true)
 }
 
 function notifyUser(success,message){
