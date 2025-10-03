@@ -29,28 +29,34 @@ $om = new OptionManager();
   <input type="date" id="f-date-to" placeholder="Tot datum">
 </div>
 
+<!-- Update THEAD to match your data (9 visible columns) -->
 <table id="invTable" class="display data-table" style="width:100%">
   <thead>
     <tr>
       <th class="ui-corner-tl">id</th>
       <th>Rolnummer</th>
       <th>Kwaliteit</th>
+      <th>Lengte</th>
+      <th>Breedte</th>
       <th>Locatie</th>
       <th>Verwerkt</th>
-      <th class="ui-corner-tr">Datum</th>
+      <th>Datum</th>
+      <th class="ui-corner-tr">Gewijzigd</th>
     </tr>
   </thead>
   <tbody></tbody>
   <tfoot>
     <tr>
-       <td colspan="6" class="ui-corner-bl ui-corner-br">&nbsp; </td> 
+      <!-- colspan must match number of columns -->
+      <td colspan="9" class="ui-corner-bl ui-corner-br">&nbsp;</td>
     </tr>
   </tfoot>
 </table>
+
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 <script>
-  // PHP -> JS data
-  const data = <?php echo $im->listInventory(); ?>; // expects an array of objects with keys: id, barcode, quality, location, processed, date
+  // PHP -> JS data (includes: id, barcode, quality, lengte, breedte, location, processed, date, modified)
+  const data = <?php echo $im->listInventory(); ?>;
 
   // Build unique locations for the dropdown
   const locations = [...new Set(data.map(r => r.location).filter(Boolean))].sort();
@@ -62,15 +68,29 @@ $om = new OptionManager();
     locSel.appendChild(opt);
   });
 
-  // DataTables custom date range filter
-  $.fn.dataTable.ext.search.push(function(settings, dataRow) {
-    // dataRow indexes follow column order defined below
-    const dateStr = dataRow[5]; // date column as string
+  // Keep column indexes in one place to avoid drift
+  const COL = {
+    id: 0,
+    barcode: 1,
+    quality: 2,
+    lengte: 3,
+    breedte: 4,
+    location: 5,
+    processed: 6,   // badge text "Ja/Nee"
+    date: 7,
+    modified: 8
+  };
+
+  // Date range filter (uses the 'date' column)
+  $.fn.dataTable.ext.search.push(function (settings, dataRow) {
+    const dateStr = dataRow[COL.date];        // index for 'Datum' column
     const fromVal = document.getElementById('f-date-from').value;
     const toVal   = document.getElementById('f-date-to').value;
 
     if (!fromVal && !toVal) return true;
-    const rowTime = new Date(dateStr.replace(' ', 'T')).getTime(); // tolerant parse (YYYY-MM-DD HH:mm:ss)
+
+    const rowTime = new Date(String(dateStr).replace(' ', 'T')).getTime();
+    if (isNaN(rowTime)) return false;
 
     if (fromVal) {
       const fromTime = new Date(fromVal + 'T00:00:00').getTime();
@@ -83,67 +103,121 @@ $om = new OptionManager();
     return true;
   });
 
- const table = $('#invTable').DataTable({
-  data,
-  deferRender: true,
-  pageLength: 25,
-  order: [[5, 'desc']],
-  columns: [
-    { data: 'id' },
-    { data: 'barcode' },
-    { data: 'quality' },
-    { data: 'location' },
-    {
-      data: 'processed',
-      render: function(val) {
-        const isYes = String(val) === '1';
-        return `<span class="badge ${isYes ? 'yes' : 'no'}">${isYes ? 'Ja' : 'Nee'}</span>`;
-      }
-    },
-    {
-      data: 'date',
-      render: function(val) {
-        const d = new Date(val.replace(' ', 'T'));
-        return isNaN(d) ? val : d.toLocaleString();
-      }
-    }
-  ],
-  language: {
-    search: "Zoeken:",
-    lengthMenu: "Toon _MENU_ resultaten per pagina",
-    info: "Resultaat _START_ tot _END_ van _TOTAL_",
-    infoEmpty: "Geen resultaten beschikbaar",
-    infoFiltered: "(gefilterd uit _MAX_ total)",
-    zeroRecords: "Geen overeenkomende records gevonden",
-    paginate: {
-      first:    "Eerste",
-      last:     "Laatste",
-      next:     "Volgende",
-      previous: "Vorige"
-    }
+// Helper: build the router URL
+  function buildEditUrl(id) {
+    // Matches your router: index.php?page=inventory%2Fedit&id=9
+    return 'index.php?page=' + encodeURIComponent('inventory/edit') + '&id=' + encodeURIComponent(id);
   }
-});
-  // Wire up filters
+
+  const table = $('#invTable').DataTable({
+    data,
+    deferRender: true,
+    pageLength: 25,
+    order: [[COL.date, 'desc']],
+    columns: [
+      { data: 'id' },
+      { data: 'barcode' },
+      { data: 'quality' },
+      {
+        data: 'lengte',
+        render: (v, t) => (v==null||v==='') ? '' : (t==='display' ? Number(v).toLocaleString() : v)
+      },
+      {
+        data: 'breedte',
+        render: (v, t) => (v==null||v==='') ? '' : (t==='display' ? Number(v).toLocaleString() : v)
+      },
+      { data: 'location' },
+      {
+        data: 'processed',
+        render: function (val, type) {
+          const yes = String(val) === '1';
+          if (type !== 'display') return yes ? 'Ja' : 'Nee';
+          return `<span class="badge ${yes ? 'yes' : 'no'}">${yes ? 'Ja' : 'Nee'}</span>`;
+        }
+      },
+      {
+        data: 'date',
+        render: (v, t) => {
+          if (!v) return '';
+          if (t === 'display') {
+            const d = new Date(String(v).replace(' ', 'T'));
+            return isNaN(d) ? v : d.toLocaleString();
+          }
+          return v;
+        }
+      },
+      {
+        data: 'modified',
+        render: (v, t) => {
+          if (!v) return '';
+          if (t === 'display') {
+            const d = new Date(String(v).replace(' ', 'T'));
+            return isNaN(d) ? v : d.toLocaleString();
+          }
+          return v;
+        }
+      }
+    ],
+    language: {
+      search: "Zoeken:",
+      lengthMenu: "Toon _MENU_ resultaten per pagina",
+      info: "Resultaat _START_ tot _END_ van _TOTAL_",
+      infoEmpty: "Geen resultaten beschikbaar",
+      infoFiltered: "(gefilterd uit _MAX_ totaal)",
+      zeroRecords: "Geen overeenkomende records gevonden",
+      paginate: { first:"Eerste", last:"Laatste", next:"Volgende", previous:"Vorige" }
+    },
+    // Tag each row so it's clickable and accessible
+    createdRow: function (row, rowData) {
+      row.classList.add('row-link');
+      row.setAttribute('data-href', buildEditUrl(rowData.id));
+      row.setAttribute('role', 'link');
+      row.setAttribute('tabindex', '0');
+      row.setAttribute('aria-label', 'Bewerk record #' + rowData.id);
+      // Optional: tooltip
+      row.title = 'Bewerk record #' + rowData.id;
+    }
+  });
+
+  // Navigate on click
+  $('#invTable tbody').on('click', 'tr.row-link', function (e) {
+    const url = this.dataset.href;
+    if (!url) return;
+
+    // Ctrl/Cmd click = new tab
+    if (e.ctrlKey || e.metaKey) {
+      window.open(url, '_blank');
+    } else {
+      window.location.href = url;
+    }
+  });
+
+  // Middle-click support (auxclick = mouse button 1)
+  $('#invTable tbody').on('auxclick', 'tr.row-link', function (e) {
+    if (e.button === 1 && this.dataset.href) {
+      window.open(this.dataset.href, '_blank');
+    }
+  });
+
+  // Keyboard: Enter to open
+  $('#invTable tbody').on('keydown', 'tr.row-link', function (e) {
+    if (e.key === 'Enter' && this.dataset.href) {
+      window.location.href = this.dataset.href;
+    }
+  });
+
+  // --- keep your existing filters below ---
   $('#f-barcode').on('keyup change', function () {
-    table.column(1).search(this.value).draw(); // barcode
+    table.column(COL.barcode).search(this.value).draw();
   });
-
   $('#f-location').on('change', function () {
-    // exact match using regex anchor
     const val = this.value;
-    table.column(3).search(val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '', true, false).draw();
+    table.column(COL.location).search(val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '', true, false).draw();
   });
-
   $('#f-processed').on('change', function () {
     const val = this.value;
-    // Match underlying text "Yes"/"No" in the rendered column or underlying 1/0; simpler to search on 1/0 via hidden data
-    // Since we render badges, use a custom search on the data source instead:
-    table.column(4).search(val === '' ? '' : (val === '1' ? 'Yes' : 'No')).draw();
+    const needle = val === '' ? '' : (val === '1' ? '^Ja$' : '^Nee$');
+    table.column(COL.processed).search(needle, true, false).draw();
   });
-
-  $('#f-date-from, #f-date-to').on('change', function () {
-    table.draw();
-  });
-
-
+  $('#f-date-from, #f-date-to').on('change', function () { table.draw(); });
 </script>
