@@ -35,8 +35,10 @@ $options = $om->getAllOptions()[0];
             <form id="inventory_in" name="inventory_in" method="post">	
                 <ul class="mobilelist" id="inventory_in_list">
                     <li><label for="barcode_in">Barcode: </label><input type="text" id="barcode_in" name="barcode_in" placeholder="Barcode"/></li>
-                    <li><label for="location_in">Locatie: </label><input type="text" id="location_in" name="location_in" placeholder="location" disabled/></li>
-                    <li><label for="quality_in">Kwaliteit: </label><input type="text" id="quality_in" name="quality_in"  placeholder="quality" disabled/></li>
+                    <li><label for="location_in">Locatie: </label><input type="text" id="location_in" name="location_in" placeholder="Locatie" disabled/></li>
+                    <li><label for="quality_in">Kwaliteit: </label><input type="text" id="quality_in" name="quality_in"  placeholder="Kwaliteit" disabled/></li>
+                    <li><label for="length_in">Lengte: </label><input type="text" id="length_in" name="length_in"  placeholder="Lengte" disabled/></li>
+                    <li><label for="width_in">Breedte: </label><input type="text" id="width_in" name="width_in"  placeholder="Breedte" value="4" disabled/></li>
                     <li><button type="submit_in">Submit</button><span> </span><button type="reset">Herstel</button></li>
                 </ul>
             </form>
@@ -49,6 +51,11 @@ $options = $om->getAllOptions()[0];
                     <li><button type="submit_out">Submit</button><span> </span><button type="reset">Herstel</button></li>
                 </ul>
             </form>
+
+            <div id="results">
+                <table>
+                </table>
+            </div>
         </div>
     </body>
 </html>

@@ -25,11 +25,28 @@ class InventoryManager {
 
         return json_encode($rows, JSON_PRETTY_PRINT);
     }
+    /**
+     * Saerch inventory by barcode and location
+     */
+    public function searchInventory(string $barcode, string $location, int $processed):  ?array {
+        $sql = "SELECT id, barcode, quality, location, processed, date, modified, lengte, breedte
+                FROM vanda_inventory WHERE barcode = ? AND location = ? AND processed = ?";
+        $stmt = $this->link->prepare($sql);
+        if (!$stmt) [];
+
+        $stmt->bind_param("ssi", $barcode, $location, $processed);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+        $stmt->close();
+
+        return $rows;
+    }
 
     /**
      * Get inventory row by ID
      */
-    public function getById(int $id): ?array {
+    public function getById(int $id): array {
         $sql = "SELECT id, barcode, quality, location, processed, date, modified, lengte, breedte
                 FROM vanda_inventory WHERE id = ?";
         $stmt = $this->link->prepare($sql);

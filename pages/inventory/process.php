@@ -134,6 +134,28 @@ try {
         exit;
     }
 
+    if($action == 'search') {
+        $barcode   = trim($_POST['barcode']  ?? '');
+        $location  = trim($_POST['location'] ?? '');
+        $processed = trim($_POST['processed'] ?? '');
+        
+        if (empty($barcode) || empty($location)) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'message' => 'Ongeldige input.']);
+            exit;
+        }
+
+        $items = $im->searchInventory($barcode, $location, $processed);
+
+        if(!$items) {
+             echo json_encode(['ok' => true, 'message' => 'Geen resultaat.', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES]);
+             return;
+        }
+
+        echo json_encode(['ok' => true, 'rows' => $items]);
+        exit;
+    }   
+
     http_response_code(400);
     echo json_encode(['ok' => false, 'message' => 'Onbekende actie.']);
 } catch (Throwable $e) {

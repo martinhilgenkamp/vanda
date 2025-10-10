@@ -19,41 +19,124 @@ const DISMISS_AFTER_MS = 600;
         // ===== INVENTORY IN HANDLING =====
         $('#inventory_in').submit(function(e) {
             e.preventDefault();
+
+            //Retrieve values from from the form
+            const barcode = $("#barcode_in").val()?.trim() || "";
+            const locationVal = $("#location_in").val()?.trim() || "";
+            const qualityVal = $("#quality_in").val()?.trim() || "";
+            const lengthVal = $("#length_in").val()?.trim() || "";
+            const widthVal = $("#width_in").val()?.trim() || "";
             
             if (!/^[A-Z0-9]{15}$/.test(barcode)) {
                 notifyUser(false,'Barcode is onjuist');
                 console.log("nope");
-                return;
+                //return;
             }
+        
+            // AJAX request to submit data
+            $.ajax({
+                type: 'POST',
+                url: '../inventory/process.php',
+                data: {
+                    action: "save",
+                    id: "",
+                    barcode: barcode,
+                    quality: qualityVal,
+                    lengte: lengthVal,
+                    breedte: widthVal,
+                    location: locationVal,
+                    date: nowSqlTimestamp(),
+                    processed: "0"
+                },
+                success: function(response) {
+                    if(response)
+                    notifyUser(true, response.message)
+
+                },
+                error: function(xhr, status, error) {
+                    notifyUser(false,'Error: ' + error)
+
+                }
+            });
+
+            $('#inventory_in')[0].reset();
         })
 
         //Reset the entire form
         $('#inventory_in').on('reset', function (e) {
-            $('#barcode_in').removeAttr('disabled');
-            $('#location_in').prop('disabled', true)
-            $('#quality_in').prop('disabled', true)
-            $('#barcode_in').focus();
+            clearIn();
         });
-      
 
         // ===== INVENTORY OUT HANDLING =====
         $('#inventory_out').submit(function(e) {
             e.preventDefault();
-            
+
+            //Retrieve values from from the form
+            const barcode = $("#barcode_out").val()?.trim() || "";
+            const locationVal = $("#location_out").val()?.trim() || "";
+
+            // AJAX request to submit data
+            $.ajax({
+                type: 'POST',
+                url: '../inventory/process.php',
+                data: {
+                    action: "search",
+                    barcode: barcode,
+                    location: locationVal,
+                    processed: 0,
+                },
+                success: function(response) {
+                   // Create table, then add rows as elements and attach click in one line
+                    const $results = $('#results').empty().append(`
+                    <table id="resultTable">
+                        <thead>
+                        <tr>
+                            <th>Barcode</th><th>Kwaliteit</th><th>Locatie</th>
+                            <th>Datum</th><th>Modified</th>
+                            <th>Lengte</th><th>Breedte</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    `);
+
+                    const $tbody = $results.find('tbody');
+
+                    response.rows.forEach(r => {
+                    // Build <tr>, attach click with the known values, then append
+                    $('<tr>')
+                        .attr('id', r.id)
+                        .append(`
+                        <td>${r.barcode}</td>
+                        <td>${r.quality}</td>
+                        <td>${r.location}</td>
+                        <td>${r.date}</td>
+                        <td>${r.modified}</td>
+                        <td>${r.lengte}</td>
+                        <td>${r.breedte}</td>
+                        `)
+                        .on('click', () => checkOut(r.id, r.barcode, r.location, r.date, r.quality, r.lengte, r.breedte)) // one-liner
+                        .appendTo($tbody);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    notifyUser(false,'Error: ' + error)
+
+                }
+            });
+
         })
 
         //Reset the entire form
         $('#inventory_out').on('reset', function (e) {
-            $('#barcode_out').removeAttr('disabled');
-            $('#location_out').prop('disabled', true)
-            $('#barcode_out').focus();
+            clearOut()
         });
 
         // ===== SHARED functions =====
         
-        //Handle move next field
+        //Add event listeners to handle switch to next fields, does it on: 'enter' and with a timeout.
         $(document)
-        .on('input', '#barcode_in, #location_in, #barcode_out' , function () {
+        .on('input', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out' , function () {
             clearTimeout(typingTimer); clearTimeout(dismissTimer);
             const val = this.value.trim(); if (!val) return;
 
@@ -61,7 +144,7 @@ const DISMISS_AFTER_MS = 600;
             dismissTimer = setTimeout(() => { NEXT[this.id]?.(); }, DISMISS_AFTER_MS);
             }, TYPING_IDLE_MS);
         })
-        .on('keydown', '#barcode_in, #location_in, #barcode_out', function (e) {
+        .on('keydown', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out', function (e) {
             if (e.key === 'Enter') {
             e.preventDefault();
             clearTimeout(typingTimer); clearTimeout(dismissTimer);
@@ -74,6 +157,7 @@ const DISMISS_AFTER_MS = 600;
  }
 
  //Function to change the active tab
+ //IN and OUT forms are different elements with their own ID so values they cannot be mixed
 function enableButton(button_id) {
     if(button_id === 0) {
         inventory_in = true;
@@ -92,24 +176,21 @@ function enableButton(button_id) {
     }
 }
 
+//Next handling when field is filled.
 const NEXT = {
     barcode_in:  () => switchBarLocIn(),
     location_in:  () => switchLocQuaIn(),
     barcode_out: () => switchBarLocOut(),
+    quality_in: () => switchQuaLenIn(),
+    length_in: () => switchLenWitIn(),
 };
 
-//Switch barcode and location
+// ===== Button switch functions =====
+//Switches input fields of the forms on the page
 function switchBarLocIn () {
     $('#location_in').removeAttr('disabled');
     $('#location_in').focus();
     $('#barcode_in').prop('disabled', true)
-}
-
-//Switch location to quality
-function switchLocQuaIn () {
-    $('#quality_in').removeAttr('disabled');
-    $('#quality_in').focus();
-    $('#location_in').prop('disabled', true)
 }
 
 function switchBarLocOut () {
@@ -118,6 +199,87 @@ function switchBarLocOut () {
     $('#barcode_out').prop('disabled', true)
 }
 
+function switchLocQuaIn () {
+    $('#quality_in').removeAttr('disabled');
+    $('#quality_in').focus();
+    $('#location_in').prop('disabled', true)
+}
+
+function switchQuaLenIn () {
+    $('#length_in').removeAttr('disabled');
+    $('#length_in').focus();
+    $('#quality_in').prop('disabled', true)
+}
+
+function switchLenWitIn () {
+    $('#width_in').removeAttr('disabled');
+    $('#width_in').focus();
+    $('#length_in').prop('disabled', true)
+}
+
+function nowSqlTimestamp() {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    return (
+        d.getFullYear() + "-" +
+        pad(d.getMonth() + 1) + "-" +
+        pad(d.getDate()) + " " +
+        pad(d.getHours()) + ":" +
+        pad(d.getMinutes()) + ":" +
+        pad(d.getSeconds())
+    );
+}
+
+function clearIn() {
+    $('#barcode_in').removeAttr('disabled');
+    $('#location_in').prop('disabled', true);
+    $('#length_in').prop('disabled', true);
+    $('#quality_in').prop('disabled', true);
+    $('#width_in').prop('disabled', true);
+    $('#barcode_in').focus();
+}
+
+function clearOut() {
+    $('#barcode_out').removeAttr('disabled');
+    $('#location_out').prop('disabled', true);
+    $('#results').html('');
+    $('#barcode_out').focus();
+}
+
+function writeResult(result){
+    $('#results').html(result);
+}
+
+//Function to checkout items
+function checkOut(id, barcode, location, date, quality, lengte, breedte) {
+    let permission = confirm(barcode + " uitscannen?");
+    if(permission){
+        $.ajax({
+            type: 'POST',
+            url: '../inventory/process.php',
+            data: {
+                action: "save",
+                id: id,
+                barcode: barcode,
+                location: location,
+                quality: quality,
+                processed: 1,
+                date: date,
+                lengte: lengte,
+                breedte: breedte,
+            },
+            success: () => {
+                $('#' + id).remove();
+                notifyUser(true, barcode + " uitgescanned");
+            },
+            error: function(xhr, status, error) {
+            notifyUser(false,'Error: ' + error)
+            }
+        });
+    }
+}
+
+// ===== notify function =====
 function notifyUser(success,message){
     // Set style for the message
     if(success){
