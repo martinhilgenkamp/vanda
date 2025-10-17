@@ -22,6 +22,7 @@ class UserManager {
 				setcookie('token',$token,time()+30*24*60*60);
                 $this->setToken($user->id, $token);
                 $_SESSION['username'] = $username;
+                return true;
 			}else{
 				return "Ongeldige gebruikersnaam of wachtwoord.";
 			}

@@ -1,8 +1,19 @@
 <?php
 require_once("../../inc/class/class.option.php");
+require_once("../../inc/class/class.user.php");
 $om = new OptionManager();
+$um = new UserManager();
 
 $options = $om->getAllOptions()[0];
+$user_loggedin = $um->checkLogin("");
+
+//Check if the user is signed in
+//If user is nog signed in relay to login page
+if(is_string($user_loggedin) || $user_loggedin === false) {
+    header('Location: ../loginscanner.php?page=/scanner/wms.php');
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
