@@ -17,27 +17,29 @@ class UserManager {
 			$user = $this->getUserByName($username);
 
 			if ($user && $this->checkCredentials($user, $password)){
-				$_SESSION['username'] = $username;
-				setcookie('username',$username,time()+30*24*60*60);
+                $token = bin2hex(random_bytes(128));
+				$_SESSION['token'] = $token;
+				setcookie('token',$token,time()+30*24*60*60);
+                $this->setToken($user->id, $token);
+                $_SESSION['username'] = $username;
 			}else{
 				return "Ongeldige gebruikersnaam of wachtwoord.";
 			}
 		}
 		
-		if (isset($_COOKIE['username'])){
-			$user = $this->getUserByName($_COOKIE['username']);
+		if (isset($_COOKIE['token'])){
+			$user = $this->getUserByToken($_COOKIE['token']);
 			if ($user){
-				$_SESSION['username'] = $_COOKIE['username'];				
-				setcookie('username',$_COOKIE['username'],time()+30*24*60*60);
+				$_SESSION['token'] = $_COOKIE['token'];				
+				setcookie('token',$_COOKIE['token'],time()+30*24*60*60);
 				return true;
 			}else{
 				return "Ongeldige gebruikersnaam of wachtwoord.";
 			}
 		}
 		
-		if (isset($_SESSION['username'])){
-			$username = $_SESSION['username'];
-			setcookie('username',$username,time()+30*24*60*60);
+		if (isset($_SESSION['token'])){
+			setcookie('token',$_SESSION['token'],time()+30*24*60*60);
 			return true;
 		}else{
 			return false;
@@ -82,6 +84,19 @@ class UserManager {
 		return null;
 	}
 
+    // Fetch a user by token
+    function getUserByToken($token) {
+        $qry = "SELECT {$this->columns} FROM {$this->table_name} WHERE token = ?";
+		$stmt = $this->db->link->prepare($qry);
+		if ($stmt) {
+			$stmt->bind_param("s", $token);
+			$stmt->execute();
+			$result = $stmt->get_result();
+			return $result->num_rows > 0 ? (object) $result->fetch_assoc() : null;
+		}
+		return null;
+    }
+
 	// Fetch a user by ID
     function getUserById($id) {
         $qry = "SELECT {$this->columns} FROM {$this->table_name} WHERE id = ?";
@@ -97,6 +112,15 @@ class UserManager {
         }
         
         return null; // Return null if the statement could not be prepared
+    }
+
+    //Set token of user in the database
+    function setToken($userid, $token) {
+        $qry = "UPDATE {$this->table_name} SET token = ? WHERE id = ?";
+
+        $stmt = $this->db->link->prepare($qry);
+        $stmt->bind_param("si", $token, $userid);
+        $stmt->execute();
     }
     
 	//Change password of a user

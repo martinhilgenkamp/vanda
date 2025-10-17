@@ -20,7 +20,7 @@
 		exit;	
 	}
 	
-	$user = $um->getUserByName($_SESSION['username']);	
+	$user = $um->getUserByToken($_SESSION['token']);	
 
 	// Security on ip base
 	// Function to get the client ip address

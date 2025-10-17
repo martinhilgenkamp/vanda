@@ -13,16 +13,16 @@
 		}
 		
 		//Check if cookie is there.		
-		if ($_COOKIE['username']){
+		if ($_COOKIE['token']){
 			// Do the check
 			$hash = password_hash($password, PASSWORD_DEFAULT);
 			checkCredentials($username,$password, $hash);
 		}
 		
 		//3.1.4 if the user is logged in Greets the user with message
-		if (isset($_SESSION['username'])){
+		if (isset($_SESSION['token'])){
 			$username = $_SESSION['username'];
-			setcookie('username',$username,time()+30*24*60*60);
+			setcookie('token',$_SESSION['token'],time()+30*24*60*60);
 			return true;
 		}else{
 			return false;
