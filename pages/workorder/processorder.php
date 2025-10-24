@@ -27,16 +27,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $workOrder->omschrijving = sanitize($_POST['omschrijving']);
     $workOrder->klant = sanitize($_POST['klant']);
     $workOrder->opdrachtnr_klant = sanitize($_POST['opdrachtnr_klant']);
-    $workOrder->omschrijving_klant = sanitize($_POST['omschrijving_klant']);
     $workOrder->leverdatum = sanitize($_POST['leverdatum']);
     $workOrder->verpakinstructie = sanitize($_POST['verpakinstructie']);
-    $workOrder->opmerkingen = sanitize($_POST['opmerkingen']);
     $workOrder->start = sanitize($_POST['start']);
     $workOrder->end = sanitize($_POST['end']);
     $workOrder->resources = sanitize($_POST['resources']); 
     $workOrder->id = isset($_POST['id']) ? sanitize($_POST['id']) : null;
     $workOrder->status = isset($_POST['status']) ? sanitize($_POST['status']) : null;
-    
+    $workOrder->recurrence_type = $_POST['recurrence_type'] ?? null;
+    $workOrder->recurrence_interval = $_POST['recurrence_interval'] ?? null;
+    $workOrder->recurrence_until = $_POST['recurrence_until'] ?? null;
+    $workOrder->recurrence_days = isset($_POST['recurrence_days']) ? implode(',', $_POST['recurrence_days']) : null;
+
      // Initialize an error array
      $errors = [];
      $workOrder->errors= $errors;
@@ -91,6 +93,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
      }
 }
-   
-
 ?>

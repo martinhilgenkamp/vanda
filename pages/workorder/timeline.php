@@ -13,6 +13,10 @@ $um = new UserManager();
 ?>
 
 <script>
+
+  
+
+
   document.addEventListener('DOMContentLoaded', function() {
     // Get the current date
     let now = new Date();
@@ -37,7 +41,7 @@ $um = new UserManager();
                   cancelButtonText: "Annuleer"
               }).then((result) => {
               if (result.isConfirmed) {
-               window.location.href = 'index.php?page=workorder/editworkorder&id=' + info.event.id;
+               window.location.href = 'index.php?page=workorder/editworkorder&id='  + info.event.extendedProps.originalId;
               } else {
                 info.revert();
               }
@@ -182,34 +186,53 @@ $um = new UserManager();
       headerToolbar: {
         left: 'today prev,next',
         center: 'title',
-        right: 'resourceTimelineWeek,resourceTimelineMonth,listWeek'
+        right: 'resourceTimelineDay,resourceTimelineWeek,dayGridMonth'
       },
-      initialView: 'resourceTimelineMonth',
+      initialView: 'resourceTimelineDay',
       views: {
+        resourceTimelineDay: {
+          buttonText: 'Dag',
+          duration: { days: 1 },
+          slotDuration: '01:00:00',       // 1-hour blocks
+          slotMinTime: '00:00:00',        // Start at 6:00 AM
+          slotMaxTime: '23:59:00'        // End at 8:00 PM
+        },
         resourceTimelineWeek: {
           buttonText: 'Week',
           duration: { weeks: 1 },
         },
-        resourceTimelineMonth: {
-          type: 'resourceTimeline',
+        dayGridMonth: {
+          type: 'dayGridMonth',
           duration: { months: 1 },
           buttonText: 'Maand'
         },
-        dayGridMonth: {
-          buttonText: 'Maand'
-        },
-        listWeek: {
-          buttonText: 'Lijst'
-        }
       },
       slotDuration: "12:00:00",
-      slotWidth: "500px",
+      
       resourceAreaHeaderContent: 'Resources',
       resources: <?php echo $um->getResources(); ?>,
       resourceOrder: 'sortOrder',
-      events: <?php echo $workorder->getWorkordersJson(); ?>
+      events: function(fetchInfo, successCallback, failureCallback) {
+        $.ajax({
+          url: 'pages/workorder/getworkorders.php',
+          type: 'GET',
+          dataType: 'json',
+          data: {
+            start: fetchInfo.startStr,
+            end: fetchInfo.endStr
+          },
+          success: function(data) {
+            successCallback(data);
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.error("Error loading events: ", textStatus, errorThrown);
+            failureCallback(errorThrown);
+          }
+        });
+      }
     });
     calendar.render();
+    console.log("Calendar rendered with events:", <?php echo $workorder->getWorkordersJson(); ?>);
   });
 
 

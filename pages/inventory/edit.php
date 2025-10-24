@@ -21,6 +21,13 @@ $om = new OptionManager();
 // --- Helpers ---
 function h($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 
+//admin enabld
+$adminEnabled = "disabled";
+
+if($user->level === 1) {
+  $adminEnabled = "enabled";
+}
+
 // Load existing when id present
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $isEdit = $id > 0;
@@ -79,7 +86,7 @@ if ($isEdit) {
 
   <div class="form-field">
   <label class="label-as-input">
-    <input type="checkbox" name="processed" value="1" <?= !empty($row['processed']) ? 'checked' : '' ?>>
+    <input type="checkbox" name="processed" value="1" <?= !empty($row['processed']) ? 'checked' : ''; $adminEnabled;?>>
     Verwerkt
   </label>
   <input type="hidden" name="date" required value="<?= htmlspecialchars(str_replace(' ', 'T', substr($row['date'] ?: date('Y-m-d H:i:s'), 0, 16))) ?>">
