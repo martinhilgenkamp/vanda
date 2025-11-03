@@ -10,7 +10,6 @@ date_default_timezone_set("Europe/Amsterdam");
 class WorkOrder {
     private $db;
     private $table_name = "vanda_work_orders";
-
     public $id;
     public $omschrijving;
     public $klant;
@@ -21,7 +20,7 @@ class WorkOrder {
     public $start;
     public $end;
     public $resource1; 
-    public $resources;      // Hier komen de resources in. 
+    public $resources; 
     public $verpakinstructie;
     public $createdby;
     public $modifiedby;
@@ -43,20 +42,54 @@ class WorkOrder {
       }
     }
 
-    public function createWorkOrder() {
+    public function createWorkOrder()
+    {
         $query = "INSERT INTO " . $this->table_name . " 
-        (omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, file_path, status, created, modified,
-        recurrence_type, recurrence_interval, recurrence_until, recurrence_days) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, file_path, status, created, modified,
+            recurrence_type, recurrence_interval, recurrence_until, recurrence_days) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+        // Set timestamps
         $this->created = date("Y-m-d H:i:s");
         $this->modified = date("Y-m-d H:i:s");
 
+        // Validate resources
+        if (!is_array($this->resources) || empty($this->resources)) {
+            error_log("Invalid or empty resources in createWorkOrder: " . print_r($this->resources, true));
+            $this->errors[] = "Resources must be a non-empty array.";
+            return false;
+        }
         $resourcesJson = json_encode($this->resources);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("JSON encoding error for resources: " . json_last_error_msg());
+            $this->errors[] = "Failed to encode resources: " . json_last_error_msg();
+            return false;
+        }
+
+        // Validate recurrence_until
+        $recurrenceUntil = null;
+        if (!empty($this->recurrence_until)) {
+            try {
+                $date = new DateTime($this->recurrence_until, new DateTimeZone('Europe/Amsterdam'));
+                $recurrenceUntil = $date->format('Y-m-d');
+            } catch (Exception $e) {
+                error_log("Invalid recurrence_until format: " . $this->recurrence_until . " - " . $e->getMessage());
+                $this->errors[] = "Invalid recurrence_until date format.";
+                return false;
+            }
+        }
+
+        // Validate other required fields
+        if (empty($this->omschrijving) || empty($this->klant) || empty($this->opdrachtnr_klant) ||
+            empty($this->leverdatum) || empty($this->start) || empty($this->end)) {
+            error_log("Missing required fields in createWorkOrder: " . print_r(get_object_vars($this), true));
+            $this->errors[] = "All required fields (omschrijving, klant, opdrachtnr_klant, leverdatum, start, end) must be provided.";
+            return false;
+        }
 
         if ($stmt = $this->db->link->prepare($query)) {
             if (!$stmt->bind_param(
-                "sssssssssssssssi", // 16 parameters: 15 strings, 1 integer
+                "sssssssssssssssi",
                 $this->omschrijving,
                 $this->klant,
                 $this->opdrachtnr_klant,
@@ -71,22 +104,27 @@ class WorkOrder {
                 $this->modified,
                 $this->recurrence_type,
                 $this->recurrence_interval,
-                $this->recurrence_until,
+                $recurrenceUntil, // Use validated variable
                 $this->recurrence_days
             )) {
-                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                error_log("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
+                $this->errors[] = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                $stmt->close();
                 return false;
             }
 
             if (!$stmt->execute()) {
-                echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                error_log("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+                $this->errors[] = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                $stmt->close();
                 return false;
             }
 
             $stmt->close();
             return true;
         } else {
-            echo "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
+            error_log("Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error);
+            $this->errors[] = "Prepare failed: (" . $this->db->link->errno . ") " . $this->db->link->error;
             return false;
         }
     }
@@ -355,83 +393,123 @@ class WorkOrder {
 
         $data = [];
 
-        if ($result = $this->db->link->query($query)) {
-            while ($row = $result->fetch_assoc()) {
-               echo "Processing row: " . print_r($row, true); // Debugging output
-                
-                $resources = json_decode($row['resources'], true);
-                $resources = is_array($resources) && count($resources) > 0 ? $resources : [null];
+        $result = $this->db->link->query($query);
+        if (!$result) {
+            error_log("Database query failed: " . $this->db->link->error);
+            return json_encode(['error' => 'Database query failed']);
+        }
 
-                // Bereken duur van event
+        while ($row = $result->fetch_assoc()) {
+            error_log("Processing row: " . print_r($row, true)); // Debugging to log
+
+            // Validate resources
+            $resources = json_decode($row['resources'], true) ?? [];
+            if (empty($resources)) {
+                error_log("Invalid or empty resources for ID {$row['id']}: {$row['resources']}");
+                continue;
+            }
+
+            // Validate dates
+            try {
                 $startDT = new DateTime($row['start']);
                 $endDT = new DateTime($row['end']);
                 $duration = $startDT->diff($endDT);
+            } catch (Exception $e) {
+                error_log("Invalid date format for ID {$row['id']}: {$e->getMessage()}");
+                continue;
+            }
 
-                // Herhalend event?
-                if (!empty($row['recurrence_type']) && !empty($row['recurrence_until'])) {
-                     $repeats = $this->generateRecurringDates(
+            // Recurring event
+            if (!empty($row['recurrence_type']) && !empty($row['recurrence_until'])) {
+                try {
+                    $repeats = $this->generateRecurringDates(
                         $row['start'],
                         $row['recurrence_type'],
                         $row['recurrence_interval'],
                         $row['recurrence_until'],
                         $row['recurrence_days']
                     );
-                    
-                    $resources = json_decode($row['resources'], true);
-                    // Validatie: moet array met geldige niet-lege strings zijn
-                    //if (!is_array($resources) || count(array_filter($resources)) === 0) {
-                    //    error_log("⚠️ Lege of ongeldige resources bij ID {$row['id']} - input: {$row['resources']}");
-                    //    continue; // sla dit event over
-                    //}
 
                     foreach ($repeats as $startTime) {
-
                         foreach ($resources as $resource) {
                             $start = new DateTime($startTime);
                             $end = clone $start;
                             $end->add($duration);
 
                             $data[] = [
-                                'id' => $row['id'] . $resource . $start->format('YmdHis'), // Unieke ID per resource en datum
+                                'id' => hash('md5', $row['id'] . $resource . $start->format('YmdHis')),
                                 'title' => $row['title'],
                                 'start' => $start->format('Y-m-d H:i:s'),
-                                'end'   => $end->format('Y-m-d H:i:s'),
+                                'end' => $end->format('Y-m-d H:i:s'),
                                 'resourceId' => $resource,
-                                'originalId' => $row['id'] // optioneel: om het echte werkorder-ID mee te geven
+                                'originalId' => $row['id']
                             ];
                         }
-                       error_log("Generated dates for ID {$row['id']}: " . print_r($repeats, true));
                     }
-                } else {
-                    // Eenmalig event
-                    foreach ($resources as $resource) {
-                        $data[] = [
-                            'id' => $row['id'] . $resource  . (new DateTime($row['start']))->format('YmdHis'),
-                            'title' => $row['title'],
-                            'start' => $row['start'],
-                            'end'   => $row['end'],
-                            'resourceId' => $resource,
-                            'originalId' => $row['id']
-                        ];
-                    }
+                    error_log("Generated dates for ID {$row['id']}: " . print_r($repeats, true));
+                } catch (Exception $e) {
+                    error_log("Error generating recurring dates for ID {$row['id']}: {$e->getMessage()}");
+                    continue;
+                }
+            } else {
+                // Non-recurring event
+                foreach ($resources as $resource) {
+                    $data[] = [
+                        'id' => hash('md5', $row['id'] . $resource . $startDT->format('YmdHis')),
+                        'title' => $row['title'],
+                        'start' => $row['start'],
+                        'end' => $row['end'],
+                        'resourceId' => $resource,
+                        'originalId' => $row['id']
+                    ];
                 }
             }
-            return json_encode($data, JSON_PRETTY_PRINT);
         }
 
-        return json_encode($data);
+        $json = json_encode($data, JSON_PRETTY_PRINT);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("JSON encoding error: " . json_last_error_msg());
+            return json_encode(['error' => 'Failed to encode data']);
+        }
+
+        return $json;
     }
 
     private function generateRecurringDates($startDateTime, $type, $interval, $until, $days = '')
     {
         $dates = [];
-        $current = new DateTime($startDateTime);
-        $end = new DateTime($until);
+        $validDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        $maxIterations = 10000; // Prevent runaway loops
 
-        $interval = (int)($interval ?: 1); // fallback naar 1 als leeg of 0
+        // Validate inputs
+        try {
+            $current = new DateTime($startDateTime);
+            $end = new DateTime($until);
+        } catch (Exception $e) {
+            error_log("Invalid date format in generateRecurringDates: {$e->getMessage()}");
+            return [];
+        }
+
+        $interval = (int)($interval ?: 1); // Default to 1 if empty or 0
         $daysArray = array_filter(explode(',', $days ?? ''));
+        if ($type === 'weekly' && !empty($daysArray)) {
+            $daysArray = array_intersect($daysArray, $validDays);
+            if (empty($daysArray)) {
+                error_log("Invalid or empty days for weekly recurrence: {$days}");
+                return [];
+            }
+        } elseif ($type === 'weekly' && empty($daysArray)) {
+            $daysArray = [$current->format('D')]; // Default to start date's day
+        }
 
-        while ($current <= $end) {
+        // Validate recurrence type
+        if (!in_array($type, ['daily', 'weekly', 'monthly'])) {
+            error_log("Invalid recurrence type: {$type}");
+            return [];
+        }
+
+        $iteration = 0;
+        while ($current <= $end && $iteration < $maxIterations) {
             switch ($type) {
                 case 'daily':
                     $dates[] = $current->format('Y-m-d H:i:s');
@@ -439,23 +517,40 @@ class WorkOrder {
                     break;
 
                 case 'weekly':
-                    // Voor weekly moet je door alle dagen lopen
-                    if (in_array($current->format('D'), $daysArray)) {
-                        $dates[] = $current->format('Y-m-d H:i:s');
+                    // Start at the beginning of the current week
+                    $weekStart = clone $current;
+                    $weekStart->modify('Monday this week'); // Ensure we start at Monday
+                    $weekEnd = clone $weekStart;
+                    $weekEnd->modify('+6 days'); // End of the week
+
+                    // Only process days within the recurrence period
+                    if ($weekStart <= $end) {
+                        foreach ($daysArray as $day) {
+                            $dayDate = clone $weekStart;
+                            $dayDate->modify($day);
+                            // Ensure the date is within bounds and not before the start
+                            if ($dayDate >= $current && $dayDate <= $end) {
+                                $dates[] = $dayDate->format('Y-m-d H:i:s');
+                            }
+                        }
                     }
-                    $current->modify("+1 day");
+                    $current->modify("+{$interval} weeks");
                     break;
 
                 case 'monthly':
                     $dates[] = $current->format('Y-m-d H:i:s');
                     $current->modify("+{$interval} months");
                     break;
-
-                default:
-                    // Ongeldige waarde, return leeg
-                    return [];
             }
+            $iteration++;
         }
+
+        if ($iteration >= $maxIterations) {
+            error_log("Max iterations reached for recurrence type {$type}");
+        }
+
+        // Sort dates chronologically
+        sort($dates);
 
         return $dates;
     }

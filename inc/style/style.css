@@ -6,7 +6,7 @@
    1. CSS Custom Properties (Root Variables)
    ========================================================================== */
 :root {
-    --background: #ffffff;
+  
 	--accent-background: #cccccc;
 	--text: #333333;
 	--accent-color: #222c6a;
@@ -28,6 +28,10 @@ html {
     font-family: Arial, Helvetica, sans-serif;
     line-height: 20px;
     color: var(--text);
+}
+
+body.dev-env {
+    background-color: #ffc1c1 !important;
 }
 
 /* ==========================================================================

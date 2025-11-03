@@ -14,7 +14,7 @@ $um = new UserManager();
 
 <script>
 
-  console.log("Events:", <?php echo $workorder->getWorkordersJson(); ?>);
+  
 
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -232,7 +232,7 @@ $um = new UserManager();
       }
     });
     calendar.render();
-    consol.log("Calendar rendered with events:", <?php echo $workorder->getWorkordersJson(); ?>);
+    console.log("Calendar rendered with events:", <?php echo $workorder->getWorkordersJson(); ?>);
   });
 
 
