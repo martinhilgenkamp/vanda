@@ -116,7 +116,6 @@
 <body>
 	<div id="wrapper">
 	    <div id="header">
-	        <div id="logo"><img src="images/logo.jpg" /></div>
 	        <div id="topmenu">
 	        	<?php require_once("pages/topmenu.php"); ?>
 	        </div>

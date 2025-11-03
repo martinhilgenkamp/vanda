@@ -1,19 +1,3 @@
-<script>
-  // Toggle the menu on mobile
-  document.getElementById("menu-toggle").addEventListener("click", function () {
-    document.querySelector(".main-nav .menu").classList.toggle("active");
-  });
-
-  // Expand/collapse submenu items on mobile
-  document.querySelectorAll(".main-nav .has-submenu > a").forEach(link => {
-    link.addEventListener("click", function (e) {
-      if (window.innerWidth <= 768) {
-        e.preventDefault();
-        this.parentElement.classList.toggle("open");
-      }
-    });
-  });
-</script>
 <nav class="main-nav">
   <div class="logo"><img src="images/logo.jpg" alt="Logo"></div>
   <button id="menu-toggle" aria-label="Toon menu">&#9776;</button>
@@ -81,7 +65,13 @@
         <li><a href="index.php?page=roll-shipments">Zending overzicht</a></li>
       </ul>
     </li>
-
+    <li class="has-submenu">
+      <a href="#">WMS</a>
+    	<ul class="submenu">
+    		<a href="index.php?page=inventory/edit"><li>Inboeken</li></a>
+            <a href="index.php?page=inventory/inventory"><li>Overzicht</li></a>	
+		</ul>
+	</li>
     <li class="has-submenu">
       <a href="#"><img src="images/menu.png" class="burgermenu" alt="Menu" /></a>
       <ul class="submenu">
@@ -98,3 +88,19 @@
     </li>
   </ul>
 </nav>
+<script>
+  // Toggle the menu on mobile
+  document.getElementById("menu-toggle").addEventListener("click", function () {
+    document.querySelector(".main-nav .menu").classList.toggle("active");
+  });
+
+  // Expand/collapse submenu items on mobile
+  document.querySelectorAll(".main-nav .has-submenu > a").forEach(link => {
+    link.addEventListener("click", function (e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        this.parentElement.classList.toggle("open");
+      }
+    });
+  });
+</script>

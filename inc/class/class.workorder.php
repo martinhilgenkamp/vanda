@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+require_once("class.db.php");
 
 date_default_timezone_set("Europe/Amsterdam");
 
@@ -15,7 +15,6 @@ class WorkOrder {
     public $omschrijving;
     public $klant;
     public $opdrachtnr_klant;
-    public $omschrijving_klant;
     public $created;
     public $modified;
     public $leverdatum;
@@ -24,11 +23,14 @@ class WorkOrder {
     public $resource1; 
     public $resources;      // Hier komen de resources in. 
     public $verpakinstructie;
-    public $opmerkingen;
     public $createdby;
     public $modifiedby;
     public $file_path;
     public $status;
+    public $recurrence_type;
+    public $recurrence_interval;
+    public $recurrence_until;
+    public $recurrence_days;
 
     public $errors;
 
@@ -43,41 +45,44 @@ class WorkOrder {
 
     public function createWorkOrder() {
         $query = "INSERT INTO " . $this->table_name . " 
-              (omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resources, verpakinstructie, opmerkingen, file_path, status, created, modified) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, resources, verpakinstructie, file_path, status, created, modified,
+        recurrence_type, recurrence_interval, recurrence_until, recurrence_days) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    $this->created = date("Y-m-d H:i:s");
-    $this->modified = date("Y-m-d H:i:s");
+        $this->created = date("Y-m-d H:i:s");
+        $this->modified = date("Y-m-d H:i:s");
 
-    $resourcesJson = json_encode($this->resources); // Encode resources array as JSON
+        $resourcesJson = json_encode($this->resources);
 
-    if ($stmt = $this->db->link->prepare($query)) {
-        if (!$stmt->bind_param(
-            "ssssssssssssss",
-            $this->omschrijving,
-            $this->klant,
-            $this->opdrachtnr_klant,
-            $this->omschrijving_klant,
-            $this->leverdatum,
-            $this->start,
-            $this->end,
-            $resourcesJson, // Save resources as JSON
-            $this->verpakinstructie,
-            $this->opmerkingen,
-            $this->file_path,
-            $this->status,
-            $this->created,
-            $this->modified
-        )) {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-            return false;
-        }
-    
+        if ($stmt = $this->db->link->prepare($query)) {
+            if (!$stmt->bind_param(
+                "sssssssssssssssi", // 16 parameters: 15 strings, 1 integer
+                $this->omschrijving,
+                $this->klant,
+                $this->opdrachtnr_klant,
+                $this->leverdatum,
+                $this->start,
+                $this->end,
+                $resourcesJson,
+                $this->verpakinstructie,
+                $this->file_path,
+                $this->status,
+                $this->created,
+                $this->modified,
+                $this->recurrence_type,
+                $this->recurrence_interval,
+                $this->recurrence_until,
+                $this->recurrence_days
+            )) {
+                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                return false;
+            }
+
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 return false;
             }
-    
+
             $stmt->close();
             return true;
         } else {
@@ -85,44 +90,49 @@ class WorkOrder {
             return false;
         }
     }
+
     
     public function updateWorkOrder() {
+
         $this->modified = date("Y-m-d H:i:s");
+        $resourcesJson = json_encode($this->resources);
 
-    $query = "UPDATE " . $this->table_name . " 
-              SET omschrijving = ?, klant = ?, opdrachtnr_klant = ?, omschrijving_klant = ?, 
-                  leverdatum = ?, start = ?, end = ?, resources = ?, verpakinstructie = ?, opmerkingen = ?, 
-                  file_path = ?, status = ?, modified = ?
-              WHERE id = ?";
+        $query = "UPDATE " . $this->table_name . " 
+                SET omschrijving = ?, klant = ?, opdrachtnr_klant = ?, 
+                    leverdatum = ?, start = ?, end = ?, resources = ?, verpakinstructie = ?, 
+                    file_path = ?, status = ?, modified = ?,
+                    recurrence_type = ?, recurrence_interval = ?, recurrence_until = ?, recurrence_days = ?
+                WHERE id = ?";
 
-    $resourcesJson = json_encode($this->resources); // Encode resources array as JSON
+        if ($stmt = $this->db->link->prepare($query)) {
+            if (!$stmt->bind_param(
+                "sssssssssssisssi",
+                $this->omschrijving,
+                $this->klant,
+                $this->opdrachtnr_klant,
+                $this->leverdatum,
+                $this->start,
+                $this->end,
+                $resourcesJson,
+                $this->verpakinstructie,
+                $this->file_path,
+                $this->status,
+                $this->modified,
+                $this->recurrence_type,
+                $this->recurrence_interval,
+                $this->recurrence_until,
+                $this->recurrence_days,
+                $this->id
+            )) {
+                echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                return false;
+            }
 
-    if ($stmt = $this->db->link->prepare($query)) {
-        if (!$stmt->bind_param(
-            "sssssssssssssi",
-            $this->omschrijving,
-            $this->klant,
-            $this->opdrachtnr_klant,
-            $this->omschrijving_klant,
-            $this->leverdatum,
-            $this->start,
-            $this->end,
-            $resourcesJson, // Update resources as JSON
-            $this->verpakinstructie,
-            $this->opmerkingen,
-            $this->file_path,
-            $this->status,
-            $this->modified,
-            $this->id
-        )) {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-            return false;
-        }
-    
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
                 return false;
             }
+
             $stmt->close();
             return true;
         } else {
@@ -199,42 +209,83 @@ class WorkOrder {
     }
 
     public function getWorkOrderById($workOrderId) {
-        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, resources, verpakinstructie, opmerkingen, file_path, created, modified, status 
-                  FROM " . $this->table_name . " 
-                  WHERE id = ?";
-    
-        if ($stmt = $this->db->link->prepare($query)) {
-            $stmt->bind_param("i", $workOrderId);
-    
-            if ($stmt->execute()) {
-                $result = $stmt->get_result();
-                if ($result->num_rows > 0) {
-                    $workOrder = $result->fetch_object();
-                    $workOrder->resources = json_decode($workOrder->resources, true); // Decode JSON to array
-                    return $workOrder;
-                }
+    $query = "SELECT 
+                id, omschrijving, klant, opdrachtnr_klant, leverdatum, 
+                start, end, resources, verpakinstructie, file_path, 
+                created, modified, status,
+                recurrence_type, recurrence_interval, recurrence_until, recurrence_days
+              FROM " . $this->table_name . " 
+              WHERE id = ?";
+
+    if ($stmt = $this->db->link->prepare($query)) {
+        $stmt->bind_param("i", $workOrderId);
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $workOrder = $result->fetch_object();
+                $workOrder->resources = json_decode($workOrder->resources, true); // Decode JSON to array
+
+                // Optioneel: decode recurrence_days naar array als dat handig is
+                // $workOrder->recurrence_days = explode(',', $workOrder->recurrence_days);
+
+                return $workOrder;
             }
         }
-        return null;
+    }
+    return null;
+}
+    public function sortLink($column, $label, $currentSort, $currentOrder) {
+        $nextOrder = ($currentSort === $column && $currentOrder === 'ASC') ? 'desc' : 'asc';
+        return "<a href='index.php?page=workorder/showworkorders&sort=$column&order=$nextOrder'>" . $label . "</a>";
     }
 
 
     // Method to get and display all work orders
-    // Method to get and display all work orders
-    public function getWorkorders($itemsPerPage = 10) {
+    public function getWorkorders($itemsPerPage = 10, $sortColumn = 'id', $sortOrder = 'ASC', $searchTerm = '') {
         $currentPage = isset($_GET['pagecount']) ? (int)$_GET['pagecount'] : 1;
         $currentPage = max(1, $currentPage);
     
         $offset = ($currentPage - 1) * $itemsPerPage;
-    
-        $totalQuery = "SELECT COUNT(*) as total FROM " . $this->table_name;
+
+        $allowedSortColumns = ['id', 'omschrijving', 'klant', 'opdrachtnr_klant', 'leverdatum', 'start', 'end', 'verpakinstructie', 'file_path', 'created', 'modified', 'status'];
+
+        $sortColumn = isset($_GET['sort']) && in_array($_GET['sort'], $allowedSortColumns) ? $_GET['sort'] : 'id';
+        $sortOrder = (isset($_GET['order']) && strtolower($_GET['order']) === 'desc') ? 'DESC' : 'ASC';
+        
+        $searchSQL = '';
+
+        if (!empty($searchTerm)) {
+            $searchSQL = "WHERE 
+                omschrijving LIKE '%$searchTerm%' OR 
+                klant LIKE '%$searchTerm%' OR 
+                opdrachtnr_klant LIKE '%$searchTerm%' OR 
+                leverdatum LIKE '%$searchTerm%' OR 
+                verpakinstructie LIKE '%$searchTerm%' OR 
+                status LIKE '%$searchTerm%' OR 
+                created LIKE '%$searchTerm%' OR 
+                modified LIKE '%$searchTerm%'";
+        }
+
+        $totalQuery = "SELECT COUNT(*) as total FROM " . $this->table_name . " " . $searchSQL;
         $totalResult = $this->db->link->query($totalQuery);
         $totalCount = $totalResult->fetch_assoc()['total'];
         $totalPages = ceil($totalCount / $itemsPerPage);
+
+
     
-        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, omschrijving_klant, leverdatum, start, end, verpakinstructie, opmerkingen, file_path, created, modified, status 
-                  FROM " . $this->table_name . " 
-                  LIMIT $itemsPerPage OFFSET $offset";
+        $query = "SELECT id, omschrijving, klant, opdrachtnr_klant, leverdatum, start, end, verpakinstructie, file_path, created, modified, status 
+                  FROM " . $this->table_name . " $searchSQL 
+                  ORDER BY $sortColumn $sortOrder LIMIT $itemsPerPage OFFSET $offset";
+
+
+        echo "<div id='filter_form_div' style='text-align: right; margin-bottom: 10px;'>
+                <form method='GET' action='index.php' style='display: inline-block;'>
+                    <input type='hidden' name='page' value='workorder/showworkorders'>
+                    <input type='text' name='search' value='$searchTerm' placeholder='Zoek werkbonnen...' style='width: 250px;' />
+                    <button type='submit'>Zoeken</button>
+                </form>
+              </div>";
     
         if ($result = $this->db->link->query($query)) {
             if ($result->num_rows > 0) {
@@ -243,18 +294,16 @@ class WorkOrder {
     
                 echo "<table class='data-table results' cellpadding='0' cellspacing='0'>";
                 echo "<tr>
-                        <th class=\"ui-corner-tl\">ID</th>
-                        <th>Omschrijving</th>
-                        <th>Klant</th>
-                        <th>Opdrachtnr Klant</th>
-                        <th>Omschrijving Klant</th>
-                        <th>Leverdatum</th>
-                        <th>Verpakinstructie</th>
-                        <th>Opmerkingen</th>
-                        <th>Status</th>
-                        <th>Gemaakt</th>
-                        <th>Aangepast</th>
-                        <th class=\"ui-corner-tr\">Inkoop Order</th>
+                        <th class=\"ui-corner-tl\">" . $this->sortLink('id', 'ID', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('omschrijving', 'Omschrijving', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('klant', 'Klant', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('opdrachtnr_klant', 'Opdrachtnr Klant', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('leverdatum', 'Leverdatum', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('verpakinstructie', 'Verpakinstructie', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('status', 'Status', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('created', 'Gemaakt', $sortColumn, $sortOrder) . "</th>
+                        <th>" . $this->sortLink('modified', 'Aangepast', $sortColumn, $sortOrder) . "</th>
+                        <th class=\"ui-corner-tr\">" . $this->sortLink('file_path', 'Inkoop Order', $sortColumn, $sortOrder) . "</th>
                       </tr>";
     
                 while ($row = $result->fetch_assoc()) {
@@ -263,10 +312,8 @@ class WorkOrder {
                             <td>" . $row['omschrijving'] . "</td>
                             <td>" . $row['klant'] . "</td>
                             <td>" . $row['opdrachtnr_klant'] . "</td>
-                            <td>" . $row['omschrijving_klant'] . "</td>
                             <td>" . $row['leverdatum'] . "</td>
                             <td>" . $row['verpakinstructie'] . "</td>
-                            <td>" . $row['opmerkingen'] . "</td>
                             <td>" . $row['status'] . "</td>
                             <td>" . $row['created'] . "</td>
                             <td>" . $row['modified'] . "</td>
@@ -276,7 +323,7 @@ class WorkOrder {
     
                 echo "<tfoot>
                         <tr>
-                            <td class=\"ui-corner-bottom\"  colspan='12'>Werkbon $startResult – $endResult van $totalCount</td>
+                            <td class=\"ui-corner-bottom\"  colspan='10'>Werkbon $startResult – $endResult van $totalCount</td>
                         </tr>
                       </tfoot>";
                 echo "</table>";
@@ -302,33 +349,117 @@ class WorkOrder {
 
     public function getWorkordersJson()
     {
-        $query = "SELECT id, omschrijving AS title, start, end, resources FROM " . $this->table_name;
-        $data = []; // Initialize $data as an empty array
+        $query = "SELECT id, omschrijving AS title, start, end, resources,
+                        recurrence_type, recurrence_interval, recurrence_until, recurrence_days
+                FROM " . $this->table_name;
+
+        $data = [];
 
         if ($result = $this->db->link->query($query)) {
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    // Decode the JSON resources array
-                    $resources = json_decode($row['resources'], true);
+            while ($row = $result->fetch_assoc()) {
+               echo "Processing row: " . print_r($row, true); // Debugging output
+                
+                $resources = json_decode($row['resources'], true);
+                $resources = is_array($resources) && count($resources) > 0 ? $resources : [null];
 
-                    // Check if resources exist and is a valid array
-                    if (is_array($resources) && count($resources) > 0) {
+                // Bereken duur van event
+                $startDT = new DateTime($row['start']);
+                $endDT = new DateTime($row['end']);
+                $duration = $startDT->diff($endDT);
+
+                // Herhalend event?
+                if (!empty($row['recurrence_type']) && !empty($row['recurrence_until'])) {
+                     $repeats = $this->generateRecurringDates(
+                        $row['start'],
+                        $row['recurrence_type'],
+                        $row['recurrence_interval'],
+                        $row['recurrence_until'],
+                        $row['recurrence_days']
+                    );
+                    
+                    $resources = json_decode($row['resources'], true);
+                    // Validatie: moet array met geldige niet-lege strings zijn
+                    //if (!is_array($resources) || count(array_filter($resources)) === 0) {
+                    //    error_log("⚠️ Lege of ongeldige resources bij ID {$row['id']} - input: {$row['resources']}");
+                    //    continue; // sla dit event over
+                    //}
+
+                    foreach ($repeats as $startTime) {
+
                         foreach ($resources as $resource) {
+                            $start = new DateTime($startTime);
+                            $end = clone $start;
+                            $end->add($duration);
+
                             $data[] = [
-                                'id' => $row['id'],
+                                'id' => $row['id'] . $resource . $start->format('YmdHis'), // Unieke ID per resource en datum
                                 'title' => $row['title'],
-                                'start' => $row['start'],
-                                'end' => $row['end'],
-                                'resourceId' => $resource, // Add each resource as a separate entry
+                                'start' => $start->format('Y-m-d H:i:s'),
+                                'end'   => $end->format('Y-m-d H:i:s'),
+                                'resourceId' => $resource,
+                                'originalId' => $row['id'] // optioneel: om het echte werkorder-ID mee te geven
                             ];
                         }
+                       error_log("Generated dates for ID {$row['id']}: " . print_r($repeats, true));
+                    }
+                } else {
+                    // Eenmalig event
+                    foreach ($resources as $resource) {
+                        $data[] = [
+                            'id' => $row['id'] . $resource  . (new DateTime($row['start']))->format('YmdHis'),
+                            'title' => $row['title'],
+                            'start' => $row['start'],
+                            'end'   => $row['end'],
+                            'resourceId' => $resource,
+                            'originalId' => $row['id']
+                        ];
                     }
                 }
             }
             return json_encode($data, JSON_PRETTY_PRINT);
         }
-        return json_encode($data); // Return an empty JSON array if no rows are found
+
+        return json_encode($data);
     }
+
+    private function generateRecurringDates($startDateTime, $type, $interval, $until, $days = '')
+    {
+        $dates = [];
+        $current = new DateTime($startDateTime);
+        $end = new DateTime($until);
+
+        $interval = (int)($interval ?: 1); // fallback naar 1 als leeg of 0
+        $daysArray = array_filter(explode(',', $days ?? ''));
+
+        while ($current <= $end) {
+            switch ($type) {
+                case 'daily':
+                    $dates[] = $current->format('Y-m-d H:i:s');
+                    $current->modify("+{$interval} days");
+                    break;
+
+                case 'weekly':
+                    // Voor weekly moet je door alle dagen lopen
+                    if (in_array($current->format('D'), $daysArray)) {
+                        $dates[] = $current->format('Y-m-d H:i:s');
+                    }
+                    $current->modify("+1 day");
+                    break;
+
+                case 'monthly':
+                    $dates[] = $current->format('Y-m-d H:i:s');
+                    $current->modify("+{$interval} months");
+                    break;
+
+                default:
+                    // Ongeldige waarde, return leeg
+                    return [];
+            }
+        }
+
+        return $dates;
+    }
+
 
     public function searchWorkOrderCustomers($term) {
         // Prepare the SQL query

@@ -5,7 +5,35 @@ var amount;
 
 // Docuement selectors
 $(document).ready(function(){
-		
+	 
+
+	// Check for dark mode preference
+    const darkMode = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // Function to handle theme change
+    function handleThemeChange(e) {
+        if (e.matches) {
+            console.log('Dark mode enabled');
+            $(':root').css({
+                '--background': '#1a1a1a',
+                '--text': '#ffffff'
+            });
+        } else {
+            console.log('Light mode enabled');
+            $(':root').css({
+                '--background': '#ffffff',
+                '--text': '#000000'
+            });
+        }
+    }
+
+    // Initial check
+    handleThemeChange(darkMode);
+
+    // Listen for changes in prefers-color-scheme
+    darkMode.addEventListener('change', handleThemeChange);
+
+
 	 // JQuery ui element initialisation
 	 ProcessLayout();	 
 	 $(document).on('click',".suppliers a.article", BuildAccordion);	 
