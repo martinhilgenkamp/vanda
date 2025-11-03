@@ -1,0 +1,30 @@
+div.button {
+    width: 50%;
+    float: left;
+    height: 100px;
+    color: black;
+    display: grid;
+    place-items: center;
+    border-style: outset;
+    box-sizing: border-box;
+    border-color: white;
+}
+
+div.button_selected_green {
+    background-color: greenyellow;
+    border-style: inset;
+}
+
+div.button_selected_red {
+    background-color: red;
+    border-style: inset;
+}
+
+.mobilelist {
+    list-style: none;
+    padding: 0px;
+}
+
+form.inventoryForm {
+    padding-top: 5%;
+}

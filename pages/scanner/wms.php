@@ -7,11 +7,12 @@ $um = new UserManager();
 $options = $om->getAllOptions()[0];
 $user_loggedin = $um->checkLogin("");
 
+
 //Check if the user is signed in
 //If user is nog signed in relay to login page
 if(is_string($user_loggedin) || $user_loggedin === false) {
-    header('Location: ../loginscanner.php?page=/scanner/wms.php');
-    exit;
+   header('Location: ../loginscanner.php?page=/scanner/wms.php');
+   exit;
 }
 
 ?>
@@ -26,7 +27,8 @@ if(is_string($user_loggedin) || $user_loggedin === false) {
         <title>Vanda Carpets - Process Management</title>
 
         <!-- Iinclude Stylesheet !-->
-        <link rel="stylesheet" href="inc/css/style.css">
+         <link rel="stylesheet" href="css/style.css">
+          <link rel="stylesheet" href="css/wms.css">
 
         <!-- Adding required scripts !-->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -34,16 +36,14 @@ if(is_string($user_loggedin) || $user_loggedin === false) {
     </head>
 
     <body>
-        <h1>Magazijnbeheer</h1>
         <div id="result"></div>
         <div class="switch">
             <div id="checkin" class="button button_selected_green"><span>inboeken</span></div>
             <div id="checkout" class="button"><span>Uitscannen</span></div>
         </div>
-
-        <div>
+        <div id="shiplist">
             <!-- inventory in form !-->
-            <form id="inventory_in" name="inventory_in" method="post">	
+            <form class="inventoryForm" id="inventory_in" name="inventory_in" method="post">	
                 <ul class="mobilelist" id="inventory_in_list">
                     <li><label for="barcode_in">Barcode: </label><input type="text" id="barcode_in" name="barcode_in" placeholder="Barcode"/></li>
                     <li><label for="location_in">Locatie: </label><input type="text" id="location_in" name="location_in" placeholder="Locatie" disabled/></li>
@@ -55,14 +55,13 @@ if(is_string($user_loggedin) || $user_loggedin === false) {
             </form>
 
             <!-- inventory out form !-->
-            <form id="inventory_out" name="inventory_out" method="post" style="display: none;">	
+            <form class="inventoryForm" id="inventory_out" name="inventory_out" method="post" style="display: none;">	
                 <ul class="mobilelist" id="inventory_out_list">
                     <li><label for="barcode_out">Barcode: </label><input type="text" id="barcode_out" name="barcode_out" placeholder="Barcode"/></li>
                     <li><label for="location_out">Locatie: </label><input type="text" id="location_out" name="location_out" placeholder="location" disabled/></li>
                     <li><button type="submit_out">Submit</button><span> </span><button type="reset">Herstel</button></li>
                 </ul>
             </form>
-
             <div id="results">
                 <table>
                 </table>

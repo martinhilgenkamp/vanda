@@ -88,11 +88,10 @@ const DISMISS_AFTER_MS = 600;
                 success: function(response) {
                    // Create table, then add rows as elements and attach click in one line
                     const $results = $('#results').empty().append(`
-                    <table id="resultTable">
+                    <table id="shipmenttable">
                         <thead>
                         <tr>
-                            <th>Barcode</th><th>Kwaliteit</th><th>Locatie</th>
-                            <th>Datum</th><th>Modified</th>
+                            <th>Barcode</th><th>Locatie</th><th>Kwaliteit</th>
                             <th>Lengte</th><th>Breedte</th>
                         </tr>
                         </thead>
@@ -108,10 +107,8 @@ const DISMISS_AFTER_MS = 600;
                         .attr('id', r.id)
                         .append(`
                         <td>${r.barcode}</td>
-                        <td>${r.quality}</td>
                         <td>${r.location}</td>
-                        <td>${r.date}</td>
-                        <td>${r.modified}</td>
+                        <td>${r.quality}</td>                   
                         <td>${r.lengte}</td>
                         <td>${r.breedte}</td>
                         `)
@@ -161,6 +158,8 @@ const DISMISS_AFTER_MS = 600;
 function enableButton(button_id) {
     if(button_id === 0) {
         inventory_in = true;
+        clearOut();
+        $('#inventory_out')[0].reset();
         checkin.classList.add("button_selected_green");
         checkout.classList.remove("button_selected_red");
         $('#inventory_out').hide();
@@ -168,11 +167,13 @@ function enableButton(button_id) {
         $('#barcode_in').focus();
     } else {
         inventory_in = false;
+        clearIn();
+        $('#inventory_in')[0].reset();
         checkin.classList.remove("button_selected_green");
         checkout.classList.add("button_selected_red");
         $('#inventory_out').show();
         $('#inventory_in').hide();
-        $('#barcode_out').focus();
+        $('#barcode_out').focus(); 
     }
 }
 

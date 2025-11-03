@@ -111,3 +111,7 @@ html, body {
     margin-top: 10px;
     font-size: 16px;
   }
+  
+  form.disabled {
+    display: none;
+  }
