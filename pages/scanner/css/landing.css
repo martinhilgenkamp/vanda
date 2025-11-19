@@ -1,0 +1,16 @@
+html, body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+div.button {
+    width: 100%;
+    float: left;
+    height: 100px;
+    color: black;
+    background-color: rgb(240, 240, 240);
+    display: grid;
+    place-items: center;
+    border-style: outset;
+    box-sizing: border-box;
+    border-color: white;
+}

@@ -27,8 +27,8 @@ if(is_string($user_loggedin) || $user_loggedin === false) {
         <title>Vanda Carpets - Process Management</title>
 
         <!-- Iinclude Stylesheet !-->
-         <link rel="stylesheet" href="css/style.css">
-          <link rel="stylesheet" href="css/wms.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/wms.css">
 
         <!-- Adding required scripts !-->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
