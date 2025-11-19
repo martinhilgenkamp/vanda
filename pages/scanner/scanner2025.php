@@ -11,7 +11,7 @@ $user_loggedin = $um->checkLogin("");
 //Check if the user is signed in
 //If user is nog signed in relay to login page
 if(is_string($user_loggedin) || $user_loggedin === false) {
-   header('Location: ../loginscanner.php?page=/scanner/wms.php');
+   header('Location: ../loginscanner.php?page=/scanner/scanner2025.php');
    exit;
 }
 
