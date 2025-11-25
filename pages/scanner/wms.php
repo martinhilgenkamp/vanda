@@ -62,7 +62,18 @@ if(is_string($user_loggedin) || $user_loggedin === false) {
                     <li><button type="submit_out">Submit</button><span> </span><button type="reset">Herstel</button></li>
                 </ul>
             </form>
-            <div id="results">
+            <div id="resultsIn">
+                <table id="shipmenttable">
+                    <thead>
+                    <tr>
+                        <th>Barcode</th><th>Locatie</th><th>Kwaliteit</th>
+                        <th>Lengte</th><th>Breedte</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="resultsOut" style="display: none;">
                 <table>
                 </table>
             </div>

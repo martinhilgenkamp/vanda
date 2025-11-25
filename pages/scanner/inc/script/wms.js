@@ -1,9 +1,11 @@
 //Initial init
 inventory_in = true;
+cleared_loc = true;
+cleared_qua = true;
 
 let typingTimer, dismissTimer;
 const TYPING_IDLE_MS   = 600;
-const DISMISS_AFTER_MS = 600;
+const DISMISS_AFTER_MS = 1200;
 
 //Functions loading after DOM has finished initilizing
   document.onreadystatechange = function () {
@@ -29,7 +31,6 @@ const DISMISS_AFTER_MS = 600;
             
             if (!/^[A-Z0-9]{15}$/.test(barcode)) {
                 notifyUser(false,'Barcode is onjuist');
-                console.log("nope");
                 //return;
             }
         
@@ -50,9 +51,24 @@ const DISMISS_AFTER_MS = 600;
                 },
                 success: function(response) {
                     if(response)
-                    notifyUser(true, response.message)
+                    notifyUser(true, "Scannen succesvol")
+                    // Create table, then add rows as elements and attach click in one line
+                    const $results = $('#resultsIn');
+                    const $tbody = $results.find('tbody');
+                    $('<tr>')
+                        .append(`
+                        <td>${barcode}</td>
+                        <td>${locationVal}</td>
+                        <td>${qualityVal}</td>                   
+                        <td>${lengthVal}</td>
+                        <td>${widthVal}</td>
+                        `).prependTo($tbody)
 
-                },
+                        if($tbody.find("tr").length > 5) {
+                            $tbody.find("tr").last().remove();
+                        }
+                    
+            },
                 error: function(xhr, status, error) {
                     notifyUser(false,'Error: ' + error)
 
@@ -60,6 +76,11 @@ const DISMISS_AFTER_MS = 600;
             });
 
             $('#inventory_in')[0].reset();
+
+            $("#location_in").val(locationVal);
+            $("#quality_in").val(qualityVal);
+            cleared_loc = false;
+            cleared_qua = false;
         })
 
         //Reset the entire form
@@ -87,7 +108,7 @@ const DISMISS_AFTER_MS = 600;
                 },
                 success: function(response) {
                    // Create table, then add rows as elements and attach click in one line
-                    const $results = $('#results').empty().append(`
+                    const $results = $('#resultsOut').empty().append(`
                     <table id="shipmenttable">
                         <thead>
                         <tr>
@@ -140,12 +161,37 @@ const DISMISS_AFTER_MS = 600;
             typingTimer = setTimeout(() => {
             dismissTimer = setTimeout(() => { NEXT[this.id]?.(); }, DISMISS_AFTER_MS);
             }, TYPING_IDLE_MS);
+            
+            //Clear input if value was previously set
+            if(this.id === 'location_in' && !cleared_loc) {
+                let index = this.value.length - 1;
+                this.value = this.value.substring(index);
+                cleared_loc = true;
+            }
+
+            if(this.id === 'quality_in' && !cleared_qua) {
+                let index = this.value.length - 1;
+                this.value = this.value.substring(index);
+                cleared_qua = true;
+            }
         })
         .on('keydown', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out', function (e) {
+            //Detect enter key, move to next
             if (e.key === 'Enter') {
             e.preventDefault();
             clearTimeout(typingTimer); clearTimeout(dismissTimer);
             NEXT[this.id]?.();
+            }
+        })
+        .on('focus', '#location_in, #quality_in', function () {
+            //Start timeout if value is already there
+            if(this.value.length > 0) {
+                clearTimeout(typingTimer); clearTimeout(dismissTimer);
+                const val = this.value.trim(); if (!val) return;
+               
+                typingTimer = setTimeout(() => {
+                dismissTimer = setTimeout(() => { NEXT[this.id]?.(); }, DISMISS_AFTER_MS);
+                }, TYPING_IDLE_MS);
             }
         });
         
@@ -164,6 +210,8 @@ function enableButton(button_id) {
         checkout.classList.remove("button_selected_red");
         $('#inventory_out').hide();
         $('#inventory_in').show();
+        $('#resultsOut').hide();
+        $('#resultsIn').show();
         $('#barcode_in').focus();
     } else {
         inventory_in = false;
@@ -173,6 +221,8 @@ function enableButton(button_id) {
         checkout.classList.add("button_selected_red");
         $('#inventory_out').show();
         $('#inventory_in').hide();
+        $('#resultsOut').show();
+        $('#resultsIn').hide();
         $('#barcode_out').focus(); 
     }
 }
@@ -191,31 +241,26 @@ const NEXT = {
 function switchBarLocIn () {
     $('#location_in').removeAttr('disabled');
     $('#location_in').focus();
-    $('#barcode_in').prop('disabled', true)
 }
 
 function switchBarLocOut () {
     $('#location_out').removeAttr('disabled');
     $('#location_out').focus();
-    $('#barcode_out').prop('disabled', true)
 }
 
 function switchLocQuaIn () {
     $('#quality_in').removeAttr('disabled');
     $('#quality_in').focus();
-    $('#location_in').prop('disabled', true)
 }
 
 function switchQuaLenIn () {
     $('#length_in').removeAttr('disabled');
     $('#length_in').focus();
-    $('#quality_in').prop('disabled', true)
 }
 
 function switchLenWitIn () {
     $('#width_in').removeAttr('disabled');
     $('#width_in').focus();
-    $('#length_in').prop('disabled', true)
 }
 
 function nowSqlTimestamp() {
