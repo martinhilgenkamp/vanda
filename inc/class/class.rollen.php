@@ -416,7 +416,7 @@ class RollsManager {
 							</td>
 						</tr>';
 			$lengthsum = $lengthsum + $length;
-			if($colums > 2){
+			if($colums >= 2){
 				$colum++;
 			}
 		}
@@ -445,7 +445,7 @@ class RollsManager {
 							</tr>';
 				$lengthsum = $lengthsum + $restlengte;
 				$i++;
-				if($colums > 2){
+				if($colums >= 2){
 					$colum++;
 				}
 			}
