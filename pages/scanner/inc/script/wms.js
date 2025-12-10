@@ -22,6 +22,9 @@ const DISMISS_AFTER_MS = 1200;
         $('#inventory_in').submit(function(e) {
             e.preventDefault();
 
+            //Clear notifications
+            notifyUser(false);
+
             //Retrieve values from from the form
             const barcode = $("#barcode_in").val()?.trim() || "";
             const locationVal = $("#location_in").val()?.trim() || "";
@@ -92,6 +95,10 @@ const DISMISS_AFTER_MS = 1200;
         $('#inventory_out').submit(function(e) {
             e.preventDefault();
 
+            //Clear result table and notifications
+            $('#resultsOut').empty();
+            notifyUser(false);
+
             //Retrieve values from from the form
             const barcode = $("#barcode_out").val()?.trim() || "";
             const locationVal = $("#location_out").val()?.trim() || "";
@@ -107,54 +114,67 @@ const DISMISS_AFTER_MS = 1200;
                     processed: 0,
                 },
                 success: function(response) {
-                   // Create table, then add rows as elements and attach click in one line
-                    const $results = $('#resultsOut').empty().append(`
-                    <table id="shipmenttable">
-                        <thead>
-                        <tr>
-                            <th>Barcode</th><th>Locatie</th><th>Kwaliteit</th>
-                            <th>Lengte</th><th>Breedte</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    `);
+                    //No results
+                    if(response.message === "Geen resultaat.") {
+                        notifyUser(true, response.message);
+                    }
+                    //Single response immidate checkout
+                    else if(response.rows.length === 1) {
+                        let singleOutput = response.rows[0];
+                        checkOut(singleOutput.id, singleOutput.barcode, singleOutput.location, singleOutput.date, singleOutput.quality, singleOutput.lengte, singleOutput.breedte);
+                    } 
+                    //Show multiple collisons
+                    else {
+                    // Create table, then add rows as elements and attach click in one line
+                        const $results = $('#resultsOut').append(`
+                        <table id="shipmenttable">
+                            <thead>
+                            <tr>
+                                <th>Barcode</th><th>Locatie</th><th>Kwaliteit</th>
+                                <th>Lengte</th><th>Breedte</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        `);
 
-                    const $tbody = $results.find('tbody');
+                        const $tbody = $results.find('tbody');
 
-                    response.rows.forEach(r => {
-                    // Build <tr>, attach click with the known values, then append
-                    $('<tr>')
-                        .attr('id', r.id)
-                        .append(`
-                        <td>${r.barcode}</td>
-                        <td>${r.location}</td>
-                        <td>${r.quality}</td>                   
-                        <td>${r.lengte}</td>
-                        <td>${r.breedte}</td>
-                        `)
-                        .on('click', () => checkOut(r.id, r.barcode, r.location, r.date, r.quality, r.lengte, r.breedte)) // one-liner
-                        .appendTo($tbody);
-                    });
+                        response.rows.forEach(r => {
+                        // Build <tr>, attach click with the known values, then append
+                        $('<tr>')
+                            .attr('id', r.id)
+                            .append(`
+                            <td>${r.barcode}</td>
+                            <td>${r.location}</td>
+                            <td>${r.quality}</td>                   
+                            <td>${r.lengte}</td>
+                            <td>${r.breedte}</td>
+                            `)
+                            .on('click', () => checkOut(r.id, r.barcode, r.location, r.date, r.quality, r.lengte, r.breedte)) // one-liner
+                            .appendTo($tbody);
+                        });
+                    }
                 },
                 error: function(xhr, status, error) {
                     notifyUser(false,'Error: ' + error)
 
                 }
             });
-
+            //Clear input after submit
+            $('#inventory_out')[0].reset();
         })
 
         //Reset the entire form
         $('#inventory_out').on('reset', function (e) {
-            clearOut()
+            clearOut();
         });
 
         // ===== SHARED functions =====
         
         //Add event listeners to handle switch to next fields, does it on: 'enter' and with a timeout.
         $(document)
-        .on('input', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out' , function () {
+        .on('input', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out, #location_out' , function () {
             clearTimeout(typingTimer); clearTimeout(dismissTimer);
             const val = this.value.trim(); if (!val) return;
 
@@ -175,7 +195,7 @@ const DISMISS_AFTER_MS = 1200;
                 cleared_qua = true;
             }
         })
-        .on('keydown', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out', function (e) {
+        .on('keydown', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out, #location_out', function (e) {
             //Detect enter key, move to next
             if (e.key === 'Enter') {
             e.preventDefault();
@@ -232,6 +252,7 @@ const NEXT = {
     barcode_in:  () => switchBarLocIn(),
     location_in:  () => switchLocQuaIn(),
     barcode_out: () => switchBarLocOut(),
+    location_out: () => switchLocSubOut(),
     quality_in: () => switchQuaLenIn(),
     length_in: () => switchLenWitIn(),
 };
@@ -246,6 +267,10 @@ function switchBarLocIn () {
 function switchBarLocOut () {
     $('#location_out').removeAttr('disabled');
     $('#location_out').focus();
+}
+
+function switchLocSubOut() {
+    $('#inventory_out').trigger('submit');
 }
 
 function switchLocQuaIn () {
@@ -288,7 +313,7 @@ function clearIn() {
 function clearOut() {
     $('#barcode_out').removeAttr('disabled');
     $('#location_out').prop('disabled', true);
-    $('#results').html('');
+    $('#results').empty();
     $('#barcode_out').focus();
 }
 
@@ -334,6 +359,7 @@ function notifyUser(success,message){
         $('#result').removeClass('notice').addClass('error');
     } else {
         $('#result').removeClass('notice').removeClass('error');
+        $('#result').empty();
     }
 
     // Return the message
