@@ -34,6 +34,7 @@ $isEdit = $id > 0;
 
 $row = [
   'id'        => '',
+  'relation' => '',
   'barcode'     => '',
   'quality'   => '',
   'location'  => '',
@@ -62,6 +63,11 @@ if ($isEdit) {
   <div class="form-field">
     <label class="label-as-input">Rolnummer *</label>
     <input type="text" name="barcode" required value="<?= htmlspecialchars($row['barcode']) ?>">
+  </div>
+
+  <div class="form-field">
+    <label class="label-as-input">Relatie *</label>
+    <input type="text" name="relation" required value="<?= htmlspecialchars($row['relation']) ?>">
   </div>
 
   <div class="form-field">

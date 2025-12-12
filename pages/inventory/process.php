@@ -39,11 +39,11 @@ try {
 
     if ($action === 'save') {
         $barcode   = trim($_POST['barcode']  ?? '');
+        $relation  = trim($_POST['relation']  ?? '');
         $quality   = trim($_POST['quality']  ?? '');
         $location  = trim($_POST['location'] ?? '');
         $processed = isset($_POST['processed']) ? (int)$_POST['processed'] : 0;
         $dateSql   = trim($_POST['date'] ?? '');
-
         // New fields
         $lengte    = $toFloat($_POST['lengte']  ?? null);
         $breedte   = $toFloat($_POST['breedte'] ?? null);
@@ -51,6 +51,7 @@ try {
         // Validate
         $errors = [];
         if ($barcode === '')   $errors[] = 'Rolnummer/Barcode is verplicht.';
+        if ($relation === '')  $errors[] = 'Relatie is verplicht.';
         if ($quality === '')   $errors[] = 'Quality is verplicht.';
         if ($location === '')  $errors[] = 'Location is verplicht.';
         if ($dateSql === '')   $errors[] = 'Datum/tijd is verplicht.';
@@ -78,6 +79,7 @@ try {
             // Update
             $fields = [
                 'barcode'   => $barcode,
+                'relation'  => $relation,
                 'quality'   => $quality,
                 'location'  => $location,
                 'processed' => $processed,
@@ -106,7 +108,7 @@ try {
             $lenVal = $lengte  ?? 0.0;
             $brdVal = $breedte ?? 0.0;
 
-            $newId = $im->InsertStock(null, $barcode, $quality, $location, $processed, $dateSql, $lenVal, $brdVal);
+            $newId = $im->InsertStock(null, $barcode, $relation, $quality, $location, $processed, $dateSql, $lenVal, $brdVal);
             if (!$newId) {
                 throw new Exception('Aanmaken mislukt.');
             }

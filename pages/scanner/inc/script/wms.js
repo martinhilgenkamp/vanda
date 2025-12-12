@@ -2,6 +2,7 @@
 inventory_in = true;
 cleared_loc = true;
 cleared_qua = true;
+cleared_rea = true;
 
 let typingTimer, dismissTimer;
 const TYPING_IDLE_MS   = 600;
@@ -28,6 +29,7 @@ const DISMISS_AFTER_MS = 1200;
             //Retrieve values from from the form
             const barcode = $("#barcode_in").val()?.trim() || "";
             const locationVal = $("#location_in").val()?.trim() || "";
+            const relationVal = $("#relation_in").val()?.trim() || "";
             const qualityVal = $("#quality_in").val()?.trim() || "";
             const lengthVal = $("#length_in").val()?.trim() || "";
             const widthVal = $("#width_in").val()?.trim() || "";
@@ -45,6 +47,7 @@ const DISMISS_AFTER_MS = 1200;
                     action: "save",
                     id: "",
                     barcode: barcode,
+                    relation: relationVal,
                     quality: qualityVal,
                     lengte: lengthVal,
                     breedte: widthVal,
@@ -61,6 +64,7 @@ const DISMISS_AFTER_MS = 1200;
                     $('<tr>')
                         .append(`
                         <td>${barcode}</td>
+                        <td>${relationVal}</td>
                         <td>${locationVal}</td>
                         <td>${qualityVal}</td>                   
                         <td>${lengthVal}</td>
@@ -82,8 +86,10 @@ const DISMISS_AFTER_MS = 1200;
 
             $("#location_in").val(locationVal);
             $("#quality_in").val(qualityVal);
+            $("#relation_in").val(relationVal);
             cleared_loc = false;
             cleared_qua = false;
+            cleared_rea = false;
         })
 
         //Reset the entire form
@@ -121,7 +127,7 @@ const DISMISS_AFTER_MS = 1200;
                     //Single response immidate checkout
                     else if(response.rows.length === 1) {
                         let singleOutput = response.rows[0];
-                        checkOut(singleOutput.id, singleOutput.barcode, singleOutput.location, singleOutput.date, singleOutput.quality, singleOutput.lengte, singleOutput.breedte);
+                        checkOut(singleOutput.id, singleOutput.barcode, singleOutput.relation, singleOutput.location, singleOutput.date, singleOutput.quality, singleOutput.lengte, singleOutput.breedte);
                     } 
                     //Show multiple collisons
                     else {
@@ -130,7 +136,7 @@ const DISMISS_AFTER_MS = 1200;
                         <table id="shipmenttable">
                             <thead>
                             <tr>
-                                <th>Barcode</th><th>Locatie</th><th>Kwaliteit</th>
+                                <th>Barcode</th><th>Relatie</th><th>Locatie</th><th>Kwaliteit</th>
                                 <th>Lengte</th><th>Breedte</th>
                             </tr>
                             </thead>
@@ -146,12 +152,13 @@ const DISMISS_AFTER_MS = 1200;
                             .attr('id', r.id)
                             .append(`
                             <td>${r.barcode}</td>
+                            <td>${r.relation}</td>
                             <td>${r.location}</td>
                             <td>${r.quality}</td>                   
                             <td>${r.lengte}</td>
                             <td>${r.breedte}</td>
                             `)
-                            .on('click', () => checkOut(r.id, r.barcode, r.location, r.date, r.quality, r.lengte, r.breedte)) // one-liner
+                            .on('click', () => checkOut(r.id, r.barcode, r.relation, r.location, r.date, r.quality, r.lengte, r.breedte)) // one-liner
                             .appendTo($tbody);
                         });
                     }
@@ -174,7 +181,7 @@ const DISMISS_AFTER_MS = 1200;
         
         //Add event listeners to handle switch to next fields, does it on: 'enter' and with a timeout.
         $(document)
-        .on('input', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out, #location_out' , function () {
+        .on('input', '#barcode_in, #location_in, #relation_in, #quality_in, #length_in, #barcode_out, #location_out' , function () {
             clearTimeout(typingTimer); clearTimeout(dismissTimer);
             const val = this.value.trim(); if (!val) return;
 
@@ -189,13 +196,19 @@ const DISMISS_AFTER_MS = 1200;
                 cleared_loc = true;
             }
 
-            if(this.id === 'quality_in' && !cleared_qua) {
+            if(this.id === 'relation_in' && !cleared_qua) {
                 let index = this.value.length - 1;
                 this.value = this.value.substring(index);
                 cleared_qua = true;
             }
+
+            if(this.id === 'quality_in' && !cleared_rea) {
+                let index = this.value.length - 1;
+                this.value = this.value.substring(index);
+                cleared_rea = true;
+            }
         })
-        .on('keydown', '#barcode_in, #location_in, #quality_in, #length_in, #barcode_out, #location_out', function (e) {
+        .on('keydown', '#barcode_in, #location_in, #relation_in, #quality_in, #length_in, #barcode_out, #location_out', function (e) {
             //Detect enter key, move to next
             if (e.key === 'Enter') {
             e.preventDefault();
@@ -203,7 +216,7 @@ const DISMISS_AFTER_MS = 1200;
             NEXT[this.id]?.();
             }
         })
-        .on('focus', '#location_in, #quality_in', function () {
+        .on('focus', '#location_in, #quality_in, #relation_in', function () {
             //Start timeout if value is already there
             if(this.value.length > 0) {
                 clearTimeout(typingTimer); clearTimeout(dismissTimer);
@@ -250,7 +263,8 @@ function enableButton(button_id) {
 //Next handling when field is filled.
 const NEXT = {
     barcode_in:  () => switchBarLocIn(),
-    location_in:  () => switchLocQuaIn(),
+    location_in:  () => switchLocReaIn(),
+    relation_in: () => switchReaQuaIn(),
     barcode_out: () => switchBarLocOut(),
     location_out: () => switchLocSubOut(),
     quality_in: () => switchQuaLenIn(),
@@ -273,7 +287,12 @@ function switchLocSubOut() {
     $('#inventory_out').trigger('submit');
 }
 
-function switchLocQuaIn () {
+function switchLocReaIn () {
+    $('#relation_in').removeAttr('disabled');
+    $('#relation_in').focus();
+}
+
+function switchReaQuaIn () {
     $('#quality_in').removeAttr('disabled');
     $('#quality_in').focus();
 }
@@ -304,6 +323,7 @@ function nowSqlTimestamp() {
 function clearIn() {
     $('#barcode_in').removeAttr('disabled');
     $('#location_in').prop('disabled', true);
+    $('#relation_in').prop('disabled', true);
     $('#length_in').prop('disabled', true);
     $('#quality_in').prop('disabled', true);
     $('#width_in').prop('disabled', true);
@@ -322,7 +342,7 @@ function writeResult(result){
 }
 
 //Function to checkout items
-function checkOut(id, barcode, location, date, quality, lengte, breedte) {
+function checkOut(id, barcode, relation, location, date, quality, lengte, breedte) {
     let permission = confirm(barcode + " uitscannen?");
     if(permission){
         $.ajax({
@@ -332,6 +352,7 @@ function checkOut(id, barcode, location, date, quality, lengte, breedte) {
                 action: "save",
                 id: id,
                 barcode: barcode,
+                relation: relation,
                 location: location,
                 quality: quality,
                 processed: 1,

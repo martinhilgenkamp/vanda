@@ -13,7 +13,7 @@ class InventoryManager {
      * List inventory (all rows as JSON)
      */
     public function listInventory(): string {
-        $sql = "SELECT id, barcode, quality, location, processed, date, modified, lengte, breedte
+        $sql = "SELECT id, barcode, relation, quality, location, processed, date, modified, lengte, breedte
                 FROM vanda_inventory";
         $stmt = $this->link->prepare($sql);
         if (!$stmt) return json_encode([]);
@@ -29,7 +29,7 @@ class InventoryManager {
      * Saerch inventory by barcode and location
      */
     public function searchInventory(string $barcode, string $location, int $processed):  ?array {
-        $sql = "SELECT id, barcode, quality, location, processed, date, modified, lengte, breedte
+        $sql = "SELECT id, barcode, relation, quality, location, processed, date, modified, lengte, breedte
                 FROM vanda_inventory WHERE barcode = ? AND location = ? AND processed = ?";
         $stmt = $this->link->prepare($sql);
         if (!$stmt) [];
@@ -47,7 +47,7 @@ class InventoryManager {
      * Get inventory row by ID
      */
     public function getById(int $id): array {
-        $sql = "SELECT id, barcode, quality, location, processed, date, modified, lengte, breedte
+        $sql = "SELECT id, barcode, relation, quality, location, processed, date, modified, lengte, breedte
                 FROM vanda_inventory WHERE id = ?";
         $stmt = $this->link->prepare($sql);
         if (!$stmt) return null;
@@ -68,6 +68,7 @@ class InventoryManager {
     public function InsertStock(
         ?int $id,
         string $barcode,
+        string $relation,
         string $quality,
         string $location,
         int $processed,
@@ -77,15 +78,16 @@ class InventoryManager {
     ): int {
         if ($id === null) {
             $sql  = "INSERT INTO vanda_inventory
-                     (barcode, quality, location, processed, date, modified, lengte, breedte)
-                     VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)";
+                     (barcode, relation, quality, location, processed, date, modified, lengte, breedte)
+                     VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
             $stmt = $this->link->prepare($sql);
             if (!$stmt) return 0;
 
             // s s s i s d d
             $stmt->bind_param(
-                "sssisdd",
+                "ssssisdd",
                 $barcode,
+                $relation,
                 $quality,
                 $location,
                 $processed, // use 'i' (integer) for tinyint
@@ -95,16 +97,17 @@ class InventoryManager {
             );
         } else {
             $sql  = "INSERT INTO vanda_inventory
-                     (id, barcode, quality, location, processed, date, modified, lengte, breedte)
+                     (id, barcode, relation, quality, relation, location, processed, date, modified, lengte, breedte)
                      VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
             $stmt = $this->link->prepare($sql);
             if (!$stmt) return 0;
 
             // i s s s i s d d
             $stmt->bind_param(
-                "isssisdd",
+                "issssisdd",
                 $id,
                 $barcode,
+                $relation,
                 $quality,
                 $location,
                 $processed,
@@ -126,13 +129,13 @@ class InventoryManager {
 
     /**
      * Modify existing stock (by ID).
-     * Allowed columns: barcode, quality, location, processed, date, lengte, breedte
+     * Allowed columns: barcode, quality, relation, location, processed, date, lengte, breedte
      * 'modified' is set to NOW() automatically on update.
      */
     public function ModifyStock(int $id, array $fields): bool {
         if ($id <= 0) return false;
 
-        $allowed = ['barcode', 'quality', 'location', 'processed', 'date', 'lengte', 'breedte'];
+        $allowed = ['barcode', 'quality', 'relation', 'location', 'processed', 'date', 'lengte', 'breedte'];
 
         $setParts = [];
         $params   = [];
@@ -158,7 +161,6 @@ class InventoryManager {
                     break;
             }
         }
-
         if (empty($setParts)) return false;
 
         // auto-stamp modified
