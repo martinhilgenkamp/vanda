@@ -857,13 +857,13 @@ hr {
 /* ==========================================================================
    13. Media Queries
    ========================================================================== */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     :root {
         --background: #1a1a1a;
         --text: #ffffff;
 		--accent-background: #333333;
     }
-}
+} */
 
 @media (forced-colors: active) {
     :root {
