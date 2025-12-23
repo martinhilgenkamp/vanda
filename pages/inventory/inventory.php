@@ -42,6 +42,7 @@ $om = new OptionManager();
       <th>Locatie</th>
       <th>Verwerkt</th>
       <th>Datum</th>
+      <th>Dagen</th>
       <th class="ui-corner-tr">Gewijzigd</th>
     </tr>
   </thead>
@@ -49,7 +50,7 @@ $om = new OptionManager();
   <tfoot>
     <tr>
       <!-- colspan must match number of columns -->
-      <td colspan="10" class="ui-corner-bl ui-corner-br">&nbsp;</td>
+      <td colspan="11" class="ui-corner-bl ui-corner-br">&nbsp;</td>
     </tr>
   </tfoot>
 </table>
@@ -81,7 +82,8 @@ $om = new OptionManager();
     location: 6,
     processed: 7,
     date: 8,
-    modified: 9
+    daysInStock: 9,
+    modified: 10
   };
 
   // Date range filter (uses the 'date' column)
@@ -144,6 +146,34 @@ $om = new OptionManager();
             return isNaN(d) ? v : d.toLocaleString();
           }
           return v;
+        }
+      },
+      {
+        data: null,
+        title: 'Dagen',
+        render: (row, t) => {
+          // Keep comments in English
+          const parse = (s) => {
+            if (!s) return null;
+            const d = new Date(String(s).replace(' ', 'T'));
+            return isNaN(d) ? null : d;
+          };
+
+          const start = parse(row?.date);
+          const end = parse(row?.modified) || new Date(); // if not modified: today
+
+          if (!start || !end) return (t === 'display') ? '' : null;
+
+          // Normalize to local midnight to avoid timezone/hour causing -1
+          const a = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
+          const b = new Date(end.getFullYear(), end.getMonth(), end.getDate()).getTime();
+
+          let days = Math.round((b - a) / 86400000);
+
+          // Clamp negative results (data issues / clock issues)
+          if (days < 0) days = 0;
+
+          return (t === 'display') ? days.toLocaleString() : days;
         }
       },
       {
