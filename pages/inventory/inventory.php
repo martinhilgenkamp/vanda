@@ -114,8 +114,8 @@ $om = new OptionManager();
     columns: [
       { data: 'id' },          // ID
       { data: 'relation' },    // Relatie
-      { data: 'quality' },     // Quality
       { data: 'barcode' },     // Barcode
+      { data: 'quality' },     // Quality
       {
         data: 'lengte',
         render: (v, t) =>
