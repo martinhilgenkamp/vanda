@@ -63,7 +63,7 @@ class RollsShipment {
 
 		$this->restoreSession();
 		if (isset($_GET["free_search_rollship"])) { 	$free_search_rollship  = $_GET["free_search_rollship"];	} elseif (isset($_POST['free_search_rollship'])){	$free_search_rollship = $_POST['free_search_rollship'];	} else { $free_search_rollship='';	};		
-		$user = $this->userManager->getUserByName($_SESSION['username']);
+		$user = $this->userManager->getUserByToken($_COOKIE['token']);
 		
 		$output .= "<div id='filter_form_div'>".$nl;
 		$output .= "<form id='filter_form' action='index.php?page=roll-shipments' method='post'>".$nl;
@@ -89,7 +89,7 @@ class RollsShipment {
 		$sort = "";
 		$order = "";
 
-		$user = $this->userManager->getUserByName($_SESSION['username']);
+		$user = $this->userManager->getUserByToken($_COOKIE['token']);
 		$cols = array('id','klant','datum');
 		
 		// Variabelen definieren
