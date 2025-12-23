@@ -21,9 +21,9 @@ $om = new OptionManager();
   <input type="text" id="f-barcode" placeholder="Rolnummer">
   <select id="f-location"><option value="">All locations</option></select>
   <select id="f-processed">
+    <option value="0">Voorraad</option>
     <option value="">Alles</option>
     <option value="1">Uitgeboekt</option>
-    <option value="0">Voorraad</option>
   </select>
   <input type="date" id="f-date-from" placeholder="Van datum">
   <input type="date" id="f-date-to" placeholder="Tot datum">
@@ -215,4 +215,6 @@ $om = new OptionManager();
   });
 
   $('#f-date-from, #f-date-to').on('change', () => table.draw());
+
+  $('#f-processed').trigger('change');
 </script>
