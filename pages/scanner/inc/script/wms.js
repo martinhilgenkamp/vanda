@@ -5,8 +5,8 @@ cleared_qua = true;
 cleared_rea = true;
 
 let typingTimer, dismissTimer;
-const TYPING_IDLE_MS   = 600;
-const DISMISS_AFTER_MS = 1200;
+const TYPING_IDLE_MS   = 1200;
+const DISMISS_AFTER_MS = 1800;
 
 //Functions loading after DOM has finished initilizing
   document.onreadystatechange = function () {
