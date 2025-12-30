@@ -16,7 +16,6 @@ $om = new OptionManager();
 <link rel="stylesheet" href="inc/style/inventory.css">
 
 <h2>Inventory</h2>
-
 <div class="filters" id="filterdiv">
   <input type="text" id="f-barcode" placeholder="Rolnummer">
   <select id="f-location"><option value="">All locations</option></select>
@@ -106,6 +105,59 @@ $om = new OptionManager();
   // Helper: build edit URL
   function buildEditUrl(id) {
     return 'index.php?page=' + encodeURIComponent('inventory/edit') + '&id=' + encodeURIComponent(id);
+  }
+
+  //Export data to CSV file using blob download
+  function exportCsv() {
+    //Handle filters
+    const fBarcode  = ($("#f-barcode").val() || "").trim().toLowerCase();
+    const fLocation = $("#f-location").val() || "";
+    const fFrom     = $("#f-date-from").val() || "";
+    const fTo       = $("#f-date-to").val() || ""; 
+    const fProcessed = $("#f-processed").val();
+    const doProcessedFilter = fProcessed !== "";
+
+    var csv = "";
+
+    //Convert to CSV format
+    for(i = 0; i < data.length; i++){
+      const row = data[i];
+
+      const rowBarcode = String(row.barcode ?? "").toLowerCase();
+      const rowLocation = String(row.location ?? "");
+      const rowProcessed = String(row.processed ?? "");
+      const rowDate = String(row.date ?? "");
+
+      if (fBarcode && !rowBarcode.includes(fBarcode)) continue;
+
+      if (fLocation && rowLocation !== fLocation) continue;
+
+      if (doProcessedFilter && rowProcessed !== String(fProcessed)) continue;
+
+      if (fFrom || fTo) {
+
+      if (!rowDate) continue;
+        if (fFrom && rowDate < fFrom) continue;
+        if (fTo && rowDate > fTo) continue;
+      }
+      csv = csv.concat(row.relation + ";" + row.barcode + ";" + row.quality + ";" + row.lengte + ";" + row.breedte + ";" + row.location + ";" + row.processed + ";" + row.date + ";" + row.modified + "\n");
+    }
+
+    //Create CSV blob object
+    const blob = new Blob(
+      [csv],
+      { type: "text/csv;charset=utf-8;" }
+    );
+
+    //Convert BLOB to URL download
+    const url = URL.createObjectURL(blob);
+    
+    //Start the download
+    $("<a>")
+    .attr("href", url)
+    .attr("download", "voorraad.csv")
+    .appendTo("body")[0]
+    .click();
   }
 
   const table = $('#invTable').DataTable({
@@ -247,4 +299,7 @@ $om = new OptionManager();
   $('#f-date-from, #f-date-to').on('change', () => table.draw());
 
   $('#f-processed').trigger('change');
+
+  //CSV button
+  $('#csv').on('click', () => exportCsv());
 </script>
