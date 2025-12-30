@@ -17,6 +17,7 @@ $om = new OptionManager();
 
 <h2>Inventory</h2>
 <div class="filters" id="filterdiv">
+  <div id="csv" class="csv"><img src="images/excel.png"></div>
   <input type="text" id="f-barcode" placeholder="Rolnummer">
   <select id="f-location"><option value="">All locations</option></select>
   <select id="f-processed">
