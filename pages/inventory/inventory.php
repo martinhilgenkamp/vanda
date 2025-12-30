@@ -118,7 +118,7 @@ $om = new OptionManager();
     const fProcessed = $("#f-processed").val();
     const doProcessedFilter = fProcessed !== "";
 
-    var csv = "";
+    var csv = "Relatie;Rolnummer;Kwaliteit;Lengte;Breedte;Locatie;Verwerkt;Datum;Datum verwerkt\n";
 
     //Convert to CSV format
     for(i = 0; i < data.length; i++){
