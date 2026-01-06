@@ -208,6 +208,9 @@ const DISMISS_AFTER_MS = 1800;
                 cleared_rea = true;
             }
         })
+        .on('click', '#submit_out', function () {
+            clearTimeout(typingTimer); clearTimeout(dismissTimer);
+        })
         .on('keydown', '#barcode_in, #location_in, #relation_in, #quality_in, #length_in, #barcode_out, #location_out', function (e) {
             //Detect enter key, move to next
             if (e.key === 'Enter') {

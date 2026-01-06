@@ -60,7 +60,7 @@ if(is_string($user_loggedin) || $user_loggedin === false) {
                 <ul class="mobilelist" id="inventory_out_list">
                     <li><label for="barcode_out">Barcode: </label><input type="text" id="barcode_out" name="barcode_out" placeholder="Barcode"/></li>
                     <li><label for="location_out">Locatie: </label><input type="text" id="location_out" name="location_out" placeholder="location" disabled/></li>
-                    <li><button type="submit_out">Submit</button><span> </span><button type="reset">Herstel</button></li>
+                    <li><button id="submit_out" type="submit_out">Submit</button><span> </span><button type="reset">Herstel</button></li>
                 </ul>
             </form>
             <div id="resultsIn">
