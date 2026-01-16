@@ -381,6 +381,7 @@ $(document).ready(function(){
 		var gewicht = $('#gewicht').val();
 		var barcode = $('#barcode').val();
 		var ordernr =  $('#ordernr').val() != undefined ? $('#ordernr').val() : "";
+		var pallet_nr = $('#pallet_nr').val() != undefined ? $('#pallet_nr').val() : "";
 		var task = $('#task').val();
 		var colli = $('#colli').val();
 				
@@ -410,7 +411,7 @@ $(document).ready(function(){
 		
 		
 		// Boek het artikel in de mysql database.
-		$.post( "pages/process.php", { task: "insertartikel", artikelnummer: artikelnummer, kwaliteit: kwaliteit, gewicht: gewicht, ordernr: ordernr, colli: colli}).done(function( data ) {
+		$.post( "pages/process.php", { task: "insertartikel", artikelnummer: artikelnummer, kwaliteit: kwaliteit, gewicht: gewicht, ordernr: ordernr, pallet_nr: pallet_nr, colli: colli}).done(function( data ) {
 		
 			if(data.includes("succesvol")){
 				//Show Etiket.

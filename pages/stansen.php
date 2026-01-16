@@ -52,6 +52,9 @@ $options = $om->getAllOptions()[0];
 				<label for="colli">Colli: </label><input type="text" class="ui-corner-all textfield" id="colli" name="colli"/>
 			</li>
 			<li>
+				<label for="colli">Pallet no.: </label><input type="text" class="ui-corner-all textfield" id="pallet_nr" name="pallet_nr"/>
+			</li>
+			<li>
 			<!--<div id="barcode-display"><?php echo $barcode; ?></div>!-->
 			</li>
 			<li>

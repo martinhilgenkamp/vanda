@@ -59,7 +59,7 @@ class TablePDF extends TCPDF{
 			// Werk de groep uit.
 			$groep_gewicht = 0;
 			foreach($group as $row){
-				$return[] = array('',$row['shipping_id'],$row['barcode'],$row['ordernr'],$row['geleverd'],$row['gewicht']);	
+				$return[] = array('',$row['shipping_id'],$row['pallet_nr'],$row['barcode'],$row['ordernr'],$row['geleverd'],$row['gewicht']);	
 				$groep_gewicht = $groep_gewicht + $row['gewicht'];
 			}
 			$return[] = array('','','','Totaal Gewicht: ',$groep_gewicht);
@@ -101,7 +101,7 @@ class TablePDF extends TCPDF{
 	 // Colored table
     public function ColoredTable($key, $data) {
         // Header
-		$w = array(50, 15, 35, 20, 35, 20, );
+		$w = array(45, 15, 12, 33, 18, 37, 20, );
 		$rows = 25; 
 			
 		// Data
@@ -122,10 +122,11 @@ class TablePDF extends TCPDF{
 				$this->SetFont('helvetica', '', 12);
 				$this->Cell($w[0], 7, $key, 1, 0, 'C', 1);
 				$this->Cell($w[1], 7, 'ID', 1, 0, 'C', 1);
-				$this->Cell($w[2], 7, 'Barcode', 1, 0, 'C', 1);
-				$this->Cell($w[3], 7, 'Ordernr', 1, 0, 'C', 1);
-				$this->Cell($w[4], 7, 'Lever Datum', 1, 0, 'C', 1);
-				$this->Cell($w[5], 7, 'Kg / Stk', 1, 0, 'R', 1);
+				$this->Cell($w[2], 7, 'Pallet', 1, 0, 'C', 1);
+				$this->Cell($w[3], 7, 'Barcode', 1, 0, 'C', 1);
+				$this->Cell($w[4], 7, 'Ordernr', 1, 0, 'C', 1);
+				$this->Cell($w[5], 7, 'Lever Datum', 1, 0, 'C', 1);
+				$this->Cell($w[6], 7, 'Kg / Stk', 1, 0, 'R', 1);
 				$this->Ln();
 				// Color and font restoration
 				$this->SetFillColor(225);
@@ -169,7 +170,8 @@ class TablePDF extends TCPDF{
 				$this->Cell($w[2], 4, $row[2], 'LR', 0, 'C', $fill);
 				$this->Cell($w[3], 4, $row[3], 'LR', 0, 'C', $fill);
 				$this->Cell($w[4], 4, $row[4], 'LR', 0, 'C', $fill);
-				$this->Cell($w[5], 4, $row[5].(strpos($key, ' - ') ? ' Stk' : ' Kg'), 'LR', 0, 'R', $fill);
+				$this->Cell($w[5], 4, $row[5], 'LR', 0, 'C', $fill);
+				$this->Cell($w[6], 4, $row[6].(strpos($key, ' - ') ? ' Stk' : ' Kg'), 'LR', 0, 'R', $fill);
 				$this->Ln();
 			}
             $fill=!$fill;

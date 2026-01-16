@@ -41,7 +41,7 @@ class ShipmentSpreadsheet extends Spreadsheet {
 	}
 
     public function loadData($ship_id ){
-        $query = "SELECT barcode, artikelnummer, gewicht, DATE_FORMAT(datum,'%m-%d-%Y') as datum, DATE_FORMAT(datum,'%H:%i') as tijd, ponummer FROM `vanda_production` LEFT JOIN vanda_options ON vanda_options.id = 1 WHERE shipping_id = '".$ship_id."' ORDER BY artikelnummer, datum";
+        $query = "SELECT barcode, artikelnummer, pallet_nr as pallet, gewicht, DATE_FORMAT(datum,'%m-%d-%Y') as datum, DATE_FORMAT(datum,'%H:%i') as tijd, ponummer FROM `vanda_production` LEFT JOIN vanda_options ON vanda_options.id = 1 WHERE shipping_id = '".$ship_id."' ORDER BY artikelnummer, datum";
         $result = $this->db->selectQuery($query);
 
         // rewrite data as an array
@@ -74,10 +74,11 @@ $spreadsheet->getProperties()->setCreator('Vanda Carpets')
 $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A1', 'Barcode')
             ->setCellValue('B1', 'Artikelnummer')
-            ->setCellValue('C1', 'Gewicht')
-            ->setCellValue('D1', 'Productie Datum')
-			->setCellValue('E1', 'Productie Tijd')
-			->setCellValue('F1', 'PO Nummer');
+            ->setCellValue('C1', 'pallet')
+            ->setCellValue('D1', 'Gewicht')
+            ->setCellValue('E1', 'Productie Datum')
+			->setCellValue('F1', 'Productie Tijd')
+			->setCellValue('G1', 'PO Nummer');
 
 // Print requested data in Excel
 $spreadsheet->setActiveSheetIndex(0)

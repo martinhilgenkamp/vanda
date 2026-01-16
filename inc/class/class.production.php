@@ -13,6 +13,7 @@ class ProductionManager {
 			'removed' => 0,
 			'kwaliteit' => "",
 			'ordernr' => "",
+			'pallet_nr' => "",
 			'geleverd' => "00-00-0000",
 			'shipping_id' => ""
 		];
@@ -24,7 +25,7 @@ class ProductionManager {
 		}
 		
 	$data['barcode'] = "F00830".$this->getNewBarcode();
-	
+
 	return $this->db->insertQuery("vanda_production", $data);	
 
 	}

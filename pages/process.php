@@ -211,9 +211,9 @@ switch($task){
 			"gewicht" => $_POST['gewicht'],
 			"datum" => date('Y-m-d H:i:s'),
 			"ordernr" => $_POST['ordernr'],
+			"pallet_nr" => $_POST['pallet_nr'],
 			"colli" => $_POST['colli']
 		];
-		
 		
 		//Check if colli is set, default to 1
 		if(!isset($data['colli'])){
