@@ -4,10 +4,6 @@ cleared_loc = true;
 cleared_qua = true;
 cleared_rea = true;
 
-let typingTimer, dismissTimer;
-const TYPING_IDLE_MS   = 1200;
-const DISMISS_AFTER_MS = 1800;
-
 //Functions loading after DOM has finished initilizing
   document.onreadystatechange = function () {
     if (document.readyState == "complete") {
@@ -182,13 +178,8 @@ const DISMISS_AFTER_MS = 1800;
         //Add event listeners to handle switch to next fields, does it on: 'enter' and with a timeout.
         $(document)
         .on('input', '#barcode_in, #location_in, #relation_in, #quality_in, #length_in, #barcode_out, #location_out' , function () {
-            clearTimeout(typingTimer); clearTimeout(dismissTimer);
             const val = this.value.trim(); if (!val) return;
 
-            typingTimer = setTimeout(() => {
-            dismissTimer = setTimeout(() => { NEXT[this.id]?.(); }, DISMISS_AFTER_MS);
-            }, TYPING_IDLE_MS);
-            
             //Clear input if value was previously set
             if(this.id === 'location_in' && !cleared_loc) {
                 let index = this.value.length - 1;
@@ -208,26 +199,11 @@ const DISMISS_AFTER_MS = 1800;
                 cleared_rea = true;
             }
         })
-        .on('click', '#submit_out', function () {
-            clearTimeout(typingTimer); clearTimeout(dismissTimer);
-        })
         .on('keydown', '#barcode_in, #location_in, #relation_in, #quality_in, #length_in, #barcode_out, #location_out', function (e) {
             //Detect enter key, move to next
             if (e.key === 'Enter') {
             e.preventDefault();
-            clearTimeout(typingTimer); clearTimeout(dismissTimer);
             NEXT[this.id]?.();
-            }
-        })
-        .on('focus', '#location_in, #quality_in, #relation_in', function () {
-            //Start timeout if value is already there
-            if(this.value.length > 0) {
-                clearTimeout(typingTimer); clearTimeout(dismissTimer);
-                const val = this.value.trim(); if (!val) return;
-               
-                typingTimer = setTimeout(() => {
-                dismissTimer = setTimeout(() => { NEXT[this.id]?.(); }, DISMISS_AFTER_MS);
-                }, TYPING_IDLE_MS);
             }
         });
         
@@ -277,12 +253,10 @@ const NEXT = {
 // ===== Button switch functions =====
 //Switches input fields of the forms on the page
 function switchBarLocIn () {
-    $('#location_in').removeAttr('disabled');
     $('#location_in').focus();
 }
 
 function switchBarLocOut () {
-    $('#location_out').removeAttr('disabled');
     $('#location_out').focus();
 }
 
@@ -291,22 +265,18 @@ function switchLocSubOut() {
 }
 
 function switchLocReaIn () {
-    $('#relation_in').removeAttr('disabled');
     $('#relation_in').focus();
 }
 
 function switchReaQuaIn () {
-    $('#quality_in').removeAttr('disabled');
     $('#quality_in').focus();
 }
 
 function switchQuaLenIn () {
-    $('#length_in').removeAttr('disabled');
     $('#length_in').focus();
 }
 
 function switchLenWitIn () {
-    $('#width_in').removeAttr('disabled');
     $('#width_in').focus();
 }
 
@@ -324,18 +294,10 @@ function nowSqlTimestamp() {
 }
 
 function clearIn() {
-    $('#barcode_in').removeAttr('disabled');
-    $('#location_in').prop('disabled', true);
-    $('#relation_in').prop('disabled', true);
-    $('#length_in').prop('disabled', true);
-    $('#quality_in').prop('disabled', true);
-    $('#width_in').prop('disabled', true);
     $('#barcode_in').focus();
 }
 
 function clearOut() {
-    $('#barcode_out').removeAttr('disabled');
-    $('#location_out').prop('disabled', true);
     $('#results').empty();
     $('#barcode_out').focus();
 }

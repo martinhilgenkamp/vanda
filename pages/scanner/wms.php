@@ -46,11 +46,11 @@ $user_loggedin = $um->checkLogin("");
             <form class="inventoryForm" id="inventory_in" name="inventory_in" method="post">	
                 <ul class="mobilelist" id="inventory_in_list">
                     <li><label for="barcode_in">Barcode: </label><input type="text" id="barcode_in" name="barcode_in" placeholder="Barcode"/></li>
-                    <li><label for="location_in">Locatie: </label><input type="text" id="location_in" name="location_in" placeholder="Locatie" disabled/></li>
-                    <li><label for="relation_in">Relatie: </label><input type="text" id="relation_in" name="relation_in" placeholder="Relatie" disabled/></li>
-                    <li><label for="quality_in">Kwaliteit: </label><input type="text" id="quality_in" name="quality_in"  placeholder="Kwaliteit" disabled/></li>
-                    <li><label for="length_in">Lengte: </label><input type="text" id="length_in" name="length_in"  placeholder="Lengte" disabled/></li>
-                    <li><label for="width_in">Breedte: </label><input type="text" id="width_in" name="width_in"  placeholder="Breedte" value="4" disabled/></li>
+                    <li><label for="location_in">Locatie: </label><input type="text" id="location_in" name="location_in" placeholder="Locatie"/></li>
+                    <li><label for="relation_in">Relatie: </label><input type="text" id="relation_in" name="relation_in" placeholder="Relatie"/></li>
+                    <li><label for="quality_in">Kwaliteit: </label><input type="text" id="quality_in" name="quality_in"  placeholder="Kwaliteit"/></li>
+                    <li><label for="length_in">Lengte: </label><input type="text" id="length_in" name="length_in"  placeholder="Lengte"/></li>
+                    <li><label for="width_in">Breedte: </label><input type="text" id="width_in" name="width_in"  placeholder="Breedte" value="4"/></li>
                     <li><button type="submit_in">Submit</button><span> </span><button type="reset">Herstel</button></li>
                 </ul>
             </form>
@@ -59,7 +59,7 @@ $user_loggedin = $um->checkLogin("");
             <form class="inventoryForm" id="inventory_out" name="inventory_out" method="post" style="display: none;">	
                 <ul class="mobilelist" id="inventory_out_list">
                     <li><label for="barcode_out">Barcode: </label><input type="text" id="barcode_out" name="barcode_out" placeholder="Barcode"/></li>
-                    <li><label for="location_out">Locatie: </label><input type="text" id="location_out" name="location_out" placeholder="location" disabled/></li>
+                    <li><label for="location_out">Locatie: </label><input type="text" id="location_out" name="location_out" placeholder="location"/></li>
                     <li><button id="submit_out" type="submit_out">Submit</button><span> </span><button type="reset">Herstel</button></li>
                 </ul>
             </form>
