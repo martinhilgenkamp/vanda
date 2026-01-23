@@ -110,7 +110,7 @@ class TablePDF extends TCPDF{
 		$i = 0;
 		$rijen = count($data);
 		$noline = 0;
-				
+
 		foreach($data as $row) {
 			if($t == 0){
 				 // Colors, line width and bold font
@@ -164,7 +164,7 @@ class TablePDF extends TCPDF{
 			  );
 
 				$this->Cell(1, 4, '', 'L', 0, 'C', $fill);
-				$this->write1DBarcode($row[2], 'C128', '', '', $w[0]-1, 4 , '.18', $bstyle, 'T');
+				$this->write1DBarcode($row[3], 'C128', '', '', $w[0]-1, 4 , '.18', $bstyle, 'T');
 				//$this->Cell($w[0], 4, '', 'LR', 0, 'C', $fill);
 				$this->Cell($w[1], 4, $row[1], 'LR', 0, 'C', $fill);
 				$this->Cell($w[2], 4, $row[2], 'LR', 0, 'C', $fill);
