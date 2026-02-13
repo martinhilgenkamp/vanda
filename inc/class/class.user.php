@@ -9,6 +9,11 @@ class UserManager {
 
 	function __construct($username = null) {
 		$this->db = new DB();
+
+        //Get the root of the host domain, using sub domain makes different cookies per sub domain
+        $host = strtolower($_SERVER['HTTP_HOST'] ?? '');
+		$hostParts = explode('.', $host);
+		$this->host = (count($hostParts) >= 2) ? implode('.', array_slice($hostParts, -2)) : $host;
 	}
 
 	function checkLogin($data){ 
