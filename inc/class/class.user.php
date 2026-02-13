@@ -5,12 +5,14 @@ class UserManager {
 	private $db;
     private $table_name = "vanda_user";
     private $columns = "id, username, email, level, active, password, isresource";
+    private $host = "";
 
 	function __construct($username = null) {
 		$this->db = new DB();
 	}
 
 	function checkLogin($data){ 
+           print($this->host);
 			if (isset($data['username']) and isset($data['password'])){
 			$username = $data['username'];
 			$password = $data['password'];
@@ -19,7 +21,14 @@ class UserManager {
 			if ($user && $this->checkCredentials($user, $password)){
                 $token = bin2hex(random_bytes(128));
 				$_SESSION['token'] = $token;
-				setcookie('token',$token,time()+30*24*60*60);
+				setcookie('token', $token, [
+                    'expires'  => time() + 30*24*60*60,
+                    'path'     => '/',
+                    'domain'   => $this->host,
+                    'secure'   => true,
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ]);
                 $this->setToken($user->id, $token);
                 $_SESSION['username'] = $username;
                 return true;
@@ -32,7 +41,14 @@ class UserManager {
 			$user = $this->getUserByToken($_COOKIE['token']);
 			if ($user){
 				$_SESSION['token'] = $_COOKIE['token'];				
-				setcookie('token',$_COOKIE['token'],time()+30*24*60*60);
+				setcookie('token',$_COOKIE['token'], [
+                    'expires'  => time() + 30*24*60*60,
+                    'path'     => '/',
+                    'domain'   => $this->host,
+                    'secure'   => true,
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ]);
 				return true;
 			}else{
 				return "Ongeldige gebruikersnaam of wachtwoord.";
@@ -40,7 +56,14 @@ class UserManager {
 		}
 		
 		if (isset($_SESSION['token'])){
-			setcookie('token',$_SESSION['token'],time()+30*24*60*60);
+			setcookie('token',$_SESSION['token'], [
+                    'expires'  => time() + 30*24*60*60,
+                    'path'     => '/',
+                    'domain'   => $this->host,
+                    'secure'   => true,
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ]);
 			return true;
 		}else{
 			return false;
