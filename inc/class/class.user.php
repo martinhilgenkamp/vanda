@@ -17,7 +17,6 @@ class UserManager {
 	}
 
 	function checkLogin($data){ 
-           print($this->host);
 			if (isset($data['username']) and isset($data['password'])){
 			$username = $data['username'];
 			$password = $data['password'];
