@@ -79,7 +79,7 @@ for($c = 0; $c < $colli; $c++){
 
 	$pdf->write1DBarcode($barcode, 'C128', '0', '35', 200, 80, 1, $style, 'N');
 
-	$pdf->writeHTMLCell(150, 0, '10', '120', '<span style="font-size: 18px; font-weight: bold;">Ordernr: '.$post->ordernr.'</span>', 0, 1, 0, false, 'L', true);
+	$pdf->writeHTMLCell(150, 0, '10', '120', '<span style="font-size: 25px; font-weight: bold;">Ordernr: '.$post->ordernr.'</span>', 0, 1, 0, false, 'L', true);
 	$pdf->writeHTMLCell(150, 0, '10', '130', '<span style="font-size: 18px; font-weight: bold;">Palletnr: '.$post->pallet_nr.'</span>', 0, 1, 0, false, 'L', true);
 	$pdf->writeHTMLCell(150, 0, '10', '140', '<span style="font-size: 18px; font-weight: bold;">PROD: '.date('d/m/Y H:i', strtotime($post->datum)).'</span>', 0, 1, 0, false, 'L', true);
 
