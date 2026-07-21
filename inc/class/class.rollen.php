@@ -629,8 +629,8 @@ class RollsManager {
 			$output .= "		<td>".$row->kleur."</td>";	
 			$output .= "		<td>".$row->backing."</td>";
 			$output .= "		<td>".$row->referentie."</td>";
-			$output .= "		<td>".date('Y-m-d',strtotime($row->ingevoerd))."</td>";
-			$output .= "		<td>".date('Y-m-d',strtotime($row->gewijzigd))."</td>";
+			$output .= "		<td>".date('Y-m-d H:i:s',strtotime($row->ingevoerd))."</td>";
+			$output .= "		<td>".date('Y-m-d H:i:s',strtotime($row->gewijzigd))."</td>";
 			$output .= "		<td>".$row->verzonden."</td>";
 				
 				
