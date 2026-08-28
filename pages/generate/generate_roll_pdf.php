@@ -58,11 +58,12 @@ class TablePDF extends TCPDF{
 		foreach($rows as $key => $group){
 			// Werk de groep uit.
 			foreach($group as $row){
-				$return[] = array($row['rolnummer'].sprintf('%02d', $row['deelnummer']),$row['omschrijving'],$row['kleur'],$row['backing'],round($row['snijlengte'],2),round($row['snijbreedte'],2),round(($row['snijlengte']*$row['snijbreedte']),2),$row['referentie'],$row['ean']);	
+				$return[] = array($row['rolnummer'].sprintf('%02d', $row['deelnummer']),$row['omschrijving'],$row['kleur'],$row['backing'],round($row['snijlengte'],2),round($row['snijbreedte'],2),round(($row['snijlengte']*$row['snijbreedte']),2),$row['referentie'],date('d-m-Y H:i', strtotime($row['gewijzigd'])));	
 			}
 			$tables[$key] = $return;
 			unset($return);
 		}
+
 		return $tables;			
 	}// end of load data function
 	
@@ -103,7 +104,7 @@ class TablePDF extends TCPDF{
 				$this->Cell($w[0], 7, 'Rolnummer', 1, 0, 'L', 1);
 				$this->Cell($w[1], 7, 'Kwaliteit', 1, 0, 'L', 1);
 				$this->Cell($w[2], 7, 'Referentie', 1, 0, 'L', 1);
-				$this->Cell($w[3], 7, 'Locatie', 1, 0, 'L', 1);
+				$this->Cell($w[3], 7, 'Datum', 1, 0, 'L', 1);
 				$this->Cell($w[4], 7, 'Kleur', 1, 0, 'L', 1);
 				$this->Cell($w[5], 7, 'Backing', 1, 0, 'L', 1);
 				$this->Cell($w[6], 7, 'Lengte', 1, 0, 'L', 1);

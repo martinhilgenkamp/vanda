@@ -101,7 +101,7 @@ class TablePDF extends TCPDF{
 	 // Colored table
     public function ColoredTable($key, $data) {
         // Header
-		$w = array(45, 15, 12, 33, 18, 37, 20, );
+		$w = array(45, 14, 11, 33, 28, 32, 17);
 		$rows = 25; 
 			
 		// Data
@@ -119,7 +119,7 @@ class TablePDF extends TCPDF{
 				$this->SetDrawColor(51, 51, 51);
 				$this->SetLineWidth(0.1);
 				$this->SetFont('', 'B');
-				$this->SetFont('helvetica', '', 12);
+				$this->SetFont('helvetica', '', 10);
 				$this->Cell($w[0], 7, $key, 1, 0, 'C', 1);
 				$this->Cell($w[1], 7, 'ID', 1, 0, 'C', 1);
 				$this->Cell($w[2], 7, 'Pallet', 1, 0, 'C', 1);
@@ -165,6 +165,7 @@ class TablePDF extends TCPDF{
 
 				$this->Cell(1, 4, '', 'L', 0, 'C', $fill);
 				$this->write1DBarcode($row[3], 'C128', '', '', $w[0]-1, 4 , '.18', $bstyle, 'T');
+				$this->SetX($this->GetX() + 1);
 				//$this->Cell($w[0], 4, '', 'LR', 0, 'C', $fill);
 				$this->Cell($w[1], 4, $row[1], 'LR', 0, 'C', $fill);
 				$this->Cell($w[2], 4, $row[2], 'LR', 0, 'C', $fill);
