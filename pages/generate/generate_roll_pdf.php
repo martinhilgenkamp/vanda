@@ -58,7 +58,7 @@ class TablePDF extends TCPDF{
 		foreach($rows as $key => $group){
 			// Werk de groep uit.
 			foreach($group as $row){
-				$return[] = array($row['rolnummer'].sprintf('%02d', $row['deelnummer']),$row['omschrijving'],$row['kleur'],$row['backing'],round($row['snijlengte'],2),round($row['snijbreedte'],2),round(($row['snijlengte']*$row['snijbreedte']),2),$row['referentie'],date('d-m-Y H:i', strtotime($row['gewijzigd'])));	
+				$return[] = array($row['rolnummer'].sprintf('%02d', $row['deelnummer']),$row['omschrijving'],$row['kleur'],$row['backing'],round($row['snijlengte'],2),round($row['snijbreedte'],2),round(($row['snijlengte']*$row['snijbreedte']),2),$row['referentie'],date('d-m-Y H:i', strtotime($row['ingevoerd'])));	
 			}
 			$tables[$key] = $return;
 			unset($return);

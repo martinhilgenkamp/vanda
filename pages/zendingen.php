@@ -12,7 +12,7 @@ if($options->shiphistory > 1){
 }
 
 // Load products from the database.
-$zendingen = $sm->getAllShipments($history);
+$zendingen = $sm->getAllShipments(1);
 
 $output = "<table id='product-table' class=\"data-table\" cellpadding=\"0\" cellspacing=\"0\">";
 $output .= "<tr>";

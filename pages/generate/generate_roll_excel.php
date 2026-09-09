@@ -41,7 +41,7 @@ class ShipmentSpreadsheet extends Spreadsheet {
 	}
 
     public function loadData($ship_id ){
-        $query = "SELECT rolnummer, deelnummer, omschrijving AS kwaliteit, ean AS Locatie, referentie, snijlengte, snijbreedte,  kleur, backing, gewijzigd AS datum FROM `vanda_rolls` WHERE `verzonden` = ".$ship_id." AND `verwijderd` = 0";
+        $query = "SELECT rolnummer, deelnummer, omschrijving AS kwaliteit, ean AS Locatie, referentie, snijlengte, snijbreedte,  kleur, backing, ingevoerd AS datum FROM `vanda_rolls` WHERE `verzonden` = ".$ship_id." AND `verwijderd` = 0";
         $result = $this->db->selectQuery($query);
        // echo $query;
         // rewrite data as an array

@@ -45,19 +45,33 @@ class ShipmentManager {
 			// Old query in case of emergency
 
 			//$qry = "SELECT * FROM  vanda_shipment WHERE datum >= '" . $dateDaysAgo . "' ORDER BY datum DESC";
-			$qry = "SELECT vanda_shipment.*, 
-				(SELECT COUNT(*) FROM `vanda_production` 
-				WHERE vanda_production.shipping_id = vanda_shipment.ship_id) as shipment_count
-			FROM vanda_shipment 
-			WHERE vanda_shipment.datum >= '".$dateDaysAgo."' 
-			ORDER BY vanda_shipment.datum DESC;";
+			$qry = "SELECT 
+				s.*,
+				COALESCE(p.shipment_count, 0) AS shipment_count
+			FROM vanda_shipment s
+			LEFT JOIN (
+				SELECT 
+					CAST(shipping_id AS UNSIGNED) AS ship_id,
+					COUNT(*) AS shipment_count
+				FROM vanda_production
+				GROUP BY CAST(shipping_id AS UNSIGNED)
+			) p ON p.ship_id = s.ship_id
+			WHERE s.datum >= '".$dateDaysAgo."'
+			ORDER BY s.datum DESC;";
 
 		} else {
-			$qry = "SELECT vanda_shipment.*, 
-				(SELECT COUNT(*) FROM `vanda_production` 
-				WHERE vanda_production.shipping_id = vanda_shipment.ship_id) as shipment_count
-			FROM vanda_shipment  
-			ORDER BY vanda_shipment.datum DESC;";
+			$qry = "SELECT 
+				s.*,
+				COALESCE(p.shipment_count, 0) AS shipment_count
+			FROM vanda_shipment s
+			LEFT JOIN (
+				SELECT 
+					CAST(shipping_id AS UNSIGNED) AS ship_id,
+					COUNT(*) AS shipment_count
+				FROM vanda_production
+				GROUP BY CAST(shipping_id AS UNSIGNED)
+			) p ON p.ship_id = s.ship_id
+			ORDER BY s.datum DESC;";
 		}
 		return $this->db->selectQuery($qry);
 	}
