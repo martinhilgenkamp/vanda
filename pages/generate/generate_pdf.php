@@ -146,34 +146,33 @@ class TablePDF extends TCPDF{
 				$totaal = $totaal + $row[4];
 			} else { //Normale tabel 		
 				
-				$bstyle = array(
-				  'position' => 'L',
-				  'align' => 'C',
-				  'stretch' => false,
-				  'fitwidth' => false,
-				  'cellfitalign' => '',
-				  'border' => '0',
-				  'hpadding' => '0',
-				  'vpadding' => 1,
-				  'fgcolor' => array(0,0,0),
-				  'bgcolor' => $fill, //array(255,255,255),
-				  'text' => false,
-				  'font' => 'helvetica',
-				  'fontsize' => 8,
-				  'stretchtext' => 4
-			  );
+			$bstyle = array(
+				'position' => '',
+				'align' => 'C',
+				'stretch' => false,
+				'fitwidth' => false,
+				'cellfitalign' => '',
+				'border' => '0',
+				'hpadding' => '0',
+				'vpadding' => 1,
+				'fgcolor' => array(0, 0, 0),
+				'bgcolor' => $fill,
+				'text' => false,
+				'font' => 'helvetica',
+				'fontsize' => 8,
+				'stretchtext' => 4
+			);
 
-				$this->Cell(1, 4, '', 'L', 0, 'C', $fill);
-				$this->write1DBarcode($row[3], 'C128', '', '', $w[0]-1, 4 , '.18', $bstyle, 'T');
-				$this->SetX($this->GetX() + 1);
-				//$this->Cell($w[0], 4, '', 'LR', 0, 'C', $fill);
-				$this->Cell($w[1], 4, $row[1], 'LR', 0, 'C', $fill);
-				$this->Cell($w[2], 4, $row[2], 'LR', 0, 'C', $fill);
-				$this->Cell($w[3], 4, $row[3], 'LR', 0, 'C', $fill);
-				$this->Cell($w[4], 4, $row[4], 'LR', 0, 'C', $fill);
-				$this->Cell($w[5], 4, $row[5], 'LR', 0, 'C', $fill);
-				$this->Cell($w[6], 4, $row[6].(strpos($key, ' - ') ? ' Stk' : ' Kg'), 'LR', 0, 'R', $fill);
-				$this->Ln();
+			$this->Cell(1, 4, '', 'L', 0, 'C', $fill);
+			$this->write1DBarcode($row[3], 'C128', '', '', $w[0] - 1, 4, '.18', $bstyle, 'T');
+
+			$this->Cell($w[1], 4, $row[1], 'LR', 0, 'C', $fill);
+			$this->Cell($w[2], 4, $row[2], 'LR', 0, 'C', $fill);
+			$this->Cell($w[3], 4, $row[3], 'LR', 0, 'C', $fill);
+			$this->Cell($w[4], 4, $row[4], 'LR', 0, 'C', $fill);
+			$this->Cell($w[5], 4, $row[5], 'LR', 0, 'C', $fill);
+			$this->Cell($w[6], 4, $row[6].(strpos($key, ' - ') ? ' Stk' : ' Kg'), 'LR', 0, 'R', $fill);
+			$this->Ln();
 			}
             $fill=!$fill;
 			$t++;   // Check if pagebreak is needed.
